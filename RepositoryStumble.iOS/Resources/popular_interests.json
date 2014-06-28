@@ -1,0 +1,79 @@
+[
+	{
+		"keyword": "angularjs",
+		"language": {
+		    "name": "JavaScript",
+		    "value": "javascript"
+		 }
+	},
+	{
+		"keyword": "jquery",
+		"language": {
+		    "name": "JavaScript",
+		    "value": "javascript"
+		 }
+	},	
+	{
+		"keyword": "node",
+		"language": {
+		    "name": "JavaScript",
+		    "value": "javascript"
+		 }
+	},	
+	{
+		"keyword": "bootstrap",
+		"language": {
+		    "name": "JavaScript",
+		    "value": "javascript"
+		 }
+	},	
+	{
+		"keyword": "xamarin",
+		"language": {
+		    "name": "C#",
+		    "value": "csharp"
+		 }
+	},
+	{
+		"keyword": "asp",
+		"language": {
+		    "name": "C#",
+		    "value": "csharp"
+		 }
+	},
+    {
+		"keyword": "html5",
+		"language": {
+		    "name": "CSS",
+		    "value": "css"
+		 }
+	},
+	{
+		"keyword": "rails",
+		"language": {
+		    "name": "Ruby",
+		    "value": "ruby"
+		 }
+	},
+	{
+		"keyword": "spring",
+		"language": {
+		    "name": "Java",
+		    "value": "java"
+		  }
+	},
+	{
+		"keyword": "ios",
+		"language": {
+		    "name": "Objective-C",
+		    "value": "objective-c"
+		  }
+	},
+	{
+		"keyword": "web framework",
+		"language":   {
+		    "name": "Python",
+		    "value": "python"
+		  }
+	}
+]
