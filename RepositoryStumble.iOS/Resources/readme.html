@@ -1,0 +1,153 @@
+<html>
+	<head>
+		<title></title>
+		<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0"/>
+    	<script type="text/javascript" src="jquery.min.js"></script>
+    	<script type="text/javascript" src="marked.js"></script>
+		<script type="text/javascript">
+		
+			function tryMarkdown(s) {
+				try {
+					return marked(s);
+				}
+				catch (err)
+				{
+					return "";
+				}
+			}
+
+			function setData(data) {
+				$('#readme').html(tryMarkdown(data));
+			}
+			
+			function invokeNative(functionName, args) {
+			    var iframe = document.createElement('IFRAME');
+			    iframe.setAttribute('src', 'app://' + functionName + '#' + JSON.stringify(args));
+			    document.documentElement.appendChild(iframe);
+			    iframe.parentNode.removeChild(iframe);
+			    iframe = null;  
+			}
+			
+			$(function() {
+				$.ajaxSetup({ cache: false });
+   				invokeNative("ready");
+   				$.getJSON("../tmp/repo.json?" + Math.random(), function(data) {
+
+					$('#header > h1').text(data.Name);
+
+					if (!data.Description || 0 === data.Description.length) {
+						$('#description').hide();
+					} else {
+						$('#description').text(data.Description);
+					}
+
+					if (!data.Readme || 0 === data.Readme.length) {
+						$('#readme').hide();
+					} else {
+						$('#readme').html(tryMarkdown(data.Readme));
+					}
+   				});
+			});
+
+			$( document ).ajaxError(function( event, jqxhr, settings, exception ) {
+			  //alert("Error: " + event);
+			});
+		</script>
+
+		<style type="text/css">
+			* {
+box-sizing: border-box;
+}
+body {
+color: #333;
+font-family: Helvetica, Arial, sans-serif;
+font-size: 15px;
+line-height: 1.7;
+overflow: hidden;
+word-wrap: break-word;
+}
+h1, h2, h3, h4, h5, h6 {
+margin: 1em 0 15px;
+padding: 0;
+font-weight: bold;
+line-height: 1.7;
+cursor: text;
+position: relative;
+}
+h1 {
+font-size: 1.8em;
+border-bottom: 1px solid #ddd;
+}
+p, blockquote, ul, ol, dl, table, pre {
+margin: 15px 0;
+}
+h2 {
+font-size: 1.4em;
+border-bottom: 1px solid #eee;
+}
+ul, ol {
+padding-left: 30px;
+}
+a {
+color: #4183c4;
+text-decoration: none;
+text-decoration: none;
+}
+.highlight pre, pre {
+background-color: #f8f8f8;
+border: 1px solid #ddd;
+font-size: 13px;
+line-height: 19px;
+overflow: auto;
+padding: 6px 10px;
+border-radius: 3px;
+}
+pre {
+word-wrap: normal;
+}
+dl {
+padding: 0;
+}
+dl dt {
+font-size: 14px;
+font-weight: bold;
+font-style: italic;
+padding: 0;
+margin-top: 15px;
+}
+dl dd {
+margin-bottom: 15px;
+padding: 0 15px;
+}
+table {
+width: 100%;
+overflow: auto;
+display: block;
+}
+table tr {
+border-top: 1px solid #ccc;
+background-color: #fff;
+}
+table tr:nth-child(2n) {
+background-color: #f8f8f8;
+}
+table th, table td {
+border: 1px solid #ddd;
+padding: 6px 13px;
+}
+table th {
+font-weight: bold;
+}
+img {
+max-width: 100%;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+}
+		</style>
+	</head>
+	<body>
+		<div class="cell" id="header"><h1></h1></div>
+		<div class="cell" id="description"></div>
+		<div class="cell markdown-body" id="readme"></div>
+	</body>
+</html>

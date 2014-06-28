@@ -1,0 +1,15 @@
+[submodule "GitHubSharp"]
+	path = GitHubSharp
+	url = https://github.com/thedillonb/GitHubSharp.git
+[submodule "MonoTouch.Dialog"]
+	path = MonoTouch.Dialog
+	url = https://github.com/thedillonb/MonoTouch.Dialog.git
+[submodule "lib/Xamarin.Utilities"]
+	path = lib/Xamarin.Utilities
+	url = git@github.com:thedillonb/Xamarin.Utilities.git
+[submodule "lib/GitHubSharp"]
+	path = lib/GitHubSharp
+	url = git@github.com:thedillonb/GitHubSharp.git
+[submodule "lib/MonoTouch.Dialog"]
+	path = lib/MonoTouch.Dialog
+	url = git@github.com:thedillonb/MonoTouch.Dialog.git

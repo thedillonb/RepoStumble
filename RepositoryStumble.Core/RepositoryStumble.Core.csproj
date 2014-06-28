@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{75D603EC-906D-4D19-BC31-47BC6BA7394A}</ProjectGuid>
+    <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>RepositoryStumble.Core</RootNamespace>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+    <AssemblyName>RepositoryStumble.Core</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Akavache.Mobile">
+      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\Akavache.Mobile.dll</HintPath>
+    </Reference>
+    <Reference Include="ReactiveUI.Cocoa">
+      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.Cocoa.dll</HintPath>
+    </Reference>
+    <Reference Include="ReactiveUI.Events">
+      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.Events.dll</HintPath>
+    </Reference>
+    <Reference Include="ReactiveUI">
+      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Core">
+      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces">
+      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq">
+      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\lib\Xamarin.Utilities\Xamarin.Utilities.Core\Xamarin.Utilities.Core.iOS.csproj">
+      <Project>{EBBA1BD0-8430-4CC1-B636-B89C505C7D1C}</Project>
+      <Name>Xamarin.Utilities.Core.iOS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\GitHubSharp\GitHubSharp.MonoTouch.csproj">
+      <Project>{89E14828-85BB-4790-9B4E-E44DD4CE000E}</Project>
+      <Name>GitHubSharp.MonoTouch</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\" />
+    <Folder Include="Utils\" />
+    <Folder Include="ViewModels\" />
+    <Folder Include="ViewModels\Application\" />
+    <Folder Include="Services\" />
+    <Folder Include="ViewModels\Languages\" />
+    <Folder Include="ViewModels\Repositories\" />
+    <Folder Include="ViewModels\Interests\" />
+    <Folder Include="ViewModels\Profile\" />
+    <Folder Include="Messages\" />
+    <Folder Include="ViewModels\Stumble\" />
+    <Folder Include="ViewModels\Trending\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data\Account.cs" />
+    <Compile Include="Data\Interest.cs" />
+    <Compile Include="Data\InterestedRepository.cs" />
+    <Compile Include="Data\Language.cs" />
+    <Compile Include="Data\Repository.cs" />
+    <Compile Include="Data\StumbledRepository.cs" />
+    <Compile Include="Utils\Exceptions.cs" />
+    <Compile Include="Data\Interests.cs" />
+    <Compile Include="Data\StumbledRepositories.cs" />
+    <Compile Include="Data\InterestedRepositories.cs" />
+    <Compile Include="ViewModels\Application\StartupViewModel.cs" />
+    <Compile Include="Services\ApplicationService.cs" />
+    <Compile Include="Services\IApplicationService.cs" />
+    <Compile Include="Data\ExternalResources.cs" />
+    <Compile Include="ViewModels\Application\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\Application\LoginViewModel.cs" />
+    <Compile Include="ViewModels\Languages\LanguagesViewModel.cs" />
+    <Compile Include="ViewModels\Interests\InterestsViewModel.cs" />
+    <Compile Include="ViewModels\Profile\ProfileViewModel.cs" />
+    <Compile Include="ViewModels\Repositories\HistoryViewModel.cs" />
+    <Compile Include="ViewModels\Repositories\DislikedRepositoriesViewModel.cs" />
+    <Compile Include="ViewModels\Repositories\BaseRepositoriesViewModel.cs" />
+    <Compile Include="ViewModels\Repositories\LikedRepositoriesViewModel.cs" />
+    <Compile Include="Messages\LogoutMessage.cs" />
+    <Compile Include="ViewModels\Interests\AddInterestViewModel.cs" />
+    <Compile Include="Data\PopularInterest.cs" />
+    <Compile Include="ViewModels\Stumble\StumbleViewModel.cs" />
+    <Compile Include="ViewModels\Trending\ShowcasesViewModel.cs" />
+    <Compile Include="Data\Showcase.cs" />
+  </ItemGroup>
+</Project>
