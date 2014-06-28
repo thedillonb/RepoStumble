@@ -7,8 +7,6 @@ namespace RepositoryStumble.Core.ViewModels.Application
 {
     public class SettingsViewModel : ReactiveObject
     {
-        protected readonly IApplicationService ApplicationService;
-
         private bool _syncWithGitHub;
         public bool SyncWithGitHub
         {
@@ -20,14 +18,13 @@ namespace RepositoryStumble.Core.ViewModels.Application
 
         public SettingsViewModel(IApplicationService applicationService)
         {
-            ApplicationService = applicationService;
-            SyncWithGitHub = ApplicationService.Account.SyncWithGitHub;
+            SyncWithGitHub = applicationService.Account.SyncWithGitHub;
             LogoutCommand = new ReactiveCommand();
 
             this.WhenAnyValue(x => x.SyncWithGitHub).Skip(1).Subscribe(x =>
             {
-                ApplicationService.Account.SyncWithGitHub = x;
-                ApplicationService.Account.Save();
+                applicationService.Account.SyncWithGitHub = x;
+                applicationService.Account.Save();
             });
         }
     }

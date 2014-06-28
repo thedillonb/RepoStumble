@@ -4,10 +4,11 @@ using ReactiveUI;
 using RepositoryStumble.Core.Data;
 using System.Reactive.Linq;
 using System.Linq;
+using Xamarin.Utilities.Core.ViewModels;
 
 namespace RepositoryStumble.Core.ViewModels.Interests
 {
-    public class InterestsViewModel : ReactiveObject
+    public class InterestsViewModel : BaseViewModel
     {
         protected readonly IApplicationService ApplicationService;
 

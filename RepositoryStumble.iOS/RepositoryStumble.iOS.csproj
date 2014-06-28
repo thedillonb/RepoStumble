@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -10,6 +10,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>RepositoryStumble</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+    <AssemblyName>RepositoryStumble</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -57,7 +58,7 @@
     <MtouchI18n>
     </MtouchI18n>
     <MtouchArch>ARMv7</MtouchArch>
-    <AssemblyName>RepositoryStumble.iOS</AssemblyName>
+    <AssemblyName>RepositoryStumbleiOS</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>full</DebugType>
@@ -73,7 +74,7 @@
     <MtouchI18n>
     </MtouchI18n>
     <MtouchArch>ARMv7</MtouchArch>
-    <AssemblyName>RepositoryStumble.iOS</AssemblyName>
+    <AssemblyName>RepositoryStumbleiOS</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>full</DebugType>
@@ -86,7 +87,7 @@
     <BuildIpa>true</BuildIpa>
     <CodesignProvision>Automatic:AdHoc</CodesignProvision>
     <CodesignKey>iPhone Distribution</CodesignKey>
-    <AssemblyName>RepositoryStumble.iOS</AssemblyName>
+    <AssemblyName>RepositoryStumbleiOS</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|iPhone' ">
     <DebugType>full</DebugType>
@@ -105,7 +106,7 @@
     <MtouchArch>ARMv7</MtouchArch>
     <IpaPackageName>
     </IpaPackageName>
-    <AssemblyName>RepositoryStumble.iOS</AssemblyName>
+    <AssemblyName>RepositoryStumbleiOS</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -151,34 +152,20 @@
       <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.PlatformServices.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-    <Folder Include="Utils\" />
-    <Folder Include="ViewControllers\" />
-    <Folder Include="Data\" />
-    <Folder Include="Images\" />
-    <Folder Include="Views\" />
-    <Folder Include="ViewControllers\Application\" />
-    <Folder Include="ViewControllers\Profile\" />
-    <Folder Include="ViewControllers\Repositories\" />
-    <Folder Include="ViewControllers\Interests\" />
-    <Folder Include="ViewControllers\Languages\" />
-    <Folder Include="ViewControllers\Stumble\" />
-    <Folder Include="Elements\" />
-    <Folder Include="ViewControllers\Trending\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="TransitionOrchestrationService.cs" />
+    <Compile Include="ViewControllers\Trending\ShowcaseViewController.cs" />
+    <Compile Include="ViewControllers\ViewModelDialogViewController.cs" />
     <Compile Include="ViewControllers\WebViewController.cs" />
     <Compile Include="Images\Images.cs" />
-    <Compile Include="Views\HeaderView.cs" />
     <Compile Include="Utils\Transitions.cs" />
     <Compile Include="Views\CenterButton.cs" />
-    <Compile Include="ViewControllers\WebBrowserViewController.cs" />
     <Compile Include="ViewControllers\Application\MainViewController.cs" />
     <Compile Include="ViewControllers\Profile\ProfileViewController.cs" />
     <Compile Include="ViewControllers\Application\StartupViewController.cs" />
@@ -192,14 +179,13 @@
     <Compile Include="ViewControllers\Application\SettingsViewController.cs" />
     <Compile Include="ViewControllers\Stumble\StumbleViewController.cs" />
     <Compile Include="ViewControllers\Stumble\SeenStumbleViewController.cs" />
-    <Compile Include="ViewControllers\ViewModelDialogViewController.cs" />
     <Compile Include="ViewControllers\Application\LoginViewController.cs" />
     <Compile Include="Elements\StumbledRepositoryElement.cs" />
     <Compile Include="ViewControllers\Repositories\BaseRepositoriesViewController.cs" />
     <Compile Include="Elements\InterestElement.cs" />
     <Compile Include="ViewControllers\Trending\ShowcasesViewController.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
@@ -215,7 +201,6 @@
     <BundleResource Include="Resources\marked.js" />
     <BundleResource Include="Resources\jquery.min.js" />
     <BundleResource Include="Resources\readme.html" />
-    <BundleResource Include="Resources\languages.json" />
     <BundleResource Include="Images\thumb_down.png" />
     <BundleResource Include="Images\thumb_down%402x.png" />
     <BundleResource Include="Images\thumb_up%402x.png" />

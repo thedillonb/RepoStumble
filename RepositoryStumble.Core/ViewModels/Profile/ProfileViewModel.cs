@@ -8,11 +8,6 @@ namespace RepositoryStumble.Core.ViewModels.Profile
         public ProfileViewModel()
         {
         }
-
-        protected override System.Threading.Tasks.Task Load()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
 

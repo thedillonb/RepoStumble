@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
+using RepositoryStumble.Core.Messages;
+using RepositoryStumble.Core.ViewModels.Application;
 using RepositoryStumble.ViewControllers;
 using RepositoryStumble.Utils;
 using MTiRate;
@@ -59,6 +61,11 @@ namespace RepositoryStumble
             IoC.RegisterAssemblyServicesAsSingletons(typeof(Core.Services.IApplicationService).Assembly);
             IoC.RegisterAssemblyServicesAsSingletons(GetType().Assembly);
 
+            var viewModelViewService = IoC.Resolve<IViewModelViewService>();
+            viewModelViewService.RegisterViewModels(typeof(Xamarin.Utilities.Services.DefaultValueService).Assembly);
+            viewModelViewService.RegisterViewModels(typeof(Core.Services.IApplicationService).Assembly);
+            viewModelViewService.RegisterViewModels(GetType().Assembly);
+
 			iRate.SharedInstance.AppStoreID = 761416981;
 			iRate.SharedInstance.ApplicationBundleID = "com.dillonbuchanan.repositorystumble";
 			iRate.SharedInstance.DaysUntilPrompt = 2;
@@ -66,13 +73,18 @@ namespace RepositoryStumble
 			iRate.SharedInstance.OnlyPromptIfLatestVersion = true;
 
             //GitHubSharp.Client.ClientConstructor = () => new System.Net.Http.HttpClient(new ModernHttpClient.AFNetworkHandler());
+            var startupViewController = new StartupViewController { ViewModel = IoC.Resolve<StartupViewModel>() };
+            startupViewController.ViewModel.View = startupViewController;
 
-            var rootViewController = new UINavigationController(new StartupViewController()) { NavigationBarHidden = true };
-            Window = new UIWindow (UIScreen.MainScreen.Bounds);
-            Window.RootViewController = rootViewController;
+            var mainNavigationController = new UINavigationController(startupViewController) { NavigationBarHidden = true };
+            MessageBus.Current.Listen<LogoutMessage>().Subscribe(_ =>
+            {
+                mainNavigationController.PopToRootViewController(false);
+                mainNavigationController.DismissViewController(true, null);
+            });
+
+		    Window = new UIWindow(UIScreen.MainScreen.Bounds) {RootViewController = mainNavigationController};
             Window.MakeKeyAndVisible ();
-
-            MessageBus.Current.Listen<RepositoryStumble.Core.Messages.LogoutMessage>().Subscribe(_ => rootViewController.PopToRootViewController(true));
 			return true;
 		}
 	}

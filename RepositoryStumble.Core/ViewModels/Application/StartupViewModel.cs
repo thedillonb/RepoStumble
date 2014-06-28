@@ -1,6 +1,5 @@
 ﻿using System;
 using Xamarin.Utilities.Core.ViewModels;
-using System.Threading.Tasks;
 using RepositoryStumble.Core.Services;
 using ReactiveUI;
 
@@ -16,10 +15,22 @@ namespace RepositoryStumble.Core.ViewModels.Application
 
         public StartupViewModel(IApplicationService applicationService)
         {
-            GoToMainCommand = new ReactiveCommand();
-            StartupCommand = new ReactiveCommand();
-            GoToLoginCommand = new ReactiveCommand();
 
+            GoToLoginCommand = new ReactiveCommand();
+            GoToLoginCommand.Subscribe(x =>
+            {
+                var vm = CreateViewModel<LoginViewModel>();
+                ShowViewModel(vm);
+            });
+
+            GoToMainCommand = new ReactiveCommand();
+            GoToMainCommand.Subscribe(x =>
+            {
+                var vm = CreateViewModel<MainViewModel>();
+                ShowViewModel(vm);
+            });
+
+            StartupCommand = new ReactiveCommand();
             StartupCommand.Subscribe(_ =>
             {
                 if (applicationService.Load())

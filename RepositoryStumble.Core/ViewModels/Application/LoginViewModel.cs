@@ -2,10 +2,11 @@
 using ReactiveUI;
 using RepositoryStumble.Core.Data;
 using RepositoryStumble.Core.Services;
+using Xamarin.Utilities.Core.ViewModels;
 
 namespace RepositoryStumble.Core.ViewModels.Application
 {
-    public class LoginViewModel : ReactiveObject
+    public class LoginViewModel : BaseViewModel
     {
         private const string ClientId = "28cfa26e6ceee13c226e";
         private const string ClientSecret = "87d1e0747ba4a7965b27e4cc5cc7553f59390cea";

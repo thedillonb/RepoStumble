@@ -8,10 +8,8 @@ using RepositoryStumble.Core.ViewModels.Profile;
 
 namespace RepositoryStumble.ViewControllers
 {
-    public class ProfileViewController : ViewModelDialogViewController<ProfileViewModel>, IImageUpdated
+    public class ProfileViewController : ViewModelDialogViewController<ProfileViewModel>
     {
-		private readonly HeaderView _header = new HeaderView();
-
         public ProfileViewController()
 			: base(UITableViewStyle.Grouped)
         {
@@ -55,13 +53,6 @@ namespace RepositoryStumble.ViewControllers
 //			};
 //
 //			Root = new RootElement("Repository Stumble") { secHeader, sec2, sec1, sec3 };
-		}
-
-		public void UpdatedImage (System.Uri uri)
-		{
-			_header.Image = ImageLoader.DefaultRequestImage(uri, this);
-			if (_header.Image != null)
-				_header.SetNeedsDisplay();
 		}
 
 		private class Element : StyledStringElement

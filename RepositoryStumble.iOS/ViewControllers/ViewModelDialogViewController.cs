@@ -7,18 +7,11 @@ using Xamarin.Utilities.Core.ViewModels;
 
 namespace RepositoryStumble.ViewControllers
 {
-    public abstract class ViewModelDialogViewController<TViewModel> : DialogViewController where TViewModel : ReactiveObject
+    public abstract class ViewModelDialogViewController<TViewModel> : DialogViewController, IViewFor<TViewModel> where TViewModel : ReactiveObject
     {
-        private readonly TViewModel _viewModel = IoC.Resolve<TViewModel>();
         protected readonly INetworkActivityService NetworkActivityService = IoC.Resolve<INetworkActivityService>();
         private UIRefreshControl _refreshControl;
         private bool _loaded;
-
-
-        public TViewModel ViewModel
-        {
-            get { return _viewModel; }
-        }
 
         protected ViewModelDialogViewController(UITableViewStyle style = UITableViewStyle.Plain)
             : base(style, null, true)
@@ -30,7 +23,7 @@ namespace RepositoryStumble.ViewControllers
         {
             base.ViewDidLoad();
 
-            var loadableViewModel = _viewModel as LoadableViewModel;
+            var loadableViewModel = ViewModel as LoadableViewModel;
             if (loadableViewModel != null)
             {
                 _refreshControl = new UIRefreshControl();
@@ -59,11 +52,19 @@ namespace RepositoryStumble.ViewControllers
             if (!_loaded)
             {
                 _loaded = true;
-                var loadableViewModel = _viewModel as LoadableViewModel;
+                var loadableViewModel = ViewModel as LoadableViewModel;
                 if (loadableViewModel != null)
                     loadableViewModel.LoadCommand.ExecuteIfCan();
             }
         }
+
+        object IViewFor.ViewModel
+        {
+            get { return ViewModel; }
+            set { ViewModel = (TViewModel)value; }
+        }
+
+        public TViewModel ViewModel { get; set; }
     }
 }
 

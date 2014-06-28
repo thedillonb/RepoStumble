@@ -3,11 +3,13 @@ using System.Threading.Tasks;
 using MonoTouch.UIKit;
 using RepositoryStumble.Core.Data;
 using RepositoryStumble.Core.Services;
+using Xamarin.Utilities.Core.ViewModels;
+using Xamarin.Utilities.ViewControllers;
 
 namespace RepositoryStumble.ViewControllers
 {
-	public abstract class RepositoryViewController : WebViewController
-    {
+	public abstract class RepositoryViewController<TViewModel> : WebView<TViewModel> where TViewModel : class, IBaseViewModel
+	{
         protected IApplicationService ApplicationService = IoC.Resolve<IApplicationService>();
 		protected StumbledRepository CurrentRepo;
 		protected readonly UIBarButtonItem _dislikeButton;
@@ -96,10 +98,10 @@ namespace RepositoryStumble.ViewControllers
 		{
 			if (request.Url.AbsoluteString.StartsWith("http"))
 			{
-				var ctrl = new WebBrowserViewController();
-				ctrl.Title = Title;
-				ctrl.Load(request.Url);
-				NavigationController.PushViewController(ctrl, true);
+//				var ctrl = new WebBrowserViewController();
+//				ctrl.Title = Title;
+//				ctrl.Load(request.Url);
+//				NavigationController.PushViewController(ctrl, true);
 				return false;
 			}
 

@@ -1,10 +1,10 @@
-using System;
 using MonoTouch.UIKit;
 using RepositoryStumble.Core.Data;
+using RepositoryStumble.Core.ViewModels.Stumble;
 
-namespace RepositoryStumble.ViewControllers
+namespace RepositoryStumble.ViewControllers.Stumble
 {
-	public class SeenStumbleViewController : RepositoryViewController
+	public class SeenStumbleViewController : RepositoryViewController<SeenStumbleViewModel>
     {
 		private readonly StumbledRepository _stumbledRepository;
 

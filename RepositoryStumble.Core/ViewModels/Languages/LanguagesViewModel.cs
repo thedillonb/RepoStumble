@@ -30,11 +30,6 @@ namespace RepositoryStumble.Core.ViewModels.Languages
         {
             ApplicationService = applicationService;
         }
-
-        protected override Task Load()
-        {
-            return Task.Delay(0);
-        }
     }
 }
 
