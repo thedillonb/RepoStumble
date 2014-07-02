@@ -14,6 +14,7 @@ namespace RepositoryStumble.ViewControllers.Trending
             base.ViewDidLoad();
 
             ViewModel.WhenAnyValue(x => x.Title).Subscribe(x => Title = x);
+
             ViewModel.Repositories.Changed.Subscribe(_ =>
             {
                 var root = new RootElement(Title) {UnevenRows = true};

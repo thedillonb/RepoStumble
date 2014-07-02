@@ -1,10 +1,10 @@
 using System;
 using MonoTouch.Dialog;
 using MonoTouch.UIKit;
-using System.Linq;
 using RepositoryStumble.Views;
-using MonoTouch.Dialog.Utilities;
 using RepositoryStumble.Core.ViewModels.Profile;
+using System.Reactive.Linq;
+using ReactiveUI;
 
 namespace RepositoryStumble.ViewControllers
 {
@@ -18,8 +18,73 @@ namespace RepositoryStumble.ViewControllers
 //				NavigationController.PushViewController(new SettingsViewController(), true));
         }
 
-		public override void ViewWillAppear(bool animated)
-		{
+        protected override void Scrolled(System.Drawing.PointF point)
+        {
+            if (point.Y > 0)
+            {
+                NavigationController.NavigationBar.ShadowImage = null;
+            }
+            else
+            {
+                if (NavigationController.NavigationBar.ShadowImage == null)
+                    NavigationController.NavigationBar.ShadowImage = new UIImage();
+            }
+        }
+
+        public override void ViewWillAppear(bool animated)
+        {
+            base.ViewWillAppear(animated);
+            NavigationController.NavigationBar.ShadowImage = new UIImage();
+        }
+
+        public override void ViewWillDisappear(bool animated)
+        {
+            base.ViewWillDisappear(animated);
+            NavigationController.NavigationBar.ShadowImage = null;
+        }
+
+        public override void ViewDidLoad()
+        {
+            base.ViewDidLoad();
+
+            TableView.SectionHeaderHeight = 0;
+            RefreshControl.TintColor = UIColor.LightGray;
+
+            var header = new ImageAndTitleHeaderView 
+            { 
+                Text = ViewModel.Username,
+                BackgroundColor = NavigationController.NavigationBar.BackgroundColor,
+                TextColor = UIColor.White,
+                SubTextColor = UIColor.FromWhiteAlpha(0.9f, 1.0f)
+            };
+
+            var topBackgroundView = this.CreateTopBackground(header.BackgroundColor);
+            topBackgroundView.Hidden = true;
+
+            ViewModel.WhenAnyValue(x => x.User).Where(x => x != null).Subscribe(x =>
+            {
+                topBackgroundView.Hidden = false;
+                header.ImageUri = x.AvatarUrl;
+                header.SubText = x.Name;
+                ReloadData();
+            });
+
+            var split = new SplitButtonElement();
+            var likes = split.AddButton("Likes", "-", () => ViewModel.GoToLikesCommand.ExecuteIfCan());
+            var dislikes = split.AddButton("Dislikes", "-", () => ViewModel.GoToDislikesCommand.ExecuteIfCan());
+            var interests = split.AddButton("Interests", "-", () => ViewModel.GoToInterestsCommand.ExecuteIfCan());
+
+            ViewModel.WhenAnyValue(x => x.Likes).Subscribe(x => likes.Text = x.ToString());
+            ViewModel.WhenAnyValue(x => x.Dislikes).Subscribe(x => dislikes.Text = x.ToString());
+            ViewModel.WhenAnyValue(x => x.Interests).Subscribe(x => interests.Text = x.ToString());
+
+            var root = new RootElement(Title) { UnevenRows = true };
+            root.Add(new Section(header) { split });
+            Root = root;
+
+
+        }
+
 //			NavigationController.Toolbar.Translucent = false;
 //			NavigationController.Toolbar.BarTintColor = UIColor.FromRGB(245, 245, 245);
 //			base.ViewWillAppear(animated);
@@ -53,7 +118,6 @@ namespace RepositoryStumble.ViewControllers
 //			};
 //
 //			Root = new RootElement("Repository Stumble") { secHeader, sec2, sec1, sec3 };
-		}
 
 		private class Element : StyledStringElement
 		{

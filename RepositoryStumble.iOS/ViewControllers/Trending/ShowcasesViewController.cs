@@ -12,6 +12,11 @@ namespace RepositoryStumble.ViewControllers.Trending
         public ShowcasesViewController()
         {
             Title = "Showcases";
+        }
+
+        public override void ViewDidLoad()
+        {
+            base.ViewDidLoad();
 
             ViewModel.Showcases.Changed.Subscribe(_ =>
             {
@@ -19,7 +24,7 @@ namespace RepositoryStumble.ViewControllers.Trending
                 var section = new Section();
                 section.AddAll(ViewModel.Showcases.Select(x =>
                 {
-                    var e = new StyledStringElement(x.Name, x.Description, UITableViewCellStyle.Subtitle);
+                    var e = new StyledMultilineElement(x.Name, x.Description, UITableViewCellStyle.Subtitle);
                     e.Accessory = UITableViewCellAccessory.DisclosureIndicator;
                     e.Tapped += () => ViewModel.GoToShowcaseCommand.ExecuteIfCan(x);
                     return e;

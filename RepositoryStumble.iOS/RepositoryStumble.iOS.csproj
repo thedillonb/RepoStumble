@@ -3,14 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{CA36F069-2A63-4D83-AB5B-224AD5A1FCE6}</ProjectGuid>
     <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Exe</OutputType>
     <RootNamespace>RepositoryStumble</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
-    <AssemblyName>RepositoryStumble</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -184,6 +181,8 @@
     <Compile Include="ViewControllers\Repositories\BaseRepositoriesViewController.cs" />
     <Compile Include="Elements\InterestElement.cs" />
     <Compile Include="ViewControllers\Trending\ShowcasesViewController.cs" />
+    <Compile Include="Views\ImageAndTitleHeaderView.cs" />
+    <Compile Include="ViewControllers\Trending\TrendingViewController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ProjectExtensions>
@@ -234,6 +233,16 @@
     <BundleResource Include="Resources\Default-568h%402x.png" />
     <BundleResource Include="Resources\Default%402x.png" />
     <BundleResource Include="Resources\Default.png" />
+    <BundleResource Include="Images\user%402x.png" />
+    <BundleResource Include="Images\user.png" />
+    <BundleResource Include="Images\trending%402x.png" />
+    <BundleResource Include="Images\trending.png" />
+    <BundleResource Include="Images\spotlight%402x.png" />
+    <BundleResource Include="Images\search%402x.png" />
+    <BundleResource Include="Images\search.png" />
+    <BundleResource Include="Images\heart.png" />
+    <BundleResource Include="Images\spotlight.png" />
+    <BundleResource Include="Images\heart%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />

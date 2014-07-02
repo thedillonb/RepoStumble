@@ -49,6 +49,10 @@ namespace RepositoryStumble.ViewControllers
         {
             base.ViewWillAppear(animated);
 
+            var activatable = ViewModel as ISupportsActivation;
+            if (activatable != null)
+                activatable.Activator.Activate();
+
             if (!_loaded)
             {
                 _loaded = true;
@@ -56,6 +60,15 @@ namespace RepositoryStumble.ViewControllers
                 if (loadableViewModel != null)
                     loadableViewModel.LoadCommand.ExecuteIfCan();
             }
+        }
+
+        public override void ViewWillDisappear(bool animated)
+        {
+            base.ViewWillDisappear(animated);
+
+            var activatable = ViewModel as ISupportsActivation;
+            if (activatable != null)
+                activatable.Activator.Deactivate();
         }
 
         object IViewFor.ViewModel

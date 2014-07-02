@@ -21,6 +21,7 @@ namespace RepositoryStumble.Core.ViewModels.Trending
             {
                 var vm = CreateViewModel<ShowcaseViewModel>();
                 vm.ShowcaseSlug = x.Slug;
+                vm.Title = x.Name;
                 ShowViewModel(vm);
             });
 

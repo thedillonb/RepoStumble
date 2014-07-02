@@ -19,7 +19,7 @@ namespace RepositoryStumble.Core.ViewModels.Trending
         public string Title
         {
             get { return _title; }
-            private set { this.RaiseAndSetIfChanged(ref _title, value); }
+            set { this.RaiseAndSetIfChanged(ref _title, value); }
         }
 
         private Showcase _showcase;
@@ -31,6 +31,8 @@ namespace RepositoryStumble.Core.ViewModels.Trending
 
         public ShowcaseViewModel(IJsonHttpClientService jsonHttpClientService)
         {
+            Title = "Showcase";
+
             GoToRepositoryCommand = new ReactiveCommand();
             GoToRepositoryCommand.OfType<ShowcaseRepository>().Subscribe(x =>
             {

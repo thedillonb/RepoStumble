@@ -3,31 +3,29 @@ using MonoTouch.Dialog;
 using MonoTouch.UIKit;
 using RepositoryStumble.Core.Data;
 using RepositoryStumble.Core.ViewModels.Languages;
-using ReactiveUI;
 using System.Linq;
 
 namespace RepositoryStumble.ViewControllers.Languages
 {
     public class LanguagesViewController : ViewModelDialogViewController<LanguagesViewModel>
     {
-        public LanguagesViewController(Language selectedLanguage)
+        public override void ViewDidLoad()
         {
-            ViewModel.SelectedLanguage = selectedLanguage;
-            ViewModel.WhenAnyValue(x => x.Languages).Subscribe(x =>
+            Title = "Langauges";
+
+            base.ViewDidLoad();
+
+            ViewModel.Languages.Changed.Subscribe(_ =>
             {
-                var root = new RootElement("Languages");
+                var root = new RootElement(Title);
                 var sec = new Section();
                 root.Add(sec);
 
-                foreach (var l in x.OrderBy(y => y.Name))
+                foreach (var l in ViewModel.Languages.OrderBy(y => y.Name))
                 {
                     var closureL = l;
                     var el = new StyledStringElement(l.Name);
-                    el.Tapped += () => {
-                        ViewModel.SelectedLanguage = closureL;
-                        NavigationController.PopViewControllerAnimated(true);
-                    };
-
+                    el.Tapped += () => ViewModel.SelectedLanguage = closureL;
                     if (ViewModel.SelectedLanguage != null && closureL.Slug.Equals(ViewModel.SelectedLanguage.Slug))
                         el.Accessory = UITableViewCellAccessory.Checkmark;
                     sec.Add(el);

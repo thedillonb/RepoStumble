@@ -5,6 +5,8 @@ using System.Linq;
 using RepositoryStumble.Core.ViewModels.Interests;
 using RepositoryStumble.Elements;
 using ReactiveUI;
+using System.Reactive.Linq;
+using System.Collections.Specialized;
 
 namespace RepositoryStumble.ViewControllers.Interests
 {
@@ -13,21 +15,21 @@ namespace RepositoryStumble.ViewControllers.Interests
         public InterestsViewController()
         {
             Title = "Interests";
-
-            ViewModel.Interests.Changed.Subscribe(_ =>
-            {
-                var sec = new Section();
-                sec.AddAll(ViewModel.Interests.Select(x => new InterestElement(x, () => NavigationController.PushViewController(new StumbleViewController(x), true))));
-                Root = new RootElement("Interests") { sec };
-            });
         }
 
 		public override void ViewDidLoad()
 		{
 			base.ViewDidLoad();
 
+            ViewModel.Interests.Changed.StartWith((NotifyCollectionChangedEventArgs)null).Subscribe(_ =>
+            {
+                var sec = new Section();
+                sec.AddAll(ViewModel.Interests.Select(x => new InterestElement(x, () => NavigationController.PushViewController(new StumbleViewController(x), true))));
+                Root = new RootElement(Title) { sec };
+            });
+
 			NavigationItem.RightBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Add, 
-				(s, e) => NavigationController.PushViewController(new AddInterestViewController(), true));
+                (s, e) => ViewModel.GoToAddInterestCommand.ExecuteIfCan());
 		}
 
 		private void Delete(Element e)

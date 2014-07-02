@@ -15,6 +15,11 @@ namespace RepositoryStumble
 
 		public static UIImage CenterSearch { get { return UIImage.FromBundle("Images/center-search"); } }
 
+        public static UIImage User { get { return UIImage.FromBundle("Images/user"); } }
+        public static UIImage Trending { get { return UIImage.FromBundle("Images/trending"); } }
+        public static UIImage Spotlight { get { return UIImage.FromBundle("Images/spotlight"); } }
+        public static UIImage Search { get { return UIImage.FromBundle("Images/search"); } }
+        public static UIImage Heart { get { return UIImage.FromBundle("Images/heart"); } }
     }
 }
 

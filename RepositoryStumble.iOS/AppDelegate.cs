@@ -51,7 +51,7 @@ namespace RepositoryStumble
             RxApp.MainThreadScheduler = new SynchronizationContextScheduler(SynchronizationContext.Current);
             RxApp.DefaultExceptionHandler = Observer.Create((Exception e) =>
             {
-                IoC.Resolve<IAlertDialogService>().Alert("Unhandled Exception", e.Message);
+                IoC.Resolve<IAlertDialogService>().Alert("Error", e.Message);
                 Console.WriteLine("Exception occured: " + e.Message + " at " + e.StackTrace);
             });
 
@@ -72,6 +72,9 @@ namespace RepositoryStumble
 			iRate.SharedInstance.UsesUntilPrompt = 5;
 			iRate.SharedInstance.OnlyPromptIfLatestVersion = true;
 
+            // Install the theme
+            SetupTheme();
+
             //GitHubSharp.Client.ClientConstructor = () => new System.Net.Http.HttpClient(new ModernHttpClient.AFNetworkHandler());
             var startupViewController = new StartupViewController { ViewModel = IoC.Resolve<StartupViewModel>() };
             startupViewController.ViewModel.View = startupViewController;
@@ -87,6 +90,26 @@ namespace RepositoryStumble
             Window.MakeKeyAndVisible ();
 			return true;
 		}
+
+        private void SetupTheme()
+        {
+            var primaryColor = UIColor.FromRGB(0x4e, 0x4b, 0xbe);
+
+            UIGraphics.BeginImageContext(new System.Drawing.SizeF(1, 64f));
+            primaryColor.SetFill();
+            UIGraphics.RectFill(new System.Drawing.RectangleF(0, 0, 1, 64));
+            var img = UIGraphics.GetImageFromCurrentImageContext();
+            UIGraphics.EndImageContext();
+
+            UIApplication.SharedApplication.StatusBarStyle = UIStatusBarStyle.LightContent;
+            UINavigationBar.Appearance.TintColor = UIColor.White;
+            UINavigationBar.Appearance.BarTintColor = primaryColor;
+            UINavigationBar.Appearance.BackgroundColor = primaryColor;
+            UINavigationBar.Appearance.SetTitleTextAttributes(new UITextAttributes { TextColor = UIColor.White, Font = UIFont.SystemFontOfSize(18f) });
+            UINavigationBar.Appearance.SetBackgroundImage(img, UIBarPosition.Any, UIBarMetrics.Default);
+
+            UITabBar.Appearance.TintColor = primaryColor;
+        }
 	}
 }
 

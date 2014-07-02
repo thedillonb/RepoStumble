@@ -1,17 +1,13 @@
-﻿using System;
-using ReactiveUI;
+﻿using ReactiveUI;
 using Xamarin.Utilities.Core.ViewModels;
-using RepositoryStumble.Core.Services;
 using System.Collections.Generic;
 using RepositoryStumble.Core.Data;
-using System.Threading.Tasks;
+using Xamarin.Utilities.Core.Services;
 
 namespace RepositoryStumble.Core.ViewModels.Languages
 {
     public class LanguagesViewModel : LoadableViewModel
     {
-        protected readonly IApplicationService ApplicationService;
-
         private Language _selectedLanguage;
         public Language SelectedLanguage
         {
@@ -19,16 +15,13 @@ namespace RepositoryStumble.Core.ViewModels.Languages
             set { this.RaiseAndSetIfChanged(ref _selectedLanguage, value); }
         }
 
-        private IEnumerable<Language> _languages;
-        public IEnumerable<Language> Languages
-        {
-            get { return _languages; }
-            private set { this.RaiseAndSetIfChanged(ref _languages, value); }
-        }
+        public ReactiveList<Language> Languages { get; private set; }
 
-        public LanguagesViewModel(IApplicationService applicationService)
+        public LanguagesViewModel(IJsonHttpClientService jsonHttpClientService)
         {
-            ApplicationService = applicationService;
+            Languages = new ReactiveList<Language>();
+            LoadCommand.RegisterAsyncTask(async t => 
+                Languages.Reset((await jsonHttpClientService.Get<List<Language>>("http://codehub-trending.herokuapp.com/languages"))));
         }
     }
 }
