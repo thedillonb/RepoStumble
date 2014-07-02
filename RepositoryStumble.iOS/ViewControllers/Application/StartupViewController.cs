@@ -1,6 +1,4 @@
-using System;
 using MonoTouch.UIKit;
-using MonoTouch;
 using Xamarin.Utilities.ViewControllers;
 using RepositoryStumble.Core.ViewModels.Application;
 using ReactiveUI;
@@ -9,24 +7,7 @@ namespace RepositoryStumble.ViewControllers.Application
 {
     public class StartupViewController : ViewModelViewController<StartupViewModel>
     {
-        private UIImageView _backgroundImageView;
-
-		public StartupViewController()
-        {
-            ManualLoad = true;
-
-            ViewModel.GoToLoginCommand.Subscribe(_ => PresentViewController(new LoginViewController(), true, null));
-
-            ViewModel.GoToMainCommand.Subscribe(_ =>
-            {
-                var ctrl = new MainViewController();
-                var nav = ((UINavigationController)UIApplication.SharedApplication.Delegate.Window.RootViewController);
-                UIView.Transition(nav.View, 0.1, UIViewAnimationOptions.BeginFromCurrentState | UIViewAnimationOptions.TransitionCrossDissolve, 
-                    () => nav.PushViewController(ctrl, false), null);
-            });
-
-            _backgroundImageView = new UIImageView();
-        }
+        private readonly UIImageView _backgroundImageView = new UIImageView();
 
         public override void ViewWillLayoutSubviews()
         {

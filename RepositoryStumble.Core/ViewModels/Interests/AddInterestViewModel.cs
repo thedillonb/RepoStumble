@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Xamarin.Utilities.Core.ViewModels;
 using System.Reactive.Linq;
 using RepositoryStumble.Core.Services;
+using RepositoryStumble.Core.ViewModels.Languages;
 
 namespace RepositoryStumble.Core.ViewModels.Interests
 {
@@ -35,15 +36,13 @@ namespace RepositoryStumble.Core.ViewModels.Interests
 
         public AddInterestViewModel(IApplicationService applicationService, IJsonSerializationService jsonSerializationService)
         {
-            var doneObservable = this.WhenAnyValue(x => x.Keyword, y => y.SelectedLanguage, (x, y) => new { x, y }).Select(x => !string.IsNullOrEmpty(x.x) && x.y != null);
-
-            GoToLanguagesCommand = new ReactiveCommand();
-            DoneCommand = new ReactiveCommand(doneObservable);
-
+            DoneCommand = new ReactiveCommand();
             DoneCommand.Subscribe(_ =>
             {
-                if (_selectedLanguage == null || string.IsNullOrWhiteSpace(_keyword))
-                    return;
+                if (SelectedLanguage == null)
+                    throw new Exception("You must select a language for your interest!");
+                if (string.IsNullOrEmpty(Keyword))
+                    throw new Exception("Please specify a keyword to go with your interest!");
 
                 applicationService.Account.Interests.Insert(new Interest
                 {
@@ -52,11 +51,22 @@ namespace RepositoryStumble.Core.ViewModels.Interests
                     Keyword = _keyword
                 });
 
-//                var gameScore = new ParseObject("Interest");
-//                gameScore["language"] = _selectedLanguage.Name;
-//                gameScore["keyword"] = _keyword;
-//                gameScore.SaveAsync();
+                DismissCommand.ExecuteIfCan();
             });
+
+            GoToLanguagesCommand = new ReactiveCommand();
+            GoToLanguagesCommand.Subscribe(_ =>
+            {
+                var vm = CreateViewModel<LanguagesViewModel>();
+                vm.SelectedLanguage = SelectedLanguage;
+                vm.WhenAnyValue(x => x.SelectedLanguage).Skip(1).Subscribe(x => 
+                {
+                    SelectedLanguage = x;
+                    vm.DismissCommand.ExecuteIfCan();
+                });
+                ShowViewModel(vm);
+            });
+
 
             var str = System.IO.File.ReadAllText(PopularInterestsPath, System.Text.Encoding.UTF8);
             PopularInterests = new ReactiveList<PopularInterest>(jsonSerializationService.Deserialize<List<PopularInterest>>(str));

@@ -1,12 +1,13 @@
 using System;
 using MonoTouch.UIKit;
 using System.Threading.Tasks;
+using RepositoryStumble.Core.ViewModels.Stumble;
 using RepositoryStumble.Views;
 using RepositoryStumble.Core.Data;
 
 namespace RepositoryStumble.ViewControllers
 {
-	public class StumbleViewController : RepositoryViewController
+	public class StumbleViewController : RepositoryViewController<StumbleViewModel>
     {
 		private readonly UIBarButtonItem _stumbleButton;
 		private readonly Interest _interest;

@@ -3,30 +3,18 @@ using MonoTouch.UIKit;
 using System.Threading.Tasks;
 using RepositoryStumble.Core.ViewModels.Application;
 using ReactiveUI;
+using Xamarin.Utilities.ViewControllers;
 
 namespace RepositoryStumble.ViewControllers.Application
 {
-    public class LoginViewController : WebViewController
+    public class LoginViewController : WebView<LoginViewModel>
     {
-        protected readonly LoginViewModel ViewModel = IoC.Resolve<LoginViewModel>();
-
         public LoginViewController()
         {
             Title = "Login";
 
             LoadRequest();
-
-			ToolbarItems = new UIBarButtonItem[]
-			{
-				new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace),
-				new UIBarButtonItem(Images.Back, UIBarButtonItemStyle.Plain, (s, e) => Back()),
-				new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace),
-				new UIBarButtonItem(Images.Forward, UIBarButtonItemStyle.Plain, (s, e) => Forward()),
-				new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace),
-				new UIBarButtonItem(Images.Reload, UIBarButtonItemStyle.Plain, (s, e) => Reload()),
-				new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace),
-			};
-
+	
             ViewModel.LoginCommand.IsExecuting.Subscribe(x =>
             {
             });

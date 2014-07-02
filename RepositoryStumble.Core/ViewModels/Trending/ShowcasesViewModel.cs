@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Reactive.Linq;
 using Xamarin.Utilities.Core.ViewModels;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using RepositoryStumble.Core.Data;
 using Xamarin.Utilities.Core.Services;
@@ -10,19 +10,24 @@ namespace RepositoryStumble.Core.ViewModels.Trending
 {
     public class ShowcasesViewModel : LoadableViewModel
     {
-        protected readonly IJsonHttpClientService JsonHttpClientService;
-
         public ReactiveList<Showcase> Showcases { get; private set; }
+
+        public IReactiveCommand GoToShowcaseCommand { get; private set; }
 
         public ShowcasesViewModel(IJsonHttpClientService jsonHttpClientService)
         {
-            JsonHttpClientService = jsonHttpClientService;
-            Showcases = new ReactiveList<Showcase>();
-        }
+            GoToShowcaseCommand = new ReactiveCommand();
+            GoToShowcaseCommand.OfType<Showcase>().Subscribe(x =>
+            {
+                var vm = CreateViewModel<ShowcaseViewModel>();
+                vm.ShowcaseSlug = x.Slug;
+                vm.Title = x.Name;
+                ShowViewModel(vm);
+            });
 
-        protected override async Task Load()
-        {
-            Showcases.Reset((await JsonHttpClientService.Get<List<Showcase>>("http://codehub-trending.herokuapp.com/showcases")));
+            Showcases = new ReactiveList<Showcase>();
+            LoadCommand.RegisterAsyncTask(async t => Showcases.Reset(
+                (await jsonHttpClientService.Get<List<Showcase>>("http://codehub-trending.herokuapp.com/showcases"))));
         }
     }
 }
