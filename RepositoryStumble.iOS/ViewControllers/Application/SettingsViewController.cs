@@ -1,16 +1,17 @@
-using MonoTouch.Dialog;
 using MonoTouch.UIKit;
 using MonoTouch.Foundation;
 using RepositoryStumble.Core.ViewModels.Application;
 using ReactiveUI;
+using Xamarin.Utilities.ViewControllers;
+using Xamarin.Utilities.DialogElements;
 
 namespace RepositoryStumble.ViewControllers.Application
 {
     public class SettingsViewController : ViewModelDialogViewController<SettingsViewModel>
     {
         public SettingsViewController()
-			: base(UITableViewStyle.Grouped)
         {
+            Title = "Settings";
         }
 
 		private readonly string _description = "Repository Stumble is the best way to find new and exciting open source code! Think StumbleUpon for GitHub. Repository Stumble " +
@@ -27,7 +28,7 @@ namespace RepositoryStumble.ViewControllers.Application
 
 			var settingsSection = new Section(string.Empty, "Liked repositories will be starred in GitHub and Disliked repositories will be unstarred.")
 			{
-                new TrueFalseElement("Sync With GitHub", ViewModel.SyncWithGitHub, x => ViewModel.SyncWithGitHub = x.Value)
+                new BooleanElement("Sync With GitHub", ViewModel.SyncWithGitHub, x => ViewModel.SyncWithGitHub = x.Value)
 			};
 
 			var mid = new Section()
@@ -42,8 +43,7 @@ namespace RepositoryStumble.ViewControllers.Application
                 new StyledStringElement("Logout", () => ViewModel.LogoutCommand.ExecuteIfCan())
 			};
 
-			Root = new RootElement("Settings") { secHeader, settingsSection, mid, sec };
-			Root.UnevenRows = false;
+            Root.Add(secHeader, settingsSection, mid, sec);
 		}
     }
 }

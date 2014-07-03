@@ -1,15 +1,15 @@
-﻿using System;
-using MonoTouch.UIKit;
+﻿using MonoTouch.UIKit;
 using ReactiveUI;
 using RepositoryStumble.Core.ViewModels.Trending;
-using MonoTouch.Dialog;
-using System.Linq;
+using Xamarin.Utilities.ViewControllers;
+using Xamarin.Utilities.DialogElements;
 
 namespace RepositoryStumble.ViewControllers.Trending
 {
-    public class ShowcasesViewController : ViewModelDialogViewController<ShowcasesViewModel>
+    public class ShowcasesViewController : ViewModelCollectionViewController<ShowcasesViewModel>
     {
         public ShowcasesViewController()
+            : base(true, false)
         {
             Title = "Showcases";
         }
@@ -18,19 +18,12 @@ namespace RepositoryStumble.ViewControllers.Trending
         {
             base.ViewDidLoad();
 
-            ViewModel.Showcases.Changed.Subscribe(_ =>
+            this.Bind(ViewModel.Showcases, x =>
             {
-                var root = new RootElement(Title) { UnevenRows = true };
-                var section = new Section();
-                section.AddAll(ViewModel.Showcases.Select(x =>
-                {
-                    var e = new StyledMultilineElement(x.Name, x.Description, UITableViewCellStyle.Subtitle);
-                    e.Accessory = UITableViewCellAccessory.DisclosureIndicator;
-                    e.Tapped += () => ViewModel.GoToShowcaseCommand.ExecuteIfCan(x);
-                    return e;
-                }));
-                root.Add(section);
-                Root = root;
+                var e = new StyledMultilineElement(x.Name, x.Description, UITableViewCellStyle.Subtitle);
+                e.Accessory = UITableViewCellAccessory.DisclosureIndicator;
+                e.Tapped += () => ViewModel.GoToShowcaseCommand.ExecuteIfCan(x);
+                return e;
             });
         }
     }

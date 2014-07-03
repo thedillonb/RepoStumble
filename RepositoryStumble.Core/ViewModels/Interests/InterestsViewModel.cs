@@ -12,7 +12,7 @@ namespace RepositoryStumble.Core.ViewModels.Interests
     {
         protected readonly IApplicationService ApplicationService;
 
-        public ReactiveList<Interest> Interests { get; private set; }
+        public IReadOnlyReactiveList<Interest> Interests { get; private set; }
 
         public IReactiveCommand DeleteInterestCommand { get; private set; }
 
@@ -21,7 +21,8 @@ namespace RepositoryStumble.Core.ViewModels.Interests
         public InterestsViewModel(IApplicationService applicationService)
         {
             ApplicationService = applicationService;
-            Interests = new ReactiveList<Interest>();
+            var interests = new ReactiveList<Interest>();
+            Interests = interests;
 
             DeleteInterestCommand = new ReactiveCommand();
             DeleteInterestCommand.OfType<Interest>().Subscribe(ApplicationService.Account.Interests.Remove);
@@ -35,7 +36,7 @@ namespace RepositoryStumble.Core.ViewModels.Interests
 
             this.WhenActivated(d =>
             {
-                Interests.Reset(ApplicationService.Account.Interests.OrderBy(x => x.Keyword));
+                interests.Reset(ApplicationService.Account.Interests.OrderBy(x => x.Keyword));
             });
         }
     }

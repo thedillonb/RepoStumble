@@ -2,10 +2,11 @@
 using ReactiveUI;
 using RepositoryStumble.Core.Services;
 using System.Reactive.Linq;
+using Xamarin.Utilities.Core.ViewModels;
 
 namespace RepositoryStumble.Core.ViewModels.Application
 {
-    public class SettingsViewModel : ReactiveObject
+    public class SettingsViewModel : BaseViewModel
     {
         private bool _syncWithGitHub;
         public bool SyncWithGitHub

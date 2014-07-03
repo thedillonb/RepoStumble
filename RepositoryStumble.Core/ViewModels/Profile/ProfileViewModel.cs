@@ -1,5 +1,4 @@
-﻿using System;
-using Xamarin.Utilities.Core.ViewModels;
+﻿using Xamarin.Utilities.Core.ViewModels;
 using ReactiveUI;
 using GitHubSharp.Models;
 using RepositoryStumble.Core.Services;
@@ -58,10 +57,13 @@ namespace RepositoryStumble.Core.ViewModels.Profile
 
             Username = applicationService.Account.Username;
 
-            Interests = applicationService.Account.Interests.Count();
-            Likes = applicationService.Account.StumbledRepositories.Count(x => x.Liked.HasValue && x.Liked.Value);
-            Dislikes = applicationService.Account.StumbledRepositories.Count(x => x.Liked.HasValue && !x.Liked.Value);
-
+            this.WhenActivated(d =>
+            {
+                Interests = applicationService.Account.Interests.Count();
+                Likes = applicationService.Account.StumbledRepositories.Count(x => x.Liked.HasValue && x.Liked.Value);
+                Dislikes = applicationService.Account.StumbledRepositories.Count(x => x.Liked.HasValue && !x.Liked.Value);
+            });
+   
             LoadCommand.RegisterAsyncTask(async t =>
             {
                 var ret = await applicationService.Client.ExecuteAsync(applicationService.Client.Users[Username].Get());

@@ -10,7 +10,7 @@ namespace RepositoryStumble.Core.ViewModels.Trending
 {
     public class ShowcasesViewModel : LoadableViewModel
     {
-        public ReactiveList<Showcase> Showcases { get; private set; }
+        public IReadOnlyReactiveList<Showcase> Showcases { get; private set; }
 
         public IReactiveCommand GoToShowcaseCommand { get; private set; }
 
@@ -25,9 +25,10 @@ namespace RepositoryStumble.Core.ViewModels.Trending
                 ShowViewModel(vm);
             });
 
-            Showcases = new ReactiveList<Showcase>();
-            LoadCommand.RegisterAsyncTask(async t => Showcases.Reset(
-                (await jsonHttpClientService.Get<List<Showcase>>("http://codehub-trending.herokuapp.com/showcases"))));
+            var showcases = new ReactiveList<Showcase>();
+            Showcases = showcases;
+            LoadCommand.RegisterAsyncTask(async t => showcases.Reset(
+                (await jsonHttpClientService.Get<List<Showcase>>("http://trending.codehub-app.com/showcases"))));
         }
     }
 }

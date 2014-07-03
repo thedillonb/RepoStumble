@@ -1,7 +1,7 @@
 ﻿using System;
-using MonoTouch.Dialog;
 using RepositoryStumble.Core.Data;
 using MonoTouch.UIKit;
+using Xamarin.Utilities.DialogElements;
 
 namespace RepositoryStumble.Elements
 {

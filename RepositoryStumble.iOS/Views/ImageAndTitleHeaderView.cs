@@ -1,7 +1,7 @@
 ﻿using System;
 using MonoTouch.UIKit;
-using MonoTouch.Dialog.Utilities;
 using System.Drawing;
+using Xamarin.Utilities.Images;
 
 namespace RepositoryStumble.Views
 {

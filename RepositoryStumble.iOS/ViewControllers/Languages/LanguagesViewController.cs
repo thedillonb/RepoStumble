@@ -1,37 +1,32 @@
 using System;
-using MonoTouch.Dialog;
 using MonoTouch.UIKit;
-using RepositoryStumble.Core.Data;
 using RepositoryStumble.Core.ViewModels.Languages;
-using System.Linq;
+using Xamarin.Utilities.ViewControllers;
+using Xamarin.Utilities.DialogElements;
+using ReactiveUI;
 
 namespace RepositoryStumble.ViewControllers.Languages
 {
-    public class LanguagesViewController : ViewModelDialogViewController<LanguagesViewModel>
+    public class LanguagesViewController : ViewModelCollectionViewController<LanguagesViewModel>
     {
-        public override void ViewDidLoad()
+        public LanguagesViewController()
         {
             Title = "Langauges";
+        }
 
+        public override void ViewDidLoad()
+        {
             base.ViewDidLoad();
 
-            ViewModel.Languages.Changed.Subscribe(_ =>
+            SearchTextChanging.Subscribe(x => ViewModel.SearchKeyword = x);
+
+            this.Bind(ViewModel.Languages, x =>
             {
-                var root = new RootElement(Title);
-                var sec = new Section();
-                root.Add(sec);
-
-                foreach (var l in ViewModel.Languages.OrderBy(y => y.Name))
-                {
-                    var closureL = l;
-                    var el = new StyledStringElement(l.Name);
-                    el.Tapped += () => ViewModel.SelectedLanguage = closureL;
-                    if (ViewModel.SelectedLanguage != null && closureL.Slug.Equals(ViewModel.SelectedLanguage.Slug))
-                        el.Accessory = UITableViewCellAccessory.Checkmark;
-                    sec.Add(el);
-                }
-
-                Root = root;
+                var el = new StyledStringElement(x.Name);
+                el.Tapped += () => ViewModel.SelectedLanguage = x;
+                if (ViewModel.SelectedLanguage != null && x.Slug.Equals(ViewModel.SelectedLanguage.Slug))
+                    el.Accessory = UITableViewCellAccessory.Checkmark;
+                return el;
             });
         }
     }

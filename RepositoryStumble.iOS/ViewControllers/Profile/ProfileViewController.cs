@@ -5,30 +5,25 @@ using RepositoryStumble.Views;
 using RepositoryStumble.Core.ViewModels.Profile;
 using System.Reactive.Linq;
 using ReactiveUI;
+using Xamarin.Utilities.ViewControllers;
+using Xamarin.Utilities.DialogElements;
 
 namespace RepositoryStumble.ViewControllers
 {
     public class ProfileViewController : ViewModelDialogViewController<ProfileViewModel>
     {
         public ProfileViewController()
-			: base(UITableViewStyle.Grouped)
+			: base(true, UITableViewStyle.Grouped)
         {
             Title = "Profile";
 //			NavigationItem.RightBarButtonItem = new UIBarButtonItem(Images.Gear, UIBarButtonItemStyle.Plain, (s, e) =>
 //				NavigationController.PushViewController(new SettingsViewController(), true));
-        }
 
-        protected override void Scrolled(System.Drawing.PointF point)
-        {
-            if (point.Y > 0)
-            {
-                NavigationController.NavigationBar.ShadowImage = null;
-            }
-            else
-            {
-                if (NavigationController.NavigationBar.ShadowImage == null)
-                    NavigationController.NavigationBar.ShadowImage = new UIImage();
-            }
+            Scrolled.Where(x => x.Y > 0)
+                .Subscribe(_ => NavigationController.NavigationBar.ShadowImage = null);
+            Scrolled.Where(x => x.Y <= 0)
+                .Where(x => NavigationController.NavigationBar.ShadowImage == null)
+                .Subscribe(_ => NavigationController.NavigationBar.ShadowImage = new UIImage());
         }
 
         public override void ViewWillAppear(bool animated)
@@ -78,11 +73,10 @@ namespace RepositoryStumble.ViewControllers
             ViewModel.WhenAnyValue(x => x.Dislikes).Subscribe(x => dislikes.Text = x.ToString());
             ViewModel.WhenAnyValue(x => x.Interests).Subscribe(x => interests.Text = x.ToString());
 
-            var root = new RootElement(Title) { UnevenRows = true };
-            root.Add(new Section(header) { split });
-            Root = root;
+            var section = new Section { HeaderView = header };
+            section.Add(split);
 
-
+            Root.Reset(section);
         }
 
 //			NavigationController.Toolbar.Translucent = false;
@@ -121,7 +115,7 @@ namespace RepositoryStumble.ViewControllers
 
 		private class Element : StyledStringElement
 		{
-			public Element(string caption, object value, MonoTouch.Foundation.NSAction action)
+			public Element(string caption, object value, Action action)
 				: base(caption, action)
 			{
 				this.style = UITableViewCellStyle.Value1;

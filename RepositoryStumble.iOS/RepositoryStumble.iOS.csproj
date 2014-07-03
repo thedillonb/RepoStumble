@@ -158,7 +158,6 @@
     <Compile Include="AppDelegate.cs" />
     <Compile Include="TransitionOrchestrationService.cs" />
     <Compile Include="ViewControllers\Trending\ShowcaseViewController.cs" />
-    <Compile Include="ViewControllers\ViewModelDialogViewController.cs" />
     <Compile Include="ViewControllers\WebViewController.cs" />
     <Compile Include="Images\Images.cs" />
     <Compile Include="Utils\Transitions.cs" />
@@ -260,10 +259,6 @@
     <ProjectReference Include="..\RepositoryStumble.Core\RepositoryStumble.Core.csproj">
       <Project>{75D603EC-906D-4D19-BC31-47BC6BA7394A}</Project>
       <Name>RepositoryStumble.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\lib\MonoTouch.Dialog\MonoTouch.Dialog\MonoTouch.Dialog.csproj">
-      <Project>{3FFBFFF8-5560-4EDE-82E5-3FFDFBBA8A50}</Project>
-      <Name>MonoTouch.Dialog</Name>
     </ProjectReference>
     <ProjectReference Include="..\lib\GitHubSharp\GitHubSharp.MonoTouch.csproj">
       <Project>{89E14828-85BB-4790-9B4E-E44DD4CE000E}</Project>

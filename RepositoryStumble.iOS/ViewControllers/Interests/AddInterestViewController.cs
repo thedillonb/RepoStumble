@@ -1,47 +1,46 @@
 using System;
-using MonoTouch.Dialog;
 using System.Linq;
 using RepositoryStumble.Core.ViewModels.Interests;
-using RepositoryStumble.ViewControllers.Languages;
 using ReactiveUI;
+using Xamarin.Utilities.ViewControllers;
+using Xamarin.Utilities.DialogElements;
 
 namespace RepositoryStumble.ViewControllers.Interests
 {
     public class AddInterestViewController : ViewModelDialogViewController<AddInterestViewModel>
     {
-		private readonly InputElement _input = new InputElement("Keyword", string.Empty, string.Empty);
-
         public AddInterestViewController()
-			: base(MonoTouch.UIKit.UITableViewStyle.Grouped)
         {
+            Title = "Add Interest";
         }
 
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
 
+            var input = new InputElement("Keyword", string.Empty, string.Empty);
+            input.Changed += (sender, e) => ViewModel.Keyword = input.Value;
+            input.AutocorrectionType = MonoTouch.UIKit.UITextAutocorrectionType.No;
+            input.AutocapitalizationType = MonoTouch.UIKit.UITextAutocapitalizationType.None;
+            input.TextAlignment = MonoTouch.UIKit.UITextAlignment.Right;
+
             NavigationItem.RightBarButtonItem = new MonoTouch.UIKit.UIBarButtonItem(MonoTouch.UIKit.UIBarButtonSystemItem.Done, (s, e) => 
             {
-                _input.ResignFirstResponder(false);
+                input.ResignFirstResponder(false);
                 ViewModel.DoneCommand.ExecuteIfCan();
             });
-
-            _input.Changed += (sender, e) => ViewModel.Keyword = _input.Value;
-            _input.AutocorrectionType = MonoTouch.UIKit.UITextAutocorrectionType.No;
-            _input.AutocapitalizationType = MonoTouch.UIKit.UITextAutocapitalizationType.None;
-            _input.TextAlignment = MonoTouch.UIKit.UITextAlignment.Right;
 
             var showLanguage = new StyledStringElement("Language", string.Empty, MonoTouch.UIKit.UITableViewCellStyle.Value1);
             showLanguage.Tapped += () =>
             {
-                _input.ResignFirstResponder(false);
+                input.ResignFirstResponder(false);
                 ViewModel.GoToLanguagesCommand.ExecuteIfCan();
             };
             showLanguage.Accessory = MonoTouch.UIKit.UITableViewCellAccessory.DisclosureIndicator;
 
-            var sec2 = new Section("Add New Interest") { showLanguage, _input };
+            var sec2 = new Section("Add New Interest") { showLanguage, input };
             var sec3 = new Section("Popular Interests");
-            Root = new RootElement("Add Interest") { sec2, sec3 };
+            Root.Reset(sec2, sec3);
 
             ViewModel.WhenAnyValue(x => x.PopularInterests).Subscribe(_ => sec3.Reset(ViewModel.PopularInterests.OrderBy(x => x.Keyword).Select(p =>
             {

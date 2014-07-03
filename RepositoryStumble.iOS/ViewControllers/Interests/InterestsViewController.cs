@@ -1,5 +1,4 @@
 using System;
-using MonoTouch.Dialog;
 using MonoTouch.UIKit;
 using System.Linq;
 using RepositoryStumble.Core.ViewModels.Interests;
@@ -7,12 +6,15 @@ using RepositoryStumble.Elements;
 using ReactiveUI;
 using System.Reactive.Linq;
 using System.Collections.Specialized;
+using Xamarin.Utilities.ViewControllers;
+using Xamarin.Utilities.DialogElements;
 
 namespace RepositoryStumble.ViewControllers.Interests
 {
     public class InterestsViewController : ViewModelDialogViewController<InterestsViewModel>
     {
         public InterestsViewController()
+            : base(style: UITableViewStyle.Plain)
         {
             Title = "Interests";
         }
@@ -25,7 +27,7 @@ namespace RepositoryStumble.ViewControllers.Interests
             {
                 var sec = new Section();
                 sec.AddAll(ViewModel.Interests.Select(x => new InterestElement(x, () => NavigationController.PushViewController(new StumbleViewController(x), true))));
-                Root = new RootElement(Title) { sec };
+                Root.Reset(sec);
             });
 
 			NavigationItem.RightBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Add, 

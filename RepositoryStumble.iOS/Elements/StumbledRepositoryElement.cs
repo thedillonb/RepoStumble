@@ -1,14 +1,13 @@
-﻿using System;
-using MonoTouch.Dialog;
-using RepositoryStumble.Core.Data;
-using MonoTouch.Foundation;
+﻿using RepositoryStumble.Core.Data;
 using MonoTouch.UIKit;
+using Xamarin.Utilities.DialogElements;
+using System;
 
 namespace RepositoryStumble.Elements
 {
     public class StumbledRepositoryElement : StyledMultilineElement
     {
-        public StumbledRepositoryElement(StumbledRepository repo, NSAction action)
+        public StumbledRepositoryElement(StumbledRepository repo, Action action)
             : base(repo.Owner + "/" + repo.Name, repo.Description, UITableViewCellStyle.Subtitle)
         {
             Accessory = UITableViewCellAccessory.DisclosureIndicator;
