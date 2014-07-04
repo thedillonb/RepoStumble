@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using ReactiveUI;
 using RepositoryStumble.Core.Messages;
+using RepositoryStumble.Core.Utils;
 
 namespace RepositoryStumble.Core.Services
 {

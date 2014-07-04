@@ -1,12 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using RepositoryStumble.Core.Messages;
 using RepositoryStumble.Core.ViewModels.Application;
-using RepositoryStumble.ViewControllers;
-using RepositoryStumble.Utils;
 using MTiRate;
 using Parse;
 using ReactiveUI;
@@ -91,7 +87,7 @@ namespace RepositoryStumble
 			return true;
 		}
 
-        private void SetupTheme()
+        private static void SetupTheme()
         {
             var primaryColor = UIColor.FromRGB(0x4e, 0x4b, 0xbe);
 

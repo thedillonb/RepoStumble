@@ -1,6 +1,6 @@
 using System;
 
-namespace RepositoryStumble
+namespace RepositoryStumble.Core.Utils
 {
 	public class InterestExhaustedException : Exception
     {
