@@ -15,6 +15,7 @@ namespace RepositoryStumble.Core.Data
         public override void Insert(StumbledRepository o)
         {
             o.CreatedAt = DateTime.Now;
+            o.Fullname = (o.Fullname ?? string.Empty).ToLower();
             base.Insert(o);
         }
 
@@ -34,9 +35,15 @@ namespace RepositoryStumble.Core.Data
             }
         }
 
+        public StumbledRepository FindByFullname(string owner, string name)
+        {
+            var str = string.Format("{0}/{1}", owner, name).ToLower();
+            return SqlConnection.Find<StumbledRepository>(x => x.Fullname == str);
+        }
+
         public bool Exists(string owner, string name)
         {
-            var str = string.Format("{0}/{1}", owner, name);
+            var str = string.Format("{0}/{1}", owner, name).ToLower();
             return SqlConnection.Find<StumbledRepository>(x => x.Fullname == str) != null;
         }
     }

@@ -8,7 +8,6 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>RepositoryStumble</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
-    <AssemblyName>RepositoryStumble</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -154,6 +153,10 @@
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
+    <None Include="Views\ReadmeRazorView.cshtml">
+      <Generator>RazorTemplatePreprocessor</Generator>
+      <LastGenOutput>ReadmeRazorView.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppDelegate.cs" />
@@ -172,17 +175,20 @@
     <Compile Include="ViewControllers\Interests\InterestsViewController.cs" />
     <Compile Include="ViewControllers\Interests\AddInterestViewController.cs" />
     <Compile Include="ViewControllers\Languages\LanguagesViewController.cs" />
-    <Compile Include="ViewControllers\Repositories\RepositoryViewController.cs" />
     <Compile Include="ViewControllers\Application\SettingsViewController.cs" />
     <Compile Include="ViewControllers\Stumble\StumbleViewController.cs" />
-    <Compile Include="ViewControllers\Stumble\SeenStumbleViewController.cs" />
     <Compile Include="ViewControllers\Application\LoginViewController.cs" />
     <Compile Include="Elements\StumbledRepositoryElement.cs" />
     <Compile Include="ViewControllers\Repositories\BaseRepositoriesViewController.cs" />
     <Compile Include="Elements\InterestElement.cs" />
     <Compile Include="ViewControllers\Trending\ShowcasesViewController.cs" />
-    <Compile Include="Views\ImageAndTitleHeaderView.cs" />
     <Compile Include="ViewControllers\Trending\TrendingViewController.cs" />
+    <Compile Include="ViewControllers\Repositories\BaseRepositoryViewController.cs" />
+    <Compile Include="ViewControllers\Repositories\RepositoryViewController.cs" />
+    <Compile Include="Views\ReadmeRazorView.cs">
+      <DependentUpon>ReadmeRazorView.cshtml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControllers\Stumble\StumbledRepositoryViewController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ProjectExtensions>

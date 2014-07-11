@@ -4,6 +4,7 @@ using ReactiveUI;
 using RepositoryStumble.Core.Data;
 using Xamarin.Utilities.Core.Services;
 using Xamarin.Utilities.Core.ViewModels;
+using RepositoryStumble.Core.ViewModels.Repositories;
 
 namespace RepositoryStumble.Core.ViewModels.Trending
 {
@@ -36,7 +37,9 @@ namespace RepositoryStumble.Core.ViewModels.Trending
             GoToRepositoryCommand = new ReactiveCommand();
             GoToRepositoryCommand.OfType<ShowcaseRepository>().Subscribe(x =>
             {
-
+                var vm = CreateViewModel<RepositoryViewModel>();
+                vm.RepositoryIdentifier = new BaseRepositoryViewModel.RepositoryIdentifierModel(x.Owner, x.Name);
+                ShowViewModel(vm);
             });
 
             var repositories = new ReactiveList<ShowcaseRepository>();

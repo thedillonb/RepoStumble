@@ -1,8 +1,11 @@
-﻿using Xamarin.Utilities.Core.ViewModels;
-using ReactiveUI;
-using GitHubSharp.Models;
-using RepositoryStumble.Core.Services;
+﻿using System;
 using System.Linq;
+using GitHubSharp.Models;
+using ReactiveUI;
+using Xamarin.Utilities.Core.ViewModels;
+using RepositoryStumble.Core.Services;
+using RepositoryStumble.Core.ViewModels.Application;
+using RepositoryStumble.Core.ViewModels.Repositories;
 
 namespace RepositoryStumble.Core.ViewModels.Profile
 {
@@ -49,11 +52,11 @@ namespace RepositoryStumble.Core.ViewModels.Profile
 
         public IReactiveCommand GoToDislikesCommand { get; private set; }
 
+        public IReactiveCommand GoToSettingsCommand { get; private set; }
+
         public ProfileViewModel(IApplicationService applicationService)
         {
             GoToInterestsCommand = new ReactiveCommand();
-            GoToLikesCommand = new ReactiveCommand();
-            GoToDislikesCommand = new ReactiveCommand();
 
             Username = applicationService.Account.Username;
 
@@ -63,6 +66,15 @@ namespace RepositoryStumble.Core.ViewModels.Profile
                 Likes = applicationService.Account.StumbledRepositories.Count(x => x.Liked.HasValue && x.Liked.Value);
                 Dislikes = applicationService.Account.StumbledRepositories.Count(x => x.Liked.HasValue && !x.Liked.Value);
             });
+
+            GoToLikesCommand = new ReactiveCommand();
+            GoToLikesCommand.Subscribe(_ => CreateAndShowViewModel<LikedRepositoriesViewModel>());
+
+            GoToDislikesCommand = new ReactiveCommand();
+            GoToDislikesCommand.Subscribe(_ => CreateAndShowViewModel<DislikedRepositoriesViewModel>());
+
+            GoToSettingsCommand = new ReactiveCommand();
+            GoToSettingsCommand.Subscribe(_ => CreateAndShowViewModel<SettingsViewModel>());
    
             LoadCommand.RegisterAsyncTask(async t =>
             {

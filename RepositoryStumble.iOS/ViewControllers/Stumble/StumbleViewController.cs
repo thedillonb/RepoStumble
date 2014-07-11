@@ -5,9 +5,9 @@ using RepositoryStumble.Core.ViewModels.Stumble;
 using RepositoryStumble.Views;
 using RepositoryStumble.Core.Data;
 
-namespace RepositoryStumble.ViewControllers
+namespace RepositoryStumble.ViewControllers.Repositories
 {
-	public class StumbleViewController : RepositoryViewController<StumbleViewModel>
+	public class StumbleViewController : BaseRepositoryViewController<StumbleViewModel>
     {
 		private readonly UIBarButtonItem _stumbleButton;
 		private readonly Interest _interest;
@@ -20,25 +20,25 @@ namespace RepositoryStumble.ViewControllers
 
             ToolbarItems = new [] { 
                 new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace),
-				_dislikeButton,
+				DislikeButton,
 				new UIBarButtonItem(UIBarButtonSystemItem.FixedSpace) { Width = 40 },
 				(_stumbleButton = new UIBarButtonItem(centerButton) { Enabled = false }),
 				new UIBarButtonItem(UIBarButtonSystemItem.FixedSpace) { Width = 40 },
-                _likeButton,
+                LikeButton,
 				new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace),
             };
 
-			_likeButton.TintColor = DeselectedColor;
-			_likeButton.Enabled = false;
-			_dislikeButton.TintColor = DeselectedColor;
-			_dislikeButton.Enabled = false;
+			LikeButton.TintColor = DeselectedColor;
+			LikeButton.Enabled = false;
+			DislikeButton.TintColor = DeselectedColor;
+			DislikeButton.Enabled = false;
         }
 
 		private async void Stumble()
 		{
 			_stumbleButton.Enabled = false;
-			_dislikeButton.Enabled = false;
-			_likeButton.Enabled = false;
+			DislikeButton.Enabled = false;
+			LikeButton.Enabled = false;
 //			Application.StumbleResult stumbleResult = null;
 //
 //			try
@@ -79,11 +79,11 @@ namespace RepositoryStumble.ViewControllers
 //				MonoTouch.Utilities.PopNetworkActive();
 //			}
 
-			_dislikeButton.Enabled = true;
-			_likeButton.Enabled = true;
+			DislikeButton.Enabled = true;
+			LikeButton.Enabled = true;
 			_stumbleButton.Enabled = true;
-			_likeButton.TintColor = DeselectedColor;
-			_dislikeButton.TintColor = DeselectedColor;
+			LikeButton.TintColor = DeselectedColor;
+			DislikeButton.TintColor = DeselectedColor;
 		}
 
 		public override void ViewDidLoad()

@@ -8,6 +8,7 @@ using System.Reactive.Linq;
 using System.Collections.Specialized;
 using Xamarin.Utilities.ViewControllers;
 using Xamarin.Utilities.DialogElements;
+using RepositoryStumble.ViewControllers.Repositories;
 
 namespace RepositoryStumble.ViewControllers.Interests
 {

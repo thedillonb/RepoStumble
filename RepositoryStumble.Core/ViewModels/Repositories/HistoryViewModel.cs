@@ -11,7 +11,7 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
         public HistoryViewModel(IApplicationService applicationService)
         {
             ApplicationService = applicationService;
-            Repositories.Reset(ApplicationService.Account.StumbledRepositories.OrderByDescending(x => x.CreatedAt));
+            RepositoryCollection.Reset(ApplicationService.Account.StumbledRepositories.OrderByDescending(x => x.CreatedAt));
         }
     }
 }

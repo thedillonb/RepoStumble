@@ -29,7 +29,6 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Monotouch" />
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -95,11 +94,13 @@
     <Compile Include="Messages\LogoutMessage.cs" />
     <Compile Include="ViewModels\Interests\AddInterestViewModel.cs" />
     <Compile Include="Data\PopularInterest.cs" />
-    <Compile Include="ViewModels\Stumble\SeenStumbleViewModel.cs" />
     <Compile Include="ViewModels\Stumble\StumbleViewModel.cs" />
     <Compile Include="ViewModels\Trending\ShowcasesViewModel.cs" />
     <Compile Include="Data\Showcase.cs" />
     <Compile Include="ViewModels\Trending\ShowcaseViewModel.cs" />
     <Compile Include="ViewModels\Trending\TrendingViewModel.cs" />
+    <Compile Include="ViewModels\Repositories\RepositoryViewModel.cs" />
+    <Compile Include="ViewModels\Repositories\BaseRepositoryViewModel.cs" />
+    <Compile Include="ViewModels\Stumble\StumbledRepositoryViewModel.cs" />
   </ItemGroup>
 </Project>

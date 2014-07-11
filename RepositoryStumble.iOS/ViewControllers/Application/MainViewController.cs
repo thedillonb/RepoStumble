@@ -8,7 +8,7 @@ using RepositoryStumble.Core.ViewModels.Trending;
 using RepositoryStumble.ViewControllers.Interests;
 using RepositoryStumble.ViewControllers.Trending;
 using System.Drawing;
-using System.Runtime.InteropServices;
+using RepositoryStumble.ViewControllers.Profile;
 
 namespace RepositoryStumble.ViewControllers.Application
 {

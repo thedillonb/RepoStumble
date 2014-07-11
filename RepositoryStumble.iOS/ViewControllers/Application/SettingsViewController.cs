@@ -9,7 +9,7 @@ namespace RepositoryStumble.ViewControllers.Application
 {
     public class SettingsViewController : ViewModelDialogViewController<SettingsViewModel>
     {
-        public SettingsViewController()
+        public SettingsViewController() : base(true)
         {
             Title = "Settings";
         }

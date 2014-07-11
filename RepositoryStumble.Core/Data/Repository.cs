@@ -11,9 +11,11 @@ namespace RepositoryStumble.Core.Data
 
         public string Owner { get; set; }
 
+        public string ImageUrl { get; set; }
+
 		public string Name { get; set; }
 
-		[Indexed]
+        [Indexed]
 		public string Fullname { get; set; }
 
 		[MaxLength(2048)]

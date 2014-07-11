@@ -6,6 +6,8 @@ using Xamarin.Utilities.Core.Services;
 using Xamarin.Utilities.Core.ViewModels;
 using RepositoryStumble.ViewControllers.Interests;
 using RepositoryStumble.ViewControllers;
+using RepositoryStumble.ViewControllers.Repositories;
+using RepositoryStumble.ViewControllers.Stumble;
 
 namespace RepositoryStumble
 {
@@ -45,10 +47,11 @@ namespace RepositoryStumble
                 toViewController.NavigationItem.LeftBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Cancel, (s, e) => toViewDismissCommand.ExecuteIfCan());
                 fromViewController.PresentViewController(new UINavigationController(toViewController), true, null);
             }
-            else if (toViewController is StumbleViewController)
+            else if (toViewController is StumbleViewController || toViewController is RepositoryViewController || 
+                     toViewController is StumbledRepositoryViewController || toViewController is SettingsViewController)
             {
                 toViewDismissCommand.Subscribe(_ => fromViewController.DismissViewController(true, null));
-                toViewController.NavigationItem.LeftBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Cancel, (s, e) => toViewDismissCommand.ExecuteIfCan());
+                toViewController.NavigationItem.LeftBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Done, (s, e) => toViewDismissCommand.ExecuteIfCan());
                 fromViewController.PresentViewController(new UINavigationController(toViewController), true, null);
             }
             else

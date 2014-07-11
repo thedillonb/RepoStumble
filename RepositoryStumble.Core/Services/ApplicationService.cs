@@ -5,6 +5,9 @@ using System.Linq;
 using ReactiveUI;
 using RepositoryStumble.Core.Messages;
 using RepositoryStumble.Core.Utils;
+using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace RepositoryStumble.Core.Services
 {
@@ -28,6 +31,7 @@ namespace RepositoryStumble.Core.Services
                 return false;
 
             Client = GitHubSharp.Client.BasicOAuth(Account.OAuth);
+            LoadLikesFromStars();
             return true;
         }
 
@@ -39,29 +43,52 @@ namespace RepositoryStumble.Core.Services
             MessageBus.Current.SendMessage(new LogoutMessage());
         }
 
-        public async Task LoadLikesFromStars()
+        private async Task LoadLikesFromStars()
         {
-            var req = Client.AuthenticatedUser.Repositories.GetStarred();
-
-            while (req != null)
+            try
             {
-                var repos = await Client.ExecuteAsync(req);
-                foreach (var x in repos.Data)
-                {
-                    Account.StumbledRepositories.Insert(new StumbledRepository
-                    { 
-                        Name = x.Name, 
-                        Owner = x.Owner.Login,
-                        Fullname = string.Format("{0}/{1}", x.Owner.Login, x.Name), 
-                        Description = x.Description,
-                        Stars = Convert.ToUInt32(x.StargazersCount),
-                        Forks = Convert.ToUInt32(x.Forks),
-                        Liked = true,
-                        ShowInHistory = false
-                    });
-                }
+                var d = new Dictionary<string, StumbledRepository>(Account.StumbledRepositories.Count());
+                foreach (var r in Account.StumbledRepositories)
+                    d.Add(r.Fullname.ToLower(), r);
 
-                req = repos.More;
+                var req = Client.AuthenticatedUser.Repositories.GetStarred();
+                while (req != null)
+                {
+                    var repos = await Client.ExecuteAsync(req);
+                    foreach (var x in repos.Data)
+                    {
+                        StumbledRepository repository;
+                        if (!d.TryGetValue(x.FullName.ToLower(), out repository))
+                        {
+                            Account.StumbledRepositories.Insert(new StumbledRepository
+                            { 
+                                Name = x.Name, 
+                                Owner = x.Owner.Login,
+                                Fullname = x.FullName, 
+                                Description = x.Description,
+                                Stars = Convert.ToUInt32(x.StargazersCount),
+                                Forks = Convert.ToUInt32(x.Forks),
+                                ImageUrl = x.Owner.AvatarUrl,
+                                Liked = true,
+                                ShowInHistory = false
+                            });
+                        }
+                        else
+                        {
+                            if (!string.Equals(repository.ImageUrl, x.Owner.AvatarUrl, StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                repository.ImageUrl = x.Owner.AvatarUrl;
+                                Account.StumbledRepositories.Update(repository);
+                            }
+                        }
+                    }
+
+                    req = repos.More;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Unable to get likes from stars: " + e.Message);
             }
         }
 

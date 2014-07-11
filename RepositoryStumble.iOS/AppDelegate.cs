@@ -105,6 +105,8 @@ namespace RepositoryStumble
             UINavigationBar.Appearance.SetBackgroundImage(img, UIBarPosition.Any, UIBarMetrics.Default);
 
             UITabBar.Appearance.TintColor = primaryColor;
+
+            UIApplication.SharedApplication.SetStatusBarHidden(false, UIStatusBarAnimation.Fade);
         }
 	}
 }

@@ -1,66 +1,35 @@
 using System;
-using MonoTouch.Dialog;
 using MonoTouch.UIKit;
-using RepositoryStumble.Views;
 using RepositoryStumble.Core.ViewModels.Profile;
 using System.Reactive.Linq;
 using ReactiveUI;
 using Xamarin.Utilities.ViewControllers;
 using Xamarin.Utilities.DialogElements;
 
-namespace RepositoryStumble.ViewControllers
+namespace RepositoryStumble.ViewControllers.Profile
 {
-    public class ProfileViewController : ViewModelDialogViewController<ProfileViewModel>
+    public class ProfileViewController : ViewModelPrettyDialogViewController<ProfileViewModel>
     {
         public ProfileViewController()
-			: base(true, UITableViewStyle.Grouped)
         {
             Title = "Profile";
-//			NavigationItem.RightBarButtonItem = new UIBarButtonItem(Images.Gear, UIBarButtonItemStyle.Plain, (s, e) =>
-//				NavigationController.PushViewController(new SettingsViewController(), true));
 
-            Scrolled.Where(x => x.Y > 0)
-                .Subscribe(_ => NavigationController.NavigationBar.ShadowImage = null);
-            Scrolled.Where(x => x.Y <= 0)
-                .Where(x => NavigationController.NavigationBar.ShadowImage == null)
-                .Subscribe(_ => NavigationController.NavigationBar.ShadowImage = new UIImage());
-        }
-
-        public override void ViewWillAppear(bool animated)
-        {
-            base.ViewWillAppear(animated);
-            NavigationController.NavigationBar.ShadowImage = new UIImage();
-        }
-
-        public override void ViewWillDisappear(bool animated)
-        {
-            base.ViewWillDisappear(animated);
-            NavigationController.NavigationBar.ShadowImage = null;
+            NavigationItem.RightBarButtonItem = new UIBarButtonItem(Images.Gear, UIBarButtonItemStyle.Plain, 
+                (s, e) => ViewModel.GoToSettingsCommand.ExecuteIfCan());
         }
 
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
 
-            TableView.SectionHeaderHeight = 0;
-            RefreshControl.TintColor = UIColor.LightGray;
-
-            var header = new ImageAndTitleHeaderView 
-            { 
-                Text = ViewModel.Username,
-                BackgroundColor = NavigationController.NavigationBar.BackgroundColor,
-                TextColor = UIColor.White,
-                SubTextColor = UIColor.FromWhiteAlpha(0.9f, 1.0f)
-            };
-
-            var topBackgroundView = this.CreateTopBackground(header.BackgroundColor);
-            topBackgroundView.Hidden = true;
+            HeaderView.Text = ViewModel.Username;
+            HeaderView.TextColor = UIColor.White;
+            HeaderView.SubTextColor = UIColor.FromWhiteAlpha(0.9f, 1.0f);
 
             ViewModel.WhenAnyValue(x => x.User).Where(x => x != null).Subscribe(x =>
             {
-                topBackgroundView.Hidden = false;
-                header.ImageUri = x.AvatarUrl;
-                header.SubText = x.Name;
+                HeaderView.ImageUri = x.AvatarUrl;
+                HeaderView.SubText = x.Name;
                 ReloadData();
             });
 
@@ -73,7 +42,7 @@ namespace RepositoryStumble.ViewControllers
             ViewModel.WhenAnyValue(x => x.Dislikes).Subscribe(x => dislikes.Text = x.ToString());
             ViewModel.WhenAnyValue(x => x.Interests).Subscribe(x => interests.Text = x.ToString());
 
-            var section = new Section { HeaderView = header };
+            var section = new Section { HeaderView = HeaderView };
             section.Add(split);
 
             Root.Reset(section);
