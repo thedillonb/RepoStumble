@@ -6,6 +6,7 @@ using Xamarin.Utilities.Core.ViewModels;
 using RepositoryStumble.Core.Services;
 using RepositoryStumble.Core.ViewModels.Application;
 using RepositoryStumble.Core.ViewModels.Repositories;
+using System.Reactive.Linq;
 
 namespace RepositoryStumble.Core.ViewModels.Profile
 {
@@ -62,9 +63,13 @@ namespace RepositoryStumble.Core.ViewModels.Profile
 
             this.WhenActivated(d =>
             {
-                Interests = applicationService.Account.Interests.Count();
-                Likes = applicationService.Account.StumbledRepositories.Count(x => x.Liked.HasValue && x.Liked.Value);
-                Dislikes = applicationService.Account.StumbledRepositories.Count(x => x.Liked.HasValue && !x.Liked.Value);
+                if (applicationService.Account != null)
+                {
+                    Interests = applicationService.Account.Interests.Count();
+                    Likes = applicationService.Account.StumbledRepositories.Count(x => x.Liked.HasValue && x.Liked.Value);
+                    Dislikes = applicationService.Account.StumbledRepositories.Count(x => x.Liked.HasValue && !x.Liked.Value);
+                    d(applicationService.RepositoryAdded.Subscribe(x => Likes += 1));
+                }
             });
 
             GoToLikesCommand = new ReactiveCommand();

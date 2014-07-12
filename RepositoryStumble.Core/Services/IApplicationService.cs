@@ -12,6 +12,8 @@ namespace RepositoryStumble.Core.Services
         GitHubSharp.Client Client { get; }
 
         bool Load();
+
+        IObservable<StumbledRepository> RepositoryAdded { get; }
     }
 }
 

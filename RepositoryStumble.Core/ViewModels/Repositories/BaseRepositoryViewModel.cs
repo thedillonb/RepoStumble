@@ -50,6 +50,13 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
             set { this.RaiseAndSetIfChanged(ref _collaboratorCount, value); }
         }
 
+        private bool? _liked;
+        public bool? Liked
+        {
+            get { return _liked; }
+            set { this.RaiseAndSetIfChanged(ref _liked, value); }
+        }
+
         protected BaseRepositoryViewModel(IApplicationService applicationService)
         {
             LikeCommand = new ReactiveCommand();
@@ -60,6 +67,13 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
                 .Subscribe(x =>
                 {
                     StumbedRepository = applicationService.Account.StumbledRepositories.FindByFullname(x.Owner, x.Name);
+                });
+
+            this.WhenAnyValue(x => x.StumbedRepository)
+                .Where(x => x != null)
+                .Subscribe(x =>
+                {
+                    Liked = x.Liked;
                 });
 
             LoadCommand.RegisterAsyncTask(async t =>

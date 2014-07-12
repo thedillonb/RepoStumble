@@ -26,7 +26,7 @@ namespace RepositoryStumble.ViewControllers.Repositories
                     var sec = new Section();
                     sec.AddAll(
                         from x in ViewModel.Repositories
-                        select new StumbledRepositoryElement(x, () => ViewModel.GoToRepositoryCommand.ExecuteIfCan(x)));
+                        select new RepositoryElement(x.Owner, x.Name, x.Description, x.ImageUrl, () => ViewModel.GoToRepositoryCommand.ExecuteIfCan(x)));
                     Root.Reset(sec);
                 });
         }

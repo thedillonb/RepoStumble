@@ -27,11 +27,6 @@ namespace RepositoryStumble.ViewControllers.Application
             return true;
         }
 
-        public override UIStatusBarStyle PreferredStatusBarStyle()
-        {
-            return UIStatusBarStyle.Default;
-        }
-
         public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations()
         {
             if (UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone)

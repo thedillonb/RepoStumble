@@ -20,8 +20,13 @@ namespace RepositoryStumble.ViewControllers.Repositories
 		protected BaseRepositoryViewController()
 		{
 			NavigationItem.RightBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Action, (s, e) => ShowMore());
+
             DislikeButton = new UIBarButtonItem(Images.ThumbDown, UIBarButtonItemStyle.Plain, (s, e) => ViewModel.DislikeCommand.ExecuteIfCan());
+            DislikeButton.TintColor = UITabBar.Appearance.TintColor;
+
             LikeButton = new UIBarButtonItem(Images.ThumbUp, UIBarButtonItemStyle.Plain, (s, e) => ViewModel.LikeCommand.ExecuteIfCan());
+            LikeButton.TintColor = UITabBar.Appearance.TintColor;
+
         }
             
 
@@ -56,6 +61,25 @@ namespace RepositoryStumble.ViewControllers.Repositories
                 stars.Text = x.StargazersCount.ToString();
                 watchers.Text = x.SubscribersCount.ToString();
                 ReloadData();
+            });
+
+            ViewModel.WhenAnyValue(x => x.Liked).Subscribe(x =>
+            {
+                if (x == null)
+                {
+                    DislikeButton.Image = Images.ThumbDown;
+                    LikeButton.Image = Images.ThumbUp;
+                }
+                else if (x.Value)
+                {
+                    DislikeButton.Image = Images.ThumbDown;
+                    LikeButton.Image = Images.ThumbUpFilled;
+                }
+                else
+                {
+                    DislikeButton.Image = Images.ThumbDownFilled;
+                    LikeButton.Image = Images.ThumbUp;
+                }
             });
 
             var webElement = new WebElement("readme");

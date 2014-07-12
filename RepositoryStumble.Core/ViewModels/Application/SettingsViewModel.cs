@@ -3,6 +3,7 @@ using ReactiveUI;
 using RepositoryStumble.Core.Services;
 using System.Reactive.Linq;
 using Xamarin.Utilities.Core.ViewModels;
+using RepositoryStumble.Core.Messages;
 
 namespace RepositoryStumble.Core.ViewModels.Application
 {
@@ -20,7 +21,9 @@ namespace RepositoryStumble.Core.ViewModels.Application
         public SettingsViewModel(IApplicationService applicationService)
         {
             SyncWithGitHub = applicationService.Account.SyncWithGitHub;
+
             LogoutCommand = new ReactiveCommand();
+            LogoutCommand.Select(_ => new LogoutMessage()).Subscribe(x => applicationService.Logout());
 
             this.WhenAnyValue(x => x.SyncWithGitHub).Skip(1).Subscribe(x =>
             {

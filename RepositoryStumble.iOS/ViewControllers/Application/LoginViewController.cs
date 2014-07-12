@@ -1,46 +1,39 @@
 using System;
-using MonoTouch.UIKit;
-using System.Threading.Tasks;
 using RepositoryStumble.Core.ViewModels.Application;
 using ReactiveUI;
 using Xamarin.Utilities.ViewControllers;
+using System.Text;
+using Xamarin.Utilities.Core.Services;
+using System.Reactive.Linq;
 
 namespace RepositoryStumble.ViewControllers.Application
 {
     public class LoginViewController : WebView<LoginViewModel>
     {
-        public LoginViewController()
+        private readonly IStatusIndicatorService _statusIndicator;
+        public LoginViewController(IStatusIndicatorService statusIndicator)
         {
             Title = "Login";
-
-            LoadRequest();
-	
-            ViewModel.LoginCommand.IsExecuting.Subscribe(x =>
-            {
-            });
+            _statusIndicator = statusIndicator;
         }
 
-		public override UIStatusBarStyle PreferredStatusBarStyle()
-		{
-			return UIStatusBarStyle.Default;
-		}
+        public override void ViewDidLoad()
+        {
+            base.ViewDidLoad();
 
-		private void Back()
-		{
-			if (Web.CanGoBack)
-				Web.GoBack();
-		}
+            ViewModel.LoginCommand.IsExecuting.Subscribe(x =>
+            {
+                if (x)
+                    _statusIndicator.Show("Logging in...");
+                else
+                    _statusIndicator.Hide();
+            });
 
-		private void Forward()
-		{
-			if (Web.CanGoForward)
-				Web.GoForward();
-		}
-
-		private void Reload()
-		{
-			Web.Reload();
-		}
+            foreach (var c in MonoTouch.Foundation.NSHttpCookieStorage.SharedStorage.Cookies)
+                MonoTouch.Foundation.NSHttpCookieStorage.SharedStorage.DeleteCookie(c);
+            MonoTouch.Foundation.NSUrlCache.SharedCache.RemoveAllCachedResponses();
+            Web.LoadRequest(new MonoTouch.Foundation.NSUrlRequest(new MonoTouch.Foundation.NSUrl(ViewModel.LoginUrl)));
+        }
 
 		protected override bool ShouldStartLoad(MonoTouch.Foundation.NSUrlRequest request, MonoTouch.UIKit.UIWebViewNavigationType navigationType)
         {
@@ -61,28 +54,16 @@ namespace RepositoryStumble.ViewControllers.Application
         {
             base.OnLoadFinished(sender, e);
 
-//            //Inject some Javascript so we can set the username if there is an attempted account
-//            if (_attemptedAccount != null)
-//            {
-//                var script = "(function() { setTimeout(function() { $('input[name=\"login\"]').val('" + _attemptedAccount.Username + "').attr('readonly', 'readonly'); }, 100); })();";
-//                Web.EvaluateJavascript(script);
-//            }
+            //Apple is full of clowns. The GitHub login page has links that can ultimiately end you at a place where you can purchase something
+            //so we need to inject javascript that will remove these links. What a bunch of idiots...
+            var script = new StringBuilder();
+            script.Append("$('.switch-to-desktop').hide();");
+            script.Append("$('.header-button').hide();");
+            script.Append("$('.header').hide();");
+            script.Append("$('.site-footer').hide();");
+            script.Append("$('.brand-logo-wordmark').click(function(e) { e.preventDefault(); });");
+            Web.EvaluateJavascript("(function(){setTimeout(function(){" + script +"}, 100); })();");
         }
-
-        private void LoadRequest()
-        {
-            //Remove all cookies & cache
-            foreach (var c in MonoTouch.Foundation.NSHttpCookieStorage.SharedStorage.Cookies)
-                MonoTouch.Foundation.NSHttpCookieStorage.SharedStorage.DeleteCookie(c);
-            MonoTouch.Foundation.NSUrlCache.SharedCache.RemoveAllCachedResponses();
-            Web.LoadRequest(new MonoTouch.Foundation.NSUrlRequest(new MonoTouch.Foundation.NSUrl(ViewModel.LoginUrl)));
-        }
-
-		public override void ViewWillAppear(bool animated)
-		{
-			base.ViewWillAppear(animated);
-			UIApplication.SharedApplication.SetStatusBarStyle(UIStatusBarStyle.Default, animated);
-		}
     }
 }
 

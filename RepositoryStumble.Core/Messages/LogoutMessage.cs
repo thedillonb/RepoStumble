@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RepositoryStumble.Core.Messages
+﻿namespace RepositoryStumble.Core.Messages
 {
     public class LogoutMessage
     {

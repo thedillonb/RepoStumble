@@ -189,6 +189,11 @@
       <DependentUpon>ReadmeRazorView.cshtml</DependentUpon>
     </Compile>
     <Compile Include="ViewControllers\Stumble\StumbledRepositoryViewController.cs" />
+    <Compile Include="TableViewCells\RepositoryTableViewCell.cs" />
+    <Compile Include="TableViewCells\RepositoryTableViewCell.designer.cs">
+      <DependentUpon>RepositoryTableViewCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Elements\RepositoryElement.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ProjectExtensions>
@@ -249,6 +254,10 @@
     <BundleResource Include="Images\heart.png" />
     <BundleResource Include="Images\spotlight.png" />
     <BundleResource Include="Images\heart%402x.png" />
+    <BundleResource Include="Images\thumb_down_filled.png" />
+    <BundleResource Include="Images\thumb_down_filled%402x.png" />
+    <BundleResource Include="Images\thumb_up_filled.png" />
+    <BundleResource Include="Images\thumb_up_filled%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />
@@ -271,5 +280,11 @@
       <Project>{89E14828-85BB-4790-9B4E-E44DD4CE000E}</Project>
       <Name>GitHubSharp.MonoTouch</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="TableViewCells\" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="TableViewCells\RepositoryTableViewCell.xib" />
   </ItemGroup>
 </Project>

@@ -8,12 +8,14 @@ using RepositoryStumble.Core.Utils;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reactive.Subjects;
 
 namespace RepositoryStumble.Core.Services
 {
     public class ApplicationService : IApplicationService
     {
         private static Random _random = new Random();
+        private readonly Subject<StumbledRepository> _stumbledRepositories = new Subject<StumbledRepository>();
 
         public GitHubSharp.Client Client { get; private set; }
 
@@ -60,7 +62,7 @@ namespace RepositoryStumble.Core.Services
                         StumbledRepository repository;
                         if (!d.TryGetValue(x.FullName.ToLower(), out repository))
                         {
-                            Account.StumbledRepositories.Insert(new StumbledRepository
+                            var newRepo = new StumbledRepository
                             { 
                                 Name = x.Name, 
                                 Owner = x.Owner.Login,
@@ -71,7 +73,10 @@ namespace RepositoryStumble.Core.Services
                                 ImageUrl = x.Owner.AvatarUrl,
                                 Liked = true,
                                 ShowInHistory = false
-                            });
+                            };
+
+                            Account.StumbledRepositories.Insert(newRepo);
+                            _stumbledRepositories.OnNext(newRepo);
                         }
                         else
                         {
@@ -91,6 +96,8 @@ namespace RepositoryStumble.Core.Services
                 Console.WriteLine("Unable to get likes from stars: " + e.Message);
             }
         }
+
+        public IObservable<StumbledRepository> RepositoryAdded { get { return _stumbledRepositories; } }
 
         private async Task GetMoreRepositoriesForInterest(Interest interest)
         {

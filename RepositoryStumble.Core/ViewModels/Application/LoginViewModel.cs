@@ -3,6 +3,8 @@ using ReactiveUI;
 using RepositoryStumble.Core.Data;
 using RepositoryStumble.Core.Services;
 using Xamarin.Utilities.Core.ViewModels;
+using Xamarin.Utilities.Core.Services;
+using System.Reactive.Linq;
 
 namespace RepositoryStumble.Core.ViewModels.Application
 {
@@ -29,13 +31,16 @@ namespace RepositoryStumble.Core.ViewModels.Application
             }
         }
 
-        public LoginViewModel(IApplicationService applicationService)
+        public LoginViewModel(INetworkActivityService networkActivity)
         {
             LoginCommand = new ReactiveCommand();
+
+            LoginCommand.IsExecuting.Skip(1).Where(x => x).Subscribe(x => networkActivity.PushNetworkActive());
+            LoginCommand.IsExecuting.Skip(1).Where(x => !x).Subscribe(x => networkActivity.PopNetworkActive());
+
             LoginCommand.RegisterAsyncTask(async t =>
             {
                 var account = new Account();
-
                 var token = await GitHubSharp.Client.RequestAccessToken(ClientId, ClientSecret, LoginCode, null);
                 var client = GitHubSharp.Client.BasicOAuth(token.AccessToken);
                 var info = await client.ExecuteAsync(client.AuthenticatedUser.GetInfo());
@@ -43,17 +48,9 @@ namespace RepositoryStumble.Core.ViewModels.Application
                 account.Username = info.Data.Login;
                 account.Fullname = info.Data.Name;
                 account.OAuth = token.AccessToken;
-
                 account.Save();
-                applicationService.Load();
 
-//                try
-//                {
-//                    await Application.Instance.LoadLikesFromStars();
-//                }
-//                catch
-//                {
-//                }
+                DismissCommand.ExecuteIfCan();
             });
         }
     }

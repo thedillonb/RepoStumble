@@ -1,4 +1,3 @@
-using System;
 using MonoTouch.UIKit;
 
 namespace RepositoryStumble
@@ -7,6 +6,8 @@ namespace RepositoryStumble
     {
 		public static UIImage ThumbUp { get { return UIImage.FromBundle("Images/thumb_up"); } }
 		public static UIImage ThumbDown { get { return UIImage.FromBundle("Images/thumb_down"); } }
+        public static UIImage ThumbUpFilled { get { return UIImage.FromBundle("Images/thumb_up_filled"); } }
+        public static UIImage ThumbDownFilled { get { return UIImage.FromBundle("Images/thumb_down_filled"); } }
 
 		public static UIImage Back { get { return UIImage.FromBundle("Images/back"); } }
 		public static UIImage Forward { get { return UIImage.FromBundle("Images/forward"); } }
