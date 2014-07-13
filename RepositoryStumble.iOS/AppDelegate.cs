@@ -106,6 +106,8 @@ namespace RepositoryStumble
 
             UITabBar.Appearance.TintColor = primaryColor;
 
+            Xamarin.Utilities.ViewControllers.ViewModelPrettyDialogViewController.RefreshIndicatorColor = UIColor.White;
+
             UIApplication.SharedApplication.SetStatusBarHidden(false, UIStatusBarAnimation.Fade);
         }
 	}

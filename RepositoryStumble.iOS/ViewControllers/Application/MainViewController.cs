@@ -47,7 +47,9 @@ namespace RepositoryStumble.ViewControllers.Application
                 new UINavigationController(showcasesViewController)
             };
 
-            var width = TabBar.Bounds.Width / this.ViewControllers.Length;
+            float width = 60;
+            if (TabBar.Subviews.Length == 5)
+                width = TabBar.Subviews[2].Bounds.Width;
 
             var stumbleView = new StumbleView(new RectangleF(TabBar.Bounds.Width / 2f - width / 2, 0, width, TabBar.Bounds.Height));
             stumbleView.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;

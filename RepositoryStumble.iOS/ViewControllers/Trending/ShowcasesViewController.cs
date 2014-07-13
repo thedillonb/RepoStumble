@@ -1,8 +1,7 @@
-﻿using MonoTouch.UIKit;
-using ReactiveUI;
+﻿using ReactiveUI;
 using RepositoryStumble.Core.ViewModels.Trending;
 using Xamarin.Utilities.ViewControllers;
-using Xamarin.Utilities.DialogElements;
+using RepositoryStumble.Elements;
 
 namespace RepositoryStumble.ViewControllers.Trending
 {
@@ -18,13 +17,8 @@ namespace RepositoryStumble.ViewControllers.Trending
         {
             base.ViewDidLoad();
 
-            this.Bind(ViewModel.Showcases, x =>
-            {
-                var e = new StyledMultilineElement(x.Name, x.Description, UITableViewCellStyle.Subtitle);
-                e.Accessory = UITableViewCellAccessory.DisclosureIndicator;
-                e.Tapped += () => ViewModel.GoToShowcaseCommand.ExecuteIfCan(x);
-                return e;
-            });
+            this.BindList(ViewModel.Showcases, x => new ShowcaseElement(x.Name, x.Description, 
+                "http://trending.codehub-app.com/" + x.Image, () => ViewModel.GoToShowcaseCommand.ExecuteIfCan(x)));
         }
     }
 }

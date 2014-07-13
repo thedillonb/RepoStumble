@@ -194,6 +194,12 @@
       <DependentUpon>RepositoryTableViewCell.cs</DependentUpon>
     </Compile>
     <Compile Include="Elements\RepositoryElement.cs" />
+    <Compile Include="TableViewCells\ShowcaseTableViewCell.cs" />
+    <Compile Include="TableViewCells\ShowcaseTableViewCell.designer.cs">
+      <DependentUpon>ShowcaseTableViewCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Elements\ShowcaseElement.cs" />
+    <Compile Include="Transitions\SlideDownTransition.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ProjectExtensions>
@@ -258,6 +264,10 @@
     <BundleResource Include="Images\thumb_down_filled%402x.png" />
     <BundleResource Include="Images\thumb_up_filled.png" />
     <BundleResource Include="Images\thumb_up_filled%402x.png" />
+    <BundleResource Include="Images\down_chevron%402x.png" />
+    <BundleResource Include="Images\down_chevron.png" />
+    <BundleResource Include="Resources\Default-Landscape%402x.png" />
+    <BundleResource Include="Resources\Default-Landscape.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />
@@ -283,8 +293,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="TableViewCells\" />
+    <Folder Include="Transitions\" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="TableViewCells\RepositoryTableViewCell.xib" />
+    <InterfaceDefinition Include="TableViewCells\ShowcaseTableViewCell.xib" />
   </ItemGroup>
 </Project>

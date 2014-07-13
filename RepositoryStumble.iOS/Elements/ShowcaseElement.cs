@@ -8,18 +8,16 @@ using MonoTouch.UIKit;
 
 namespace RepositoryStumble.Elements
 {
-    public class RepositoryElement : Element, IImageUpdated, IElementSizing
+    public class ShowcaseElement : Element, IImageUpdated, IElementSizing
     {
         private string _name;
-        private string _owner;
         private string _description;
         private string _imageUrl;
         private Action _tapped;
 
-        public RepositoryElement(string owner, string name, string description, string imageUrl, Action tapped = null)
+        public ShowcaseElement(string name, string description, string imageUrl, Action tapped = null)
         {
             _tapped = tapped;
-            _owner = owner;
             _name = name;
             _description = description;
             _imageUrl = imageUrl;
@@ -37,28 +35,24 @@ namespace RepositoryStumble.Elements
             var img = ImageLoader.DefaultRequestImage(uri, this);
             if (img != null)
             {
-                var cell = GetActiveCell() as RepositoryTableViewCell;
+                var cell = GetActiveCell() as ShowcaseTableViewCell;
                 if (cell != null)
                 {
                     cell.Image = img;
                     cell.SetNeedsDisplay();
                 }
-                //GetRootElement().Reload(this, UITableViewRowAnimation.None);
             }
         }
 
         public override UITableViewCell GetCell(UITableView tv)
         {
-            var cell = tv.DequeueReusableCell(RepositoryTableViewCell.Key) as RepositoryTableViewCell;
+            var cell = tv.DequeueReusableCell(ShowcaseTableViewCell.Key) as ShowcaseTableViewCell;
             if (cell == null)
             {
-                cell = RepositoryTableViewCell.Create();
+                cell = ShowcaseTableViewCell.Create();
             }
 
-            Uri uri;
-            cell.Image = Uri.TryCreate(_imageUrl, UriKind.Absolute, out uri) ? 
-                ImageLoader.DefaultRequestImage(uri, this) : null;
-            cell.Owner = _owner;
+            cell.Image = ImageLoader.DefaultRequestImage(new Uri(_imageUrl), this);
             cell.Description = _description;
             cell.Name = _name;
             return cell;
@@ -66,13 +60,12 @@ namespace RepositoryStumble.Elements
 
         public float GetHeight(MonoTouch.UIKit.UITableView tableView, MonoTouch.Foundation.NSIndexPath indexPath)
         {
-            var cell = tableView.DequeueReusableCell(RepositoryTableViewCell.Key) as RepositoryTableViewCell;
+            var cell = tableView.DequeueReusableCell(ShowcaseTableViewCell.Key) as ShowcaseTableViewCell;
             if (cell == null)
             {
-                cell = RepositoryTableViewCell.Create();
+                cell = ShowcaseTableViewCell.Create();
             }
-
-            cell.Owner = _owner;
+                
             cell.Description = _description;
             cell.Name = _name;
 

@@ -4,6 +4,7 @@ using ReactiveUI;
 using RepositoryStumble.Core.ViewModels.Trending;
 using Xamarin.Utilities.ViewControllers;
 using Xamarin.Utilities.DialogElements;
+using RepositoryStumble.Elements;
 
 namespace RepositoryStumble.ViewControllers.Trending
 {
@@ -20,13 +21,9 @@ namespace RepositoryStumble.ViewControllers.Trending
 
             ViewModel.WhenAnyValue(x => x.Title).Subscribe(x => Title = x);
 
-            this.Bind(ViewModel.Repositories, x =>
+            this.BindList(ViewModel.Repositories, x =>
             {
-                var element = new StyledMultilineElement(x.Owner + "/" + x.Name, x.Description,
-                                      UITableViewCellStyle.Subtitle);
-                element.Accessory = UITableViewCellAccessory.DisclosureIndicator;
-                element.Tapped += () => ViewModel.GoToRepositoryCommand.ExecuteIfCan(x);
-                return element;
+                return new RepositoryElement(x.Owner, x.Name, x.Description, x.AvatarUrl, () => ViewModel.GoToRepositoryCommand.ExecuteIfCan(x));
             });
         }
     }

@@ -46,7 +46,7 @@ namespace RepositoryStumble.Core.ViewModels.Trending
             Repositories = repositories;
             LoadCommand.RegisterAsyncTask(async t =>
             {
-                var url = string.Format("http://trending.codehub-app.com/showcase?name={0}", ShowcaseSlug);
+                var url = string.Format("http://trending.codehub-app.com/showcases/{0}", ShowcaseSlug);
                 var data = await jsonHttpClientService.Get<ShowcaseRepositories>(url);
                 Title = data.Name;
                 Showcase = new Showcase {Slug = data.Slug, Description = data.Description, Name = data.Name};

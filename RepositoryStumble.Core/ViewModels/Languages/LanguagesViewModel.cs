@@ -27,15 +27,23 @@ namespace RepositoryStumble.Core.ViewModels.Languages
 
         public IReadOnlyReactiveList<Language> Languages { get; private set; }
 
+        public List<Language> ExtraLanguages { get; private set; }
+
         public LanguagesViewModel(IJsonHttpClientService jsonHttpClientService)
         {
+            ExtraLanguages = new List<Language>();
+
             Languages = _languages.CreateDerivedCollection(
                 x => x, 
-                x => x.Name.StartsWith(SearchKeyword ?? string.Empty, StringComparison.Ordinal), 
+                x => x.Name.StartsWith(SearchKeyword ?? string.Empty, StringComparison.OrdinalIgnoreCase), 
                 signalReset: this.WhenAnyValue(x => x.SearchKeyword));
 
-            LoadCommand.RegisterAsyncTask(async t => 
-                _languages.Reset((await jsonHttpClientService.Get<List<Language>>("http://trending.codehub-app.com/languages"))));
+            LoadCommand.RegisterAsyncTask(async t =>
+            {
+                var langs = await jsonHttpClientService.Get<List<Language>>("http://trending.codehub-app.com/languages");
+                langs.InsertRange(0, ExtraLanguages);
+                _languages.Reset(langs);
+            });
         }
     }
 }

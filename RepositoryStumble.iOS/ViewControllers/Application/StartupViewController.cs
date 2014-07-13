@@ -9,6 +9,12 @@ namespace RepositoryStumble.ViewControllers.Application
     {
         private readonly UIImageView _backgroundImageView = new UIImageView();
 
+        public override void ViewDidLoad()
+        {
+            base.ViewDidLoad();
+            View.Add(_backgroundImageView);
+        }
+
         public override void ViewWillLayoutSubviews()
         {
             base.ViewWillLayoutSubviews();

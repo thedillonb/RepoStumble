@@ -20,11 +20,11 @@ namespace RepositoryStumble.ViewControllers.Languages
 
             SearchTextChanging.Subscribe(x => ViewModel.SearchKeyword = x);
 
-            this.Bind(ViewModel.Languages, x =>
+            this.BindList(ViewModel.Languages, x =>
             {
                 var el = new StyledStringElement(x.Name);
                 el.Tapped += () => ViewModel.SelectedLanguage = x;
-                if (ViewModel.SelectedLanguage != null && x.Slug.Equals(ViewModel.SelectedLanguage.Slug))
+                if (ViewModel.SelectedLanguage != null && string.Equals(x.Slug, ViewModel.SelectedLanguage.Slug))
                     el.Accessory = UITableViewCellAccessory.Checkmark;
                 return el;
             });

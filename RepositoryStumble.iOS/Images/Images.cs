@@ -21,6 +21,9 @@ namespace RepositoryStumble
         public static UIImage Spotlight { get { return UIImage.FromBundle("Images/spotlight"); } }
         public static UIImage Search { get { return UIImage.FromBundle("Images/search"); } }
         public static UIImage Heart { get { return UIImage.FromBundle("Images/heart"); } }
+
+        public static UIImage DownChevron { get { return UIImage.FromBundle("Images/down_chevron"); } }
+
     }
 }
 
