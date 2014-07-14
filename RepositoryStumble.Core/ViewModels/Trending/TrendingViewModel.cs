@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace RepositoryStumble.Core.ViewModels.Trending
 {
-    public class TrendingViewModel : LoadableViewModel
+    public class TrendingViewModel : BaseViewModel, ILoadableViewModel
     {
         private const string LanguagesUrl = "http://codehub-trending.herokuapp.com/languages";
         private const string TrendingUrl = "http://codehub-trending.herokuapp.com/trending";
@@ -35,11 +35,13 @@ namespace RepositoryStumble.Core.ViewModels.Trending
             set { this.RaiseAndSetIfChanged(ref _selectedLanguage, value); }
         }
 
-        public IReactiveCommand GoToRepositoryCommand { get; private set; }
+        public IReactiveCommand<object> GoToRepositoryCommand { get; private set; }
 
-        public IReactiveCommand GoToLanguages { get; private set; }
+        public IReactiveCommand<object> GoToLanguages { get; private set; }
 
-        public TrendingViewModel(IApplicationService applicationService, IJsonHttpClientService jsonHttpClient)
+        public IReactiveCommand LoadCommand { get; private set; }
+
+        public TrendingViewModel(INetworkActivityService networkActivity, IJsonHttpClientService jsonHttpClient)
         {
             _jsonHttpClient = jsonHttpClient;
             SelectedLanguage = _defaultLanguage;
@@ -47,7 +49,7 @@ namespace RepositoryStumble.Core.ViewModels.Trending
             Repositories = new ReactiveCollection<TrendingRepositoryViewModel>();
             Repositories.GroupFunc = x => x.Time;
 
-            GoToRepositoryCommand = new ReactiveCommand();
+            GoToRepositoryCommand = ReactiveCommand.Create();
             GoToRepositoryCommand.OfType<RepositoryModel>().Subscribe(x =>
             {
                 var vm = CreateViewModel<RepositoryViewModel>();
@@ -55,7 +57,7 @@ namespace RepositoryStumble.Core.ViewModels.Trending
                 ShowViewModel(vm);
             });
 
-            GoToLanguages = new ReactiveCommand();
+            GoToLanguages = ReactiveCommand.Create();
             GoToLanguages.Subscribe(_ =>
             {
                 var vm = CreateViewModel<LanguagesViewModel>();
@@ -71,7 +73,7 @@ namespace RepositoryStumble.Core.ViewModels.Trending
 
             this.WhenAnyValue(x => x.SelectedLanguage).Skip(1).Subscribe(_ => LoadCommand.ExecuteIfCan());
 
-            LoadCommand.RegisterAsyncTask(async _ =>
+            LoadCommand = ReactiveCommand.CreateAsyncTask(async _ =>
             {
                 var tempRepos = new List<TrendingRepositoryViewModel>();
                 foreach (var t in _times)
@@ -84,6 +86,8 @@ namespace RepositoryStumble.Core.ViewModels.Trending
                 }
                 Repositories.Reset(tempRepos);
             });
+
+            LoadCommand.TriggerNetworkActivity(networkActivity);
         }
 
         public class TimeModel

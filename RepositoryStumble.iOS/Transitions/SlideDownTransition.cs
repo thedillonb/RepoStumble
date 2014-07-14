@@ -1,7 +1,5 @@
-﻿using System;
-using MonoTouch.UIKit;
+﻿using MonoTouch.UIKit;
 using System.Drawing;
-using MonoTouch.CoreText;
 
 namespace RepositoryStumble.Transitions
 {
@@ -28,7 +26,7 @@ namespace RepositoryStumble.Transitions
 
             public override double TransitionDuration(IUIViewControllerContextTransitioning transitionContext)
             {
-                return 0.35f;
+                return 0.25f;
             }
 
             public override void AnimateTransition(IUIViewControllerContextTransitioning transitionContext)

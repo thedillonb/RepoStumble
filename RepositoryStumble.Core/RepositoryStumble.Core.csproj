@@ -35,34 +35,31 @@
     <Reference Include="Akavache.Mobile">
       <HintPath>..\lib\Xamarin.Utilities\lib\iOS\Akavache.Mobile.dll</HintPath>
     </Reference>
-    <Reference Include="ReactiveUI.Cocoa">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.Cocoa.dll</HintPath>
-    </Reference>
-    <Reference Include="ReactiveUI.Events">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.Events.dll</HintPath>
-    </Reference>
     <Reference Include="ReactiveUI">
       <HintPath>..\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Core">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Core.dll</HintPath>
+      <HintPath>..\lib\Xamarin.Utilities\lib\Common\System.Reactive.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Interfaces">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Interfaces.dll</HintPath>
+      <HintPath>..\lib\Xamarin.Utilities\lib\Common\System.Reactive.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Linq">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Linq.dll</HintPath>
+      <HintPath>..\lib\Xamarin.Utilities\lib\Common\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Splat">
+      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\Splat.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\lib\Xamarin.Utilities\Xamarin.Utilities.Core\Xamarin.Utilities.Core.iOS.csproj">
-      <Project>{EBBA1BD0-8430-4CC1-B636-B89C505C7D1C}</Project>
-      <Name>Xamarin.Utilities.Core.iOS</Name>
-    </ProjectReference>
     <ProjectReference Include="..\lib\GitHubSharp\GitHubSharp.MonoTouch.csproj">
       <Project>{89E14828-85BB-4790-9B4E-E44DD4CE000E}</Project>
       <Name>GitHubSharp.MonoTouch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\Xamarin.Utilities\Xamarin.Utilities.Core\Xamarin.Utilities.Core.iOS.csproj">
+      <Project>{EBBA1BD0-8430-4CC1-B636-B89C505C7D1C}</Project>
+      <Name>Xamarin.Utilities.Core.iOS</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

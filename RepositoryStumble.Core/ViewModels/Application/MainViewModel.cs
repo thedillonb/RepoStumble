@@ -8,11 +8,11 @@ namespace RepositoryStumble.Core.ViewModels.Application
 {
     public class MainViewModel : BaseViewModel
     {
-        public IReactiveCommand GoToStumbleCommand { get; private set; }
+        public IReactiveCommand<object> GoToStumbleCommand { get; private set; }
 
         public MainViewModel()
         {
-            GoToStumbleCommand = new ReactiveCommand();
+            GoToStumbleCommand = ReactiveCommand.Create();
             GoToStumbleCommand.Subscribe(_ =>
             {
                 var vm = CreateViewModel<StumbleViewModel>();

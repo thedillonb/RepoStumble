@@ -27,7 +27,8 @@ namespace RepositoryStumble.ViewControllers.Application
             interestsViewController.TabBarItem = new UITabBarItem("Interests", Images.Heart, Images.Heart);
             interestsViewController.ViewModel.View = interestsViewController;
 
-            var trendingViewController = new TrendingViewController { ViewModel = IoC.Resolve<TrendingViewModel>() };
+            var trendingViewController = IoC.Resolve<TrendingViewController>();
+            trendingViewController.ViewModel = IoC.Resolve<TrendingViewModel>();
             trendingViewController.TabBarItem = new UITabBarItem("Trending", Images.Trending, Images.Trending);
             trendingViewController.ViewModel.View = trendingViewController;
 

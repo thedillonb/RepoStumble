@@ -8,15 +8,17 @@ using ReactiveUI;
 
 namespace RepositoryStumble.Core.ViewModels.Trending
 {
-    public class ShowcasesViewModel : LoadableViewModel
+    public class ShowcasesViewModel : BaseViewModel, ILoadableViewModel
     {
         public IReadOnlyReactiveList<Showcase> Showcases { get; private set; }
 
-        public IReactiveCommand GoToShowcaseCommand { get; private set; }
+        public IReactiveCommand<object> GoToShowcaseCommand { get; private set; }
 
-        public ShowcasesViewModel(IJsonHttpClientService jsonHttpClientService)
+        public IReactiveCommand LoadCommand { get; private set; }
+
+        public ShowcasesViewModel(IJsonHttpClientService jsonHttpClientService, INetworkActivityService networkActivity)
         {
-            GoToShowcaseCommand = new ReactiveCommand();
+            GoToShowcaseCommand = ReactiveCommand.Create();
             GoToShowcaseCommand.OfType<Showcase>().Subscribe(x =>
             {
                 var vm = CreateViewModel<ShowcaseViewModel>();
@@ -27,8 +29,10 @@ namespace RepositoryStumble.Core.ViewModels.Trending
 
             var showcases = new ReactiveList<Showcase>();
             Showcases = showcases;
-            LoadCommand.RegisterAsyncTask(async t => showcases.Reset(
+
+            LoadCommand = ReactiveCommand.CreateAsyncTask(async t => showcases.Reset(
                 (await jsonHttpClientService.Get<List<Showcase>>("http://trending.codehub-app.com/showcases"))));
+            LoadCommand.TriggerNetworkActivity(networkActivity);
         }
     }
 }

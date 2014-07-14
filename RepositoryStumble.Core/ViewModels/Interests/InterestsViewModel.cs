@@ -5,6 +5,7 @@ using RepositoryStumble.Core.Data;
 using System.Reactive.Linq;
 using System.Linq;
 using Xamarin.Utilities.Core.ViewModels;
+using RepositoryStumble.Core.ViewModels.Stumble;
 
 namespace RepositoryStumble.Core.ViewModels.Interests
 {
@@ -14,9 +15,11 @@ namespace RepositoryStumble.Core.ViewModels.Interests
 
         public IReadOnlyReactiveList<Interest> Interests { get; private set; }
 
-        public IReactiveCommand DeleteInterestCommand { get; private set; }
+        public IReactiveCommand<object> DeleteInterestCommand { get; private set; }
 
-        public IReactiveCommand GoToAddInterestCommand { get; private set; }
+        public IReactiveCommand<object> GoToAddInterestCommand { get; private set; }
+
+        public IReactiveCommand<object> GoToStumbleInterestCommand { get; private set; }
 
         public InterestsViewModel(IApplicationService applicationService)
         {
@@ -24,10 +27,18 @@ namespace RepositoryStumble.Core.ViewModels.Interests
             var interests = new ReactiveList<Interest>();
             Interests = interests;
 
-            DeleteInterestCommand = new ReactiveCommand();
+            DeleteInterestCommand = ReactiveCommand.Create();
             DeleteInterestCommand.OfType<Interest>().Subscribe(ApplicationService.Account.Interests.Remove);
 
-            GoToAddInterestCommand = new ReactiveCommand();
+            GoToStumbleInterestCommand = ReactiveCommand.Create();
+            GoToStumbleInterestCommand.OfType<Interest>().Subscribe(x =>
+            {
+                var vm = CreateViewModel<StumbleViewModel>();
+                vm.Interest = x;
+                ShowViewModel(vm);
+            });
+
+            GoToAddInterestCommand = ReactiveCommand.Create();
             GoToAddInterestCommand.Subscribe(_ =>
             {
                 var vm = CreateViewModel<AddInterestViewModel>();

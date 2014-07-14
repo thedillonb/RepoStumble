@@ -6,14 +6,15 @@ using GitHubSharp.Models;
 using System.Diagnostics;
 using RepositoryStumble.Core.Data;
 using System.Reactive.Linq;
+using Xamarin.Utilities.Core.Services;
 
 namespace RepositoryStumble.Core.ViewModels.Repositories
 {
-    public abstract class BaseRepositoryViewModel : LoadableViewModel
+    public abstract class BaseRepositoryViewModel : BaseViewModel, ILoadableViewModel
     {
-        public IReactiveCommand LikeCommand { get; private set; }
+        public IReactiveCommand<object> LikeCommand { get; private set; }
 
-        public IReactiveCommand DislikeCommand { get; private set; }
+        public IReactiveCommand<object> DislikeCommand { get; private set; }
 
         private RepositoryIdentifierModel _repositoryIdentifier;
         public RepositoryIdentifierModel RepositoryIdentifier
@@ -37,7 +38,7 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
         }
 
         private StumbledRepository _stumbledRepository;
-        public StumbledRepository StumbedRepository
+        public StumbledRepository StumbledRepository
         {
             get { return _stumbledRepository; }
             private set { this.RaiseAndSetIfChanged(ref _stumbledRepository, value); }
@@ -57,27 +58,82 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
             set { this.RaiseAndSetIfChanged(ref _liked, value); }
         }
 
-        protected BaseRepositoryViewModel(IApplicationService applicationService)
+        public IReactiveCommand<object> GoToGitHubCommand { get; private set; }
+
+        public IReactiveCommand LoadCommand { get; private set; }
+
+        protected BaseRepositoryViewModel(IApplicationService applicationService, INetworkActivityService networkActivity)
         {
-            LikeCommand = new ReactiveCommand();
-            DislikeCommand = new ReactiveCommand();
+            LikeCommand = ReactiveCommand.Create();
+            LikeCommand.Subscribe(_ =>
+            {
+                if (StumbledRepository == null)
+                {
+                    var repo = CreateStumbledRepository();
+                    repo.Liked = true;
+                    applicationService.Account.StumbledRepositories.Insert(repo);
+                    StumbledRepository = repo;
+                }
+                else
+                {
+                    StumbledRepository.Liked = true;
+                    StumbledRepository.Description = Repository.Description;
+                    StumbledRepository.Forks = Repository.Forks;
+                    StumbledRepository.Stars = Repository.StargazersCount;
+                    StumbledRepository.ImageUrl = Repository.Owner.AvatarUrl;
+                    applicationService.Account.StumbledRepositories.Update(StumbledRepository);
+                }
+
+                applicationService.Client.ExecuteAsync(applicationService.Client.Users[Repository.Owner.Login].Repositories[Repository.Name].Star());
+
+                Liked = true;
+            });
+
+            DislikeCommand = ReactiveCommand.Create();
+            DislikeCommand.Subscribe(_ =>
+            {
+                if (StumbledRepository == null)
+                {
+                    var repo = CreateStumbledRepository();
+                    repo.Liked = false;
+                    applicationService.Account.StumbledRepositories.Insert(repo);
+                    StumbledRepository = repo;
+                }
+                else
+                {
+                    StumbledRepository.Liked = false;
+                    StumbledRepository.Description = Repository.Description;
+                    StumbledRepository.Forks = Repository.Forks;
+                    StumbledRepository.Stars = Repository.StargazersCount;
+                    StumbledRepository.ImageUrl = Repository.Owner.AvatarUrl;
+                    applicationService.Account.StumbledRepositories.Update(StumbledRepository);
+                }
+
+                applicationService.Client.ExecuteAsync(applicationService.Client.Users[Repository.Owner.Login].Repositories[Repository.Name].Unstar());
+
+                Liked = false;
+            });
 
             this.WhenAnyValue(x => x.RepositoryIdentifier)
                 .Where(x => x != null)
                 .Subscribe(x =>
                 {
-                    StumbedRepository = applicationService.Account.StumbledRepositories.FindByFullname(x.Owner, x.Name);
+                    StumbledRepository = applicationService.Account.StumbledRepositories.FindByFullname(x.Owner, x.Name);
                 });
 
-            this.WhenAnyValue(x => x.StumbedRepository)
+            this.WhenAnyValue(x => x.StumbledRepository)
                 .Where(x => x != null)
-                .Subscribe(x =>
-                {
-                    Liked = x.Liked;
-                });
+                .Subscribe(x => Liked = x.Liked);
 
-            LoadCommand.RegisterAsyncTask(async t =>
+            GoToGitHubCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.Repository).Select(x => x != null));
+            GoToGitHubCommand.Subscribe(_ => GoToUrlCommand.ExecuteIfCan(Repository.HtmlUrl));
+
+            LoadCommand = ReactiveCommand.CreateAsyncTask(async t =>
             {
+                // Cheap...
+                if (RepositoryIdentifier == null)
+                    return;
+
                 var repo = applicationService.Client.Users[RepositoryIdentifier.Owner].Repositories[RepositoryIdentifier.Name];
                 Repository = (await applicationService.Client.ExecuteAsync(repo.Get())).Data;
                 CollaboratorCount = (await applicationService.Client.ExecuteAsync(repo.GetCollaborators())).Data.Count;
@@ -93,6 +149,22 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
                     Debug.WriteLine(e.Message + " for " + RepositoryIdentifier.Owner + "/" + RepositoryIdentifier.Name);
                 }
             });
+
+            LoadCommand.TriggerNetworkActivity(networkActivity);
+        }
+
+        private StumbledRepository CreateStumbledRepository()
+        {
+            return new StumbledRepository 
+            {
+                Description = Repository.Description,
+                Forks = Repository.Forks,
+                Fullname = Repository.FullName,
+                ImageUrl = Repository.Owner.AvatarUrl,
+                Name = Repository.Name,
+                Owner = Repository.Owner.Login,
+                Stars = Repository.StargazersCount
+            };
         }
 
         public class RepositoryIdentifierModel
@@ -104,6 +176,11 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
             {
                 Owner = owner;
                 Name = name;
+            }
+
+            public override string ToString()
+            {
+                return string.Format("{0}/{1}", Owner, Name);
             }
         }
     }

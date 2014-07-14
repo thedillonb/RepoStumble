@@ -1,7 +1,6 @@
 ﻿using System;
 using ReactiveUI;
 using RepositoryStumble.Core.Data;
-using RepositoryStumble.Core.Services;
 using Xamarin.Utilities.Core.ViewModels;
 using Xamarin.Utilities.Core.Services;
 using System.Reactive.Linq;
@@ -33,12 +32,7 @@ namespace RepositoryStumble.Core.ViewModels.Application
 
         public LoginViewModel(INetworkActivityService networkActivity)
         {
-            LoginCommand = new ReactiveCommand();
-
-            LoginCommand.IsExecuting.Skip(1).Where(x => x).Subscribe(x => networkActivity.PushNetworkActive());
-            LoginCommand.IsExecuting.Skip(1).Where(x => !x).Subscribe(x => networkActivity.PopNetworkActive());
-
-            LoginCommand.RegisterAsyncTask(async t =>
+            LoginCommand = ReactiveCommand.CreateAsyncTask(async t =>
             {
                 var account = new Account();
                 var token = await GitHubSharp.Client.RequestAccessToken(ClientId, ClientSecret, LoginCode, null);
@@ -52,6 +46,9 @@ namespace RepositoryStumble.Core.ViewModels.Application
 
                 DismissCommand.ExecuteIfCan();
             });
+
+            LoginCommand.IsExecuting.Skip(1).Where(x => x).Subscribe(x => networkActivity.PushNetworkActive());
+            LoginCommand.IsExecuting.Skip(1).Where(x => !x).Subscribe(x => networkActivity.PopNetworkActive());
         }
     }
 }

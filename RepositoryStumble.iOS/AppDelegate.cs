@@ -6,11 +6,11 @@ using RepositoryStumble.Core.ViewModels.Application;
 using MTiRate;
 using Parse;
 using ReactiveUI;
-using System.Reactive.Concurrency;
 using System.Threading;
 using System.Reactive;
 using Xamarin.Utilities.Core.Services;
 using RepositoryStumble.ViewControllers.Application;
+using System.Reactive.Concurrency;
 
 namespace RepositoryStumble
 {

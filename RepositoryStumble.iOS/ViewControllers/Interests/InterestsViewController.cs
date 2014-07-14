@@ -27,7 +27,7 @@ namespace RepositoryStumble.ViewControllers.Interests
             ViewModel.Interests.Changed.StartWith((NotifyCollectionChangedEventArgs)null).Subscribe(_ =>
             {
                 var sec = new Section();
-                sec.AddAll(ViewModel.Interests.Select(x => new InterestElement(x, () => NavigationController.PushViewController(new StumbleViewController(x), true))));
+                sec.AddAll(ViewModel.Interests.Select(x => new InterestElement(x, () => ViewModel.GoToStumbleInterestCommand.ExecuteIfCan(x))));
                 Root.Reset(sec);
             });
 

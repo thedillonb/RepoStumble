@@ -8,11 +8,11 @@ using RepositoryStumble.Core.ViewModels.Repositories;
 
 namespace RepositoryStumble.Core.ViewModels.Trending
 {
-    public class ShowcaseViewModel : LoadableViewModel
+    public class ShowcaseViewModel : BaseViewModel, ILoadableViewModel
     {
         public IReadOnlyReactiveList<ShowcaseRepository> Repositories { get; private set; }
 
-        public IReactiveCommand GoToRepositoryCommand { get; private set; }
+        public IReactiveCommand<object> GoToRepositoryCommand { get; private set; }
 
         public string ShowcaseSlug { get; set; }
 
@@ -30,11 +30,13 @@ namespace RepositoryStumble.Core.ViewModels.Trending
             private set { this.RaiseAndSetIfChanged(ref _showcase, value); }
         }
 
-        public ShowcaseViewModel(IJsonHttpClientService jsonHttpClientService)
+        public IReactiveCommand LoadCommand { get; private set; }
+
+        public ShowcaseViewModel(IJsonHttpClientService jsonHttpClientService, INetworkActivityService networkActivity)
         {
             Title = "Showcase";
 
-            GoToRepositoryCommand = new ReactiveCommand();
+            GoToRepositoryCommand = ReactiveCommand.Create();
             GoToRepositoryCommand.OfType<ShowcaseRepository>().Subscribe(x =>
             {
                 var vm = CreateViewModel<RepositoryViewModel>();
@@ -44,7 +46,7 @@ namespace RepositoryStumble.Core.ViewModels.Trending
 
             var repositories = new ReactiveList<ShowcaseRepository>();
             Repositories = repositories;
-            LoadCommand.RegisterAsyncTask(async t =>
+            LoadCommand = ReactiveCommand.CreateAsyncTask(async t =>
             {
                 var url = string.Format("http://trending.codehub-app.com/showcases/{0}", ShowcaseSlug);
                 var data = await jsonHttpClientService.Get<ShowcaseRepositories>(url);
@@ -52,6 +54,7 @@ namespace RepositoryStumble.Core.ViewModels.Trending
                 Showcase = new Showcase {Slug = data.Slug, Description = data.Description, Name = data.Name};
                 repositories.Reset(data.Repositories);
             });
+            LoadCommand.TriggerNetworkActivity(networkActivity);
         }
     }
 }

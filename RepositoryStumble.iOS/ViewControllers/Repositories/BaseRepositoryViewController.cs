@@ -11,6 +11,7 @@ namespace RepositoryStumble.ViewControllers.Repositories
 {
     public abstract class BaseRepositoryViewController<TViewModel> : ViewModelPrettyDialogViewController<TViewModel> where TViewModel : BaseRepositoryViewModel
 	{
+        private UIActionSheet _actionSheet;
 		protected readonly UIBarButtonItem DislikeButton;
 		protected readonly UIBarButtonItem LikeButton;
 
@@ -19,25 +20,26 @@ namespace RepositoryStumble.ViewControllers.Repositories
 
 		protected BaseRepositoryViewController()
 		{
-			NavigationItem.RightBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Action, (s, e) => ShowMore());
-
             DislikeButton = new UIBarButtonItem(Images.ThumbDown, UIBarButtonItemStyle.Plain, (s, e) => ViewModel.DislikeCommand.ExecuteIfCan());
             DislikeButton.TintColor = UITabBar.Appearance.TintColor;
 
             LikeButton = new UIBarButtonItem(Images.ThumbUp, UIBarButtonItemStyle.Plain, (s, e) => ViewModel.LikeCommand.ExecuteIfCan());
             LikeButton.TintColor = UITabBar.Appearance.TintColor;
-
         }
-            
 
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
 
+            NavigationItem.RightBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Action, (s, e) => ShowMore());
+            NavigationItem.RightBarButtonItem.EnableIfExecutable(ViewModel.WhenAnyValue(x => x.Repository).Select(x => x != null));
+
             HeaderView.Text = string.Empty;
             HeaderView.TextColor = UIColor.White;
             HeaderView.SubTextColor = UIColor.FromWhiteAlpha(0.9f, 1.0f);
-            Title = HeaderView.Text = ViewModel.RepositoryIdentifier.Name;
+
+            ViewModel.WhenAnyValue(x => x.RepositoryIdentifier).Where(x => x != null)
+                .Subscribe(x => Title = HeaderView.Text = x.Name);
 
             ViewModel.WhenAnyValue(x => x.Repository).Where(x => x != null).Subscribe(x =>
             {
@@ -83,6 +85,7 @@ namespace RepositoryStumble.ViewControllers.Repositories
             });
 
             var webElement = new WebElement("readme");
+            webElement.UrlRequested += (obj) => ViewModel.GoToUrlCommand.ExecuteIfCan(obj);
             ViewModel.WhenAnyValue(x => x.Readme).Subscribe(x =>
             {
                 var view = new ReadmeRazorView { Model = x };
@@ -109,73 +112,29 @@ namespace RepositoryStumble.ViewControllers.Repositories
 
 		private void ShowMore()
 		{
-//
-//			var a = MonoTouch.Utilities.GetSheet(null);
-//			var show = a.AddButton("Show in GitHub");
-//			var share = a.AddButton("Share");
-//			a.CancelButtonIndex = a.AddButton("Cancel");
-//
-//			a.Clicked += (object sender, UIButtonEventArgs e) =>
-//			{
-//				if (e.ButtonIndex == show)
-//				{
-//					try { UIApplication.SharedApplication.OpenUrl(new MonoTouch.Foundation.NSUrl(CreateUrl())); } catch { }
-//				}
-//				else if (e.ButtonIndex == share)
-//				{
-//					var item = UIActivity.FromObject (CreateUrl());
-//					var activityItems = new MonoTouch.Foundation.NSObject[] { item };
-//					UIActivity[] applicationActivities = null;
-//					var activityController = new UIActivityViewController (activityItems, applicationActivities);
-//					PresentViewController (activityController, true, null);
-//				}
-//			};
-//
-//			a.ShowFrom(NavigationItem.RightBarButtonItem, true);
-		}
+            _actionSheet = new UIActionSheet(ViewModel.RepositoryIdentifier.ToString());
+            var show = _actionSheet.AddButton("Show in GitHub");
+            var share = _actionSheet.AddButton("Share");
+            _actionSheet.CancelButtonIndex = _actionSheet.AddButton("Cancel");
+            _actionSheet.Clicked += (sender, e) =>
+            {
+                if (e.ButtonIndex == show)
+                {
+                    ViewModel.GoToGitHubCommand.ExecuteIfCan();
+                }
+                else if (e.ButtonIndex == share)
+                {
+                    var item = MonoTouch.Foundation.NSObject.FromObject(ViewModel.Repository.HtmlUrl);
+                    var activityItems = new [] { item };
+                    UIActivity[] applicationActivities = null;
+                    var activityController = new UIActivityViewController(activityItems, applicationActivities);
+                    PresentViewController(activityController, true, null);
+                }
 
-//		protected override bool ShouldStartLoad(MonoTouch.Foundation.NSUrlRequest request, UIWebViewNavigationType navigationType)
-//		{
-//			if (request.Url.AbsoluteString.StartsWith("http"))
-//			{
-////				var ctrl = new WebBrowserViewController();
-////				ctrl.Title = Title;
-////				ctrl.Load(request.Url);
-////				NavigationController.PushViewController(ctrl, true);
-//				return false;
-//			}
-//
-//			return base.ShouldStartLoad(request, navigationType);
-//		}
+                _actionSheet = null;
+            };
 
-		protected virtual void Like()
-		{
-//			CurrentRepo.Liked = true;
-//			Application.Instance.Account.StumbledRepositories.Update(CurrentRepo);
-//			BigTed.BTProgressHUD.ShowSuccessWithStatus("Liked!");
-//			_likeButton.TintColor = SelectedColor;
-//			_dislikeButton.TintColor = DeselectedColor;
-//
-//			if (Application.Instance.Account.SyncWithGitHub)
-//			{
-//				var req = Application.Instance.Client.Users[CurrentRepo.Owner].Repositories[CurrentRepo.Name].Star();
-//				Application.Instance.Client.ExecuteAsync(req);
-//			}
-		}
-
-		protected virtual void Dislike()
-		{
-//			CurrentRepo.Liked = false;
-//			Application.Instance.Account.StumbledRepositories.Update(CurrentRepo);
-//			BigTed.BTProgressHUD.ShowErrorWithStatus("Disliked!");
-//			_dislikeButton.TintColor = SelectedColor;
-//			_likeButton.TintColor = DeselectedColor;
-//
-//			if (Application.Instance.Account.SyncWithGitHub)
-//			{
-//				var req = Application.Instance.Client.Users[CurrentRepo.Owner].Repositories[CurrentRepo.Name].Unstar();
-//				Application.Instance.Client.ExecuteAsync(req);
-//			}
+            _actionSheet.ShowFrom(NavigationItem.RightBarButtonItem, true);
 		}
     }
 }

@@ -7,11 +7,14 @@ using RepositoryStumble.Core.Services;
 using RepositoryStumble.Core.ViewModels.Application;
 using RepositoryStumble.Core.ViewModels.Repositories;
 using System.Reactive.Linq;
+using Xamarin.Utilities.Core.Services;
 
 namespace RepositoryStumble.Core.ViewModels.Profile
 {
-    public class ProfileViewModel : LoadableViewModel
+    public class ProfileViewModel : BaseViewModel, ILoadableViewModel
     {
+        public IReactiveCommand LoadCommand { get; private set; }
+
         private string _username;
         public string Username
         {
@@ -47,17 +50,17 @@ namespace RepositoryStumble.Core.ViewModels.Profile
             private set { this.RaiseAndSetIfChanged(ref _dislikes, value); }
         }
 
-        public IReactiveCommand GoToInterestsCommand { get; private set; }
+        public IReactiveCommand<object> GoToInterestsCommand { get; private set; }
 
-        public IReactiveCommand GoToLikesCommand { get; private set; }
+        public IReactiveCommand<object> GoToLikesCommand { get; private set; }
 
-        public IReactiveCommand GoToDislikesCommand { get; private set; }
+        public IReactiveCommand<object> GoToDislikesCommand { get; private set; }
 
-        public IReactiveCommand GoToSettingsCommand { get; private set; }
+        public IReactiveCommand<object> GoToSettingsCommand { get; private set; }
 
-        public ProfileViewModel(IApplicationService applicationService)
+        public ProfileViewModel(IApplicationService applicationService, INetworkActivityService networkActivity)
         {
-            GoToInterestsCommand = new ReactiveCommand();
+            GoToInterestsCommand = ReactiveCommand.Create();
 
             Username = applicationService.Account.Username;
 
@@ -72,20 +75,22 @@ namespace RepositoryStumble.Core.ViewModels.Profile
                 }
             });
 
-            GoToLikesCommand = new ReactiveCommand();
+            GoToLikesCommand = ReactiveCommand.Create();
             GoToLikesCommand.Subscribe(_ => CreateAndShowViewModel<LikedRepositoriesViewModel>());
 
-            GoToDislikesCommand = new ReactiveCommand();
+            GoToDislikesCommand = ReactiveCommand.Create();
             GoToDislikesCommand.Subscribe(_ => CreateAndShowViewModel<DislikedRepositoriesViewModel>());
 
-            GoToSettingsCommand = new ReactiveCommand();
+            GoToSettingsCommand = ReactiveCommand.Create();
             GoToSettingsCommand.Subscribe(_ => CreateAndShowViewModel<SettingsViewModel>());
    
-            LoadCommand.RegisterAsyncTask(async t =>
+            LoadCommand = ReactiveCommand.CreateAsyncTask(async t =>
             {
                 var ret = await applicationService.Client.ExecuteAsync(applicationService.Client.Users[Username].Get());
                 User = ret.Data;
             });
+
+            LoadCommand.TriggerNetworkActivity(networkActivity);
         }
     }
 }

@@ -21,9 +21,9 @@ namespace RepositoryStumble.Core.Data
 		[MaxLength(2048)]
         public string Description { get; set; }
 
-		public uint Stars { get; set; }
+		public int Stars { get; set; }
 
-		public uint Forks { get; set; }
+		public int Forks { get; set; }
     }
 }
 

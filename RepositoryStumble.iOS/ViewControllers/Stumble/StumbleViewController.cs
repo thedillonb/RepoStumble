@@ -1,129 +1,86 @@
 using System;
 using MonoTouch.UIKit;
-using System.Threading.Tasks;
 using RepositoryStumble.Core.ViewModels.Stumble;
 using RepositoryStumble.Views;
-using RepositoryStumble.Core.Data;
+using RepositoryStumble.ViewControllers.Repositories;
+using ReactiveUI;
+using System.Reactive.Linq;
 
-namespace RepositoryStumble.ViewControllers.Repositories
+namespace RepositoryStumble.ViewControllers.Stumble
 {
 	public class StumbleViewController : BaseRepositoryViewController<StumbleViewModel>
     {
-		private readonly UIBarButtonItem _stumbleButton;
-		private readonly Interest _interest;
-
-		public StumbleViewController(Interest interest = null)
-        {
-			_interest = interest;
-			var centerButton = new CenterButton();
-			centerButton.TouchUpInside += (s, e) => Stumble();
-
-            ToolbarItems = new [] { 
-                new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace),
-				DislikeButton,
-				new UIBarButtonItem(UIBarButtonSystemItem.FixedSpace) { Width = 40 },
-				(_stumbleButton = new UIBarButtonItem(centerButton) { Enabled = false }),
-				new UIBarButtonItem(UIBarButtonSystemItem.FixedSpace) { Width = 40 },
-                LikeButton,
-				new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace),
-            };
-
-			LikeButton.TintColor = DeselectedColor;
-			LikeButton.Enabled = false;
-			DislikeButton.TintColor = DeselectedColor;
-			DislikeButton.Enabled = false;
-        }
-
-		private async void Stumble()
-		{
-			_stumbleButton.Enabled = false;
-			DislikeButton.Enabled = false;
-			LikeButton.Enabled = false;
-//			Application.StumbleResult stumbleResult = null;
-//
-//			try
-//			{
-//				MonoTouch.Utilities.PushNetworkActive();
-//
-//				try
-//				{
-//					NavigationItem.RightBarButtonItem.Enabled = false;
-//					Clear();
-//					stumbleResult = await Application.Instance.StumbleRepository(_interest);
-//					NavigationItem.RightBarButtonItem.Enabled = true;
-//				}
-//				catch (InterestExhaustedException e)
-//				{
-//					MonoTouch.Utilities.ShowAlert("You've seen it all!", e.Message);
-//					NavigationController.PopViewControllerAnimated(true);
-//					return;
-//				}
-//				catch (Exception e)
-//				{
-//					MonoTouch.Utilities.ShowAlert("Error", e.Message);
-//					_stumbleButton.Enabled = true;
-//					return;
-//				}
-//
-//				try
-//				{
-//					await Load(stumbleResult.Repository);
-//				}
-//				catch (Exception e)
-//				{
-//					MonoTouch.Utilities.ShowAlert("Error", e.Message);
-//				}
-//			}
-//			finally
-//			{
-//				MonoTouch.Utilities.PopNetworkActive();
-//			}
-
-			DislikeButton.Enabled = true;
-			LikeButton.Enabled = true;
-			_stumbleButton.Enabled = true;
-			LikeButton.TintColor = DeselectedColor;
-			DislikeButton.TintColor = DeselectedColor;
-		}
+        private UIView _loadingView;
 
 		public override void ViewDidLoad()
 		{
 			base.ViewDidLoad();
 
-			Stumble();
-		}
+            var centerButton = new CenterButton();
+            centerButton.TouchUpInside += (s, e) =>
+            {
+                TableView.ScrollRectToVisible(new System.Drawing.RectangleF(0, 0, 1, 1), false);
+                ViewModel.StumbleCommand.ExecuteIfCan();
+            };
+ 
+            var stumbleButton = new UIBarButtonItem(centerButton) { Enabled = false };
+            stumbleButton.EnableIfExecutable(ViewModel.StumbleCommand.CanExecuteObservable);
 
-		public override void ViewWillDisappear(bool animated)
-		{
-//			var view = NavigationController.VisibleViewController;
-//			if (!(view is ProfileViewController))
-//				NavigationController.SetToolbarHidden(true, animated);
-			base.ViewWillDisappear(animated);
-		}
+            ToolbarItems = new [] 
+            { 
+                new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace),
+                DislikeButton,
+                new UIBarButtonItem(UIBarButtonSystemItem.FixedSpace) { Width = 40 },
+                stumbleButton,
+                new UIBarButtonItem(UIBarButtonSystemItem.FixedSpace) { Width = 40 },
+                LikeButton,
+                new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace),
+            };
 
-		public override void ViewWillAppear(bool animated)
-		{
-			base.ViewWillAppear(animated);
-			NavigationController.SetToolbarHidden(false, true);
-		}
+            DislikeButton.EnableIfExecutable(ViewModel.StumbleCommand.CanExecuteObservable);
+            LikeButton.EnableIfExecutable(ViewModel.StumbleCommand.CanExecuteObservable);
 
-		public override void ViewDidAppear(bool animated)
-		{
-			base.ViewDidAppear(animated);
-			NavigationController.Toolbar.Translucent = false;
-			NavigationController.Toolbar.BarTintColor = UIColor.FromRGB(245, 245, 245);
-		}
+            _loadingView = new UIView() { BackgroundColor = UINavigationBar.Appearance.BarTintColor };
+            _loadingView.UserInteractionEnabled = true;
 
-		protected override void Like()
-		{
-			base.Like();
-			Stumble();
-		}
 
-		protected override void Dislike()
-		{
-			base.Dislike();
-			Stumble();
+            var finished = false;
+            ViewModel.StumbleCommand.IsExecuting.Skip(1).Subscribe(x =>
+            {
+                if (x)
+                {
+                    _loadingView.Frame = TableView.Bounds;
+                    _loadingView.Alpha = 0;
+                    TableView.Add(_loadingView);
+
+                    finished = false;
+                    UIView.Animate(1.0f, 0f, UIViewAnimationOptions.CurveEaseInOut,
+                        () => _loadingView.Alpha = 1f,
+                        () => 
+                    {
+                        if (!ViewModel.StumbleCommand.IsExecuting.First())
+                        {
+                            UIView.Animate(1.0f, 0f, UIViewAnimationOptions.CurveEaseInOut,
+                                () => _loadingView.Alpha = 0f,
+                                () => _loadingView.RemoveFromSuperview());
+                        }
+                        else
+                        {
+                            finished = true;
+                        }
+                    });
+                }
+                else
+                {
+
+                    if (finished)
+                    {
+                        UIView.Animate(1.0f, 0f, UIViewAnimationOptions.CurveEaseInOut,
+                            () => _loadingView.Alpha = 0f,
+                            () => _loadingView.RemoveFromSuperview());
+                    }
+                }
+            });
 		}
     }
 }

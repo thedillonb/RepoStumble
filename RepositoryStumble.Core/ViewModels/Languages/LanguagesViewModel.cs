@@ -7,9 +7,11 @@ using Xamarin.Utilities.Core.Services;
 
 namespace RepositoryStumble.Core.ViewModels.Languages
 {
-    public class LanguagesViewModel : LoadableViewModel
+    public class LanguagesViewModel : BaseViewModel, ILoadableViewModel
     {
         private readonly ReactiveList<Language> _languages = new ReactiveList<Language>();
+
+        public IReactiveCommand LoadCommand { get; private set; }
 
         private Language _selectedLanguage;
         public Language SelectedLanguage
@@ -29,7 +31,7 @@ namespace RepositoryStumble.Core.ViewModels.Languages
 
         public List<Language> ExtraLanguages { get; private set; }
 
-        public LanguagesViewModel(IJsonHttpClientService jsonHttpClientService)
+        public LanguagesViewModel(IJsonHttpClientService jsonHttpClientService, INetworkActivityService networkActivity)
         {
             ExtraLanguages = new List<Language>();
 
@@ -38,12 +40,14 @@ namespace RepositoryStumble.Core.ViewModels.Languages
                 x => x.Name.StartsWith(SearchKeyword ?? string.Empty, StringComparison.OrdinalIgnoreCase), 
                 signalReset: this.WhenAnyValue(x => x.SearchKeyword));
 
-            LoadCommand.RegisterAsyncTask(async t =>
+            LoadCommand = ReactiveCommand.CreateAsyncTask(async t =>
             {
                 var langs = await jsonHttpClientService.Get<List<Language>>("http://trending.codehub-app.com/languages");
                 langs.InsertRange(0, ExtraLanguages);
                 _languages.Reset(langs);
             });
+
+            LoadCommand.TriggerNetworkActivity(networkActivity);
         }
     }
 }

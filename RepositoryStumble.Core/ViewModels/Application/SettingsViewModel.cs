@@ -16,13 +16,13 @@ namespace RepositoryStumble.Core.ViewModels.Application
             set { this.RaiseAndSetIfChanged(ref _syncWithGitHub, value); }
         }
 
-        public IReactiveCommand LogoutCommand { get; private set; }
+        public IReactiveCommand<object> LogoutCommand { get; private set; }
 
         public SettingsViewModel(IApplicationService applicationService)
         {
             SyncWithGitHub = applicationService.Account.SyncWithGitHub;
 
-            LogoutCommand = new ReactiveCommand();
+            LogoutCommand = ReactiveCommand.Create();
             LogoutCommand.Select(_ => new LogoutMessage()).Subscribe(x => applicationService.Logout());
 
             this.WhenAnyValue(x => x.SyncWithGitHub).Skip(1).Subscribe(x =>

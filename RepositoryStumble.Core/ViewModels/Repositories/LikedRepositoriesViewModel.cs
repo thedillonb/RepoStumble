@@ -8,8 +8,13 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
     {
         public LikedRepositoriesViewModel(IApplicationService applicationService)
         {
-            var repos = applicationService.Account.StumbledRepositories.Where(x => x.Liked != null && x.Liked.Value).OrderByDescending(x => x.CreatedAt);
-            RepositoryCollection.Reset(repos);
+            this.WhenActivated(d =>
+            {
+                var repos = applicationService.Account.StumbledRepositories
+                    .Where(x => x.Liked != null && x.Liked.Value)
+                    .OrderByDescending(x => x.CreatedAt);
+                RepositoryCollection.Reset(repos);
+            });
         }
     }
 }

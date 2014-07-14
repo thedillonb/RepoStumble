@@ -7,11 +7,11 @@ namespace RepositoryStumble.Core.ViewModels.Application
 {
     public class StartupViewModel : BaseViewModel
     {
-        public IReactiveCommand StartupCommand { get; private set; }
+        public IReactiveCommand<object> StartupCommand { get; private set; }
 
         public StartupViewModel(IApplicationService applicationService)
         {
-            StartupCommand = new ReactiveCommand();
+            StartupCommand = ReactiveCommand.Create();
             StartupCommand.Subscribe(_ =>
             {
                 if (applicationService.Load())

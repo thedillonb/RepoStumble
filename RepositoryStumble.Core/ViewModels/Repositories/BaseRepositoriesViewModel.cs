@@ -13,7 +13,7 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
 
         public IReadOnlyReactiveCollection<StumbledRepository> Repositories { get; private set; }
 
-        public IReactiveCommand GoToRepositoryCommand { get; private set; }
+        public IReactiveCommand<object> GoToRepositoryCommand { get; private set; }
 
         private string _searchKeyword;
         public string SearchKeyword
@@ -24,7 +24,7 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
 
         protected BaseRepositoriesViewModel()
         {
-            GoToRepositoryCommand = new ReactiveCommand();
+            GoToRepositoryCommand = ReactiveCommand.Create();
             GoToRepositoryCommand.OfType<StumbledRepository>().Subscribe(x =>
             {
                 var vm = CreateViewModel<StumbledRepositoryViewModel>();

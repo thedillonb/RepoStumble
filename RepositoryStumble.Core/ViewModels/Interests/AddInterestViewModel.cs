@@ -14,9 +14,9 @@ namespace RepositoryStumble.Core.ViewModels.Interests
     {
         public static readonly string PopularInterestsPath = "popular_interests.json";
 
-        public IReactiveCommand GoToLanguagesCommand { get; private set; }
+        public IReactiveCommand<object> GoToLanguagesCommand { get; private set; }
 
-        public IReactiveCommand DoneCommand { get; private set; }
+        public IReactiveCommand<object> DoneCommand { get; private set; }
 
         public ReactiveList<PopularInterest> PopularInterests { get; private set; }
 
@@ -36,7 +36,7 @@ namespace RepositoryStumble.Core.ViewModels.Interests
 
         public AddInterestViewModel(IApplicationService applicationService, IJsonSerializationService jsonSerializationService)
         {
-            DoneCommand = new ReactiveCommand();
+            DoneCommand = ReactiveCommand.Create();
             DoneCommand.Subscribe(_ =>
             {
                 if (SelectedLanguage == null)
@@ -54,7 +54,7 @@ namespace RepositoryStumble.Core.ViewModels.Interests
                 DismissCommand.ExecuteIfCan();
             });
 
-            GoToLanguagesCommand = new ReactiveCommand();
+            GoToLanguagesCommand = ReactiveCommand.Create();
             GoToLanguagesCommand.Subscribe(_ =>
             {
                 var vm = CreateViewModel<LanguagesViewModel>();
