@@ -44,8 +44,8 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
             private set { this.RaiseAndSetIfChanged(ref _stumbledRepository, value); }
         }
 
-        private int _collaboratorCount;
-        public int CollaboratorCount
+        private int? _collaboratorCount;
+        public int? CollaboratorCount
         {
             get { return _collaboratorCount; }
             set { this.RaiseAndSetIfChanged(ref _collaboratorCount, value); }

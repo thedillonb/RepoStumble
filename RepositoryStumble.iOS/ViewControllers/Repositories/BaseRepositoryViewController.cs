@@ -6,6 +6,7 @@ using ReactiveUI;
 using Xamarin.Utilities.DialogElements;
 using System.Reactive.Linq;
 using RepositoryStumble.Views;
+using System.Drawing;
 
 namespace RepositoryStumble.ViewControllers.Repositories
 {
@@ -14,9 +15,6 @@ namespace RepositoryStumble.ViewControllers.Repositories
         private UIActionSheet _actionSheet;
 		protected readonly UIBarButtonItem DislikeButton;
 		protected readonly UIBarButtonItem LikeButton;
-
-		protected static readonly UIColor SelectedColor = UIColor.FromRGB(0x4e, 0x4b, 0xbe);
-		protected static readonly UIColor DeselectedColor = UIColor.FromRGB(50, 50, 50);
 
 		protected BaseRepositoryViewController()
 		{
@@ -32,71 +30,112 @@ namespace RepositoryStumble.ViewControllers.Repositories
             base.ViewDidLoad();
 
             NavigationItem.RightBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Action, (s, e) => ShowMore());
-            NavigationItem.RightBarButtonItem.EnableIfExecutable(ViewModel.WhenAnyValue(x => x.Repository).Select(x => x != null));
+            NavigationItem.RightBarButtonItem.EnableIfExecutable(this.WhenAnyValue(x => x.ViewModel)
+                .Where(x => x != null)
+                .Select(x => x.WhenAnyValue(y => y.Repository))
+                .Switch().Select(x => x != null));
 
             HeaderView.Text = string.Empty;
             HeaderView.TextColor = UIColor.White;
             HeaderView.SubTextColor = UIColor.FromWhiteAlpha(0.9f, 1.0f);
 
-            ViewModel.WhenAnyValue(x => x.RepositoryIdentifier).Where(x => x != null)
-                .Subscribe(x => Title = HeaderView.Text = x.Name);
-
-            ViewModel.WhenAnyValue(x => x.Repository).Where(x => x != null).Subscribe(x =>
-            {
-                HeaderView.ImageUri = x.Owner.AvatarUrl;
-                HeaderView.SubText = x.Name;
-                ReloadData();
-            });
+            var section = new Section { HeaderView = HeaderView };
+            var section2 = new Section();
 
             var split = new SplitButtonElement();
             var stars = split.AddButton("Stargazers", "-");
             var watchers = split.AddButton("Watchers", "-");
             var collaborators = split.AddButton("Contributors", "-");
+            section.Add(split);
 
-            ViewModel.WhenAnyValue(x => x.CollaboratorCount).Subscribe(x => collaborators.Text = x.ToString());
+            this.WhenAnyValue(x => x.ViewModel)
+                .Where(x => x != null)
+                .Select(x => x.WhenAnyValue(y => y.RepositoryIdentifier).Where(y => y != null))
+                .Switch()
+                .Subscribe(x => Title = HeaderView.Text = x.Name);
 
-            ViewModel.WhenAnyValue(x => x.Repository).Where(x => x != null).Subscribe(x =>
-            {
-                HeaderView.ImageUri = x.Owner.AvatarUrl;
-                HeaderView.Text = x.Name;
-                HeaderView.SubText = x.Description;
-                stars.Text = x.StargazersCount.ToString();
-                watchers.Text = x.SubscribersCount.ToString();
-                ReloadData();
-            });
+            this.WhenAnyValue(x => x.ViewModel)
+                .Where(x => x != null)
+                .Select(x => x.WhenAnyValue(y => y.CollaboratorCount))
+                .Switch()
+                .Subscribe(x => collaborators.Text = x.HasValue ? x.Value.ToString() : "-");
 
-            ViewModel.WhenAnyValue(x => x.Liked).Subscribe(x =>
-            {
-                if (x == null)
+            this.WhenAnyValue(x => x.ViewModel)
+                .Where(x => x != null)
+                .Select(x => x.WhenAnyValue(y => y.Repository))
+                .Switch()
+                .Subscribe(x =>
                 {
-                    DislikeButton.Image = Images.ThumbDown;
-                    LikeButton.Image = Images.ThumbUp;
-                }
-                else if (x.Value)
+                    if (x == null)
+                    {
+                        HeaderView.ImageUri = null;
+                        HeaderView.Text = null;
+                        HeaderView.SubText = null;
+                        stars.Text = "-";
+                        watchers.Text = "-";
+                    }
+                    else
+                    {
+                        HeaderView.ImageUri = x.Owner.AvatarUrl;
+                        HeaderView.Text = x.Name;
+                        HeaderView.SubText = x.Description;
+                        stars.Text = x.StargazersCount.ToString();
+                        watchers.Text = x.SubscribersCount.ToString();
+                    }
+
+                    ReloadData();
+                });
+
+            this.WhenAnyValue(x => x.ViewModel)
+                .Where(x => x != null)
+                .Select(x => x.WhenAnyValue(y => y.Liked))
+                .Switch()
+                .Subscribe(x =>
                 {
-                    DislikeButton.Image = Images.ThumbDown;
-                    LikeButton.Image = Images.ThumbUpFilled;
-                }
-                else
-                {
-                    DislikeButton.Image = Images.ThumbDownFilled;
-                    LikeButton.Image = Images.ThumbUp;
-                }
-            });
+                    if (x == null)
+                    {
+                        DislikeButton.Image = Images.ThumbDown;
+                        LikeButton.Image = Images.ThumbUp;
+                    }
+                    else if (x.Value)
+                    {
+                        DislikeButton.Image = Images.ThumbDown;
+                        LikeButton.Image = Images.ThumbUpFilled;
+                    }
+                    else
+                    {
+                        DislikeButton.Image = Images.ThumbDownFilled;
+                        LikeButton.Image = Images.ThumbUp;
+                    }
+                });
 
             var webElement = new WebElement("readme");
             webElement.UrlRequested += (obj) => ViewModel.GoToUrlCommand.ExecuteIfCan(obj);
-            ViewModel.WhenAnyValue(x => x.Readme).Subscribe(x =>
-            {
-                var view = new ReadmeRazorView { Model = x };
-                webElement.Value = view.GenerateString();
-            });
 
-            var section = new Section { HeaderView = HeaderView };
-            section.Add(split);
+            this.WhenAnyValue(x => x.ViewModel)
+                .Where(x => x != null)
+                .Select(x => x.WhenAnyValue(y => y.Readme))
+                .Switch()
+                .Subscribe(x =>
+                {
+                    if (x == null)
+                    {
+                        webElement.Value = null;
+                        section2.HeaderView = new LoadingView();
+                        if (webElement.GetRootElement() != null)
+                            section2.Remove(webElement);
+                    }
+                    else
+                    {
+                        var view = new ReadmeRazorView { Model = x };
+                        webElement.Value = view.GenerateString();
+                        section2.HeaderView = null;
+                        if (webElement.GetRootElement() == null)
+                            section2.Add(webElement);
+                    }
 
-            var section2 = new Section();
-            section2.Add(webElement);
+                    ReloadData();
+                });
 
             Root.Reset(section, section2);
 
@@ -136,6 +175,25 @@ namespace RepositoryStumble.ViewControllers.Repositories
 
             _actionSheet.ShowFrom(NavigationItem.RightBarButtonItem, true);
 		}
+
+        private class LoadingView : UIView
+        {
+            private readonly UIActivityIndicatorView _activity;
+
+            public LoadingView()
+                : base(new RectangleF(0, 0, 320f, 44f))
+            {
+                BackgroundColor = UIColor.Clear;
+
+                _activity = new UIActivityIndicatorView();
+                _activity.Color = UINavigationBar.Appearance.BackgroundColor;
+                _activity.Center = new PointF(Bounds.Width / 2, Bounds.Height / 2);
+                _activity.AutoresizingMask = UIViewAutoresizing.FlexibleLeftMargin | UIViewAutoresizing.FlexibleRightMargin |
+                                             UIViewAutoresizing.FlexibleTopMargin | UIViewAutoresizing.FlexibleBottomMargin;
+                _activity.StartAnimating();
+                Add(_activity);
+            }
+        }
     }
 }
 
