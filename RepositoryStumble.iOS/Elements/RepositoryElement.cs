@@ -14,6 +14,7 @@ namespace RepositoryStumble.Elements
         private string _owner;
         private string _description;
         private string _imageUrl;
+        private UIImage _image;
         private Action _tapped;
 
         public RepositoryElement(string owner, string name, string description, string imageUrl, Action tapped = null)
@@ -23,6 +24,15 @@ namespace RepositoryStumble.Elements
             _name = name;
             _description = description;
             _imageUrl = imageUrl;
+        }
+
+        public RepositoryElement(string owner, string name, string description, UIImage image, Action tapped = null)
+        {
+            _tapped = tapped;
+            _owner = owner;
+            _name = name;
+            _description = description;
+            _image = image;
         }
 
         public override void Selected(UITableView tableView, MonoTouch.Foundation.NSIndexPath path)
@@ -55,9 +65,17 @@ namespace RepositoryStumble.Elements
                 cell = RepositoryTableViewCell.Create();
             }
 
-            Uri uri;
-            cell.Image = Uri.TryCreate(_imageUrl, UriKind.Absolute, out uri) ? 
+            if (!string.IsNullOrEmpty(_imageUrl))
+            {
+                Uri uri;
+                cell.Image = Uri.TryCreate(_imageUrl, UriKind.Absolute, out uri) ? 
                 ImageLoader.DefaultRequestImage(uri, this) : null;
+            }
+            else
+            {
+                cell.Image = _image;
+            }
+
             cell.Owner = _owner;
             cell.Description = _description;
             cell.Name = _name;

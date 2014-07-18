@@ -6,15 +6,14 @@ using Xamarin.Utilities.Core.ViewModels;
 using RepositoryStumble.Core.Services;
 using RepositoryStumble.Core.ViewModels.Application;
 using RepositoryStumble.Core.ViewModels.Repositories;
-using System.Reactive.Linq;
 using Xamarin.Utilities.Core.Services;
+using RepositoryStumble.Core.Data;
+using System.Reactive.Linq;
 
 namespace RepositoryStumble.Core.ViewModels.Profile
 {
     public class ProfileViewModel : BaseViewModel, ILoadableViewModel
     {
-        public IReactiveCommand LoadCommand { get; private set; }
-
         private string _username;
         public string Username
         {
@@ -50,6 +49,8 @@ namespace RepositoryStumble.Core.ViewModels.Profile
             private set { this.RaiseAndSetIfChanged(ref _dislikes, value); }
         }
 
+        public IReactiveCommand LoadCommand { get; private set; }
+
         public IReactiveCommand<object> GoToInterestsCommand { get; private set; }
 
         public IReactiveCommand<object> GoToLikesCommand { get; private set; }
@@ -58,10 +59,14 @@ namespace RepositoryStumble.Core.ViewModels.Profile
 
         public IReactiveCommand<object> GoToSettingsCommand { get; private set; }
 
+        public IReactiveCommand<object> GoToRepositoryCommand { get; private set; }
+
+        public IReactiveList<StumbledRepository> StumbleHistory { get; private set; }
+
         public ProfileViewModel(IApplicationService applicationService, INetworkActivityService networkActivity)
         {
+            StumbleHistory = new ReactiveList<StumbledRepository>();
             GoToInterestsCommand = ReactiveCommand.Create();
-
             Username = applicationService.Account.Username;
 
             this.WhenActivated(d =>
@@ -71,8 +76,17 @@ namespace RepositoryStumble.Core.ViewModels.Profile
                     Interests = applicationService.Account.Interests.Count();
                     Likes = applicationService.Account.StumbledRepositories.Count(x => x.Liked.HasValue && x.Liked.Value);
                     Dislikes = applicationService.Account.StumbledRepositories.Count(x => x.Liked.HasValue && !x.Liked.Value);
+                    StumbleHistory.Reset(applicationService.Account.StumbledRepositories.OrderByDescending(x => x.CreatedAt));
                     d(applicationService.RepositoryAdded.Subscribe(x => Likes += 1));
                 }
+            });
+
+            GoToRepositoryCommand = ReactiveCommand.Create();
+            GoToRepositoryCommand.OfType<StumbledRepository>().Subscribe(x =>
+            {
+                var vm = CreateViewModel<RepositoryViewModel>();
+                vm.RepositoryIdentifier = new BaseRepositoryViewModel.RepositoryIdentifierModel(x.Owner, x.Name);
+                ShowViewModel(vm);
             });
 
             GoToLikesCommand = ReactiveCommand.Create();
@@ -83,6 +97,7 @@ namespace RepositoryStumble.Core.ViewModels.Profile
 
             GoToSettingsCommand = ReactiveCommand.Create();
             GoToSettingsCommand.Subscribe(_ => CreateAndShowViewModel<SettingsViewModel>());
+
    
             LoadCommand = ReactiveCommand.CreateAsyncTask(async t =>
             {

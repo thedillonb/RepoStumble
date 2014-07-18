@@ -5,15 +5,15 @@ using Xamarin.Utilities.Core.Services;
 
 namespace RepositoryStumble.Core.Data
 {
-    public class Account
+    public class Account : IDisposable
     {
-		private SQLiteConnection _db;
-		private Interests _interests;
-		private InterestedRepositories _interestedRepositories;
-		private StumbledRepositories _stumbledRepositories;
+        private static readonly string AccountFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "account.json");
+        private static readonly string DBFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "db.db");
 
-		private static readonly string AccountFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "account.json");
-		private static readonly string DBFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "db.db");
+        private readonly Lazy<SQLiteConnection> _db;
+        private readonly Lazy<InterestedRepositories> _interestedRepositories;
+        private readonly Lazy<StumbledRepositories> _stumbledRepositories;
+        private readonly Lazy<Interests> _interests;
 
 		public string Username { get; set; }
 
@@ -28,6 +28,11 @@ namespace RepositoryStumble.Core.Data
 		public Account()
 		{
 			SyncWithGitHub = true;
+
+            _db = new Lazy<SQLiteConnection>(() => new SQLiteConnection(DBFilePath));
+            _interestedRepositories = new Lazy<InterestedRepositories>(() => new InterestedRepositories(Database));
+            _stumbledRepositories = new Lazy<StumbledRepositories>(() => new StumbledRepositories(Database));
+            _interests = new Lazy<Interests>(() => new Interests(Database));
 		}
 
 		public static Account Load()
@@ -45,32 +50,31 @@ namespace RepositoryStumble.Core.Data
 			File.WriteAllText(AccountFilePath, obj, System.Text.Encoding.UTF8);
 		}
 
-		public void Unload()
-		{
-			_db.Dispose();
-			_db = null;
-			File.Delete(AccountFilePath);
-			File.Delete(DBFilePath);
-		}
+        public void Dispose()
+        {
+            Database.Dispose();
+            File.Delete(AccountFilePath);
+            File.Delete(DBFilePath);
+        }
 
 		public SQLiteConnection Database
 		{
-			get { return _db ?? (_db = new SQLiteConnection(DBFilePath)); }
+            get { return _db.Value; }
 		}
 
 		public Interests Interests
 		{
-			get { return _interests ?? (_interests = new Interests(Database)); }
+            get { return _interests.Value; }
 		}
 
 		public InterestedRepositories InterestedRepositories
 		{
-			get { return _interestedRepositories ?? (_interestedRepositories = new InterestedRepositories(Database)); }
+            get { return _interestedRepositories.Value; }
 		}
 
 		public StumbledRepositories StumbledRepositories
 		{
-			get { return _stumbledRepositories ?? (_stumbledRepositories = new StumbledRepositories(Database)); }
+            get { return _stumbledRepositories.Value; }
 		}
     }
 }

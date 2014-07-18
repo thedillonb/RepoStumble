@@ -30,7 +30,7 @@ namespace RepositoryStumble.Core.Services
 
         public void Logout()
         {
-            Account.Unload();
+            Account.Dispose();
             Account = null;
             Client = null;
             MessageBus.Current.SendMessage(new LogoutMessage());

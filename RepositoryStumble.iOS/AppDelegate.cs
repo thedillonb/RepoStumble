@@ -11,6 +11,7 @@ using System.Reactive;
 using Xamarin.Utilities.Core.Services;
 using RepositoryStumble.ViewControllers.Application;
 using System.Reactive.Concurrency;
+using MonoTouch.Security;
 
 namespace RepositoryStumble
 {
@@ -37,6 +38,8 @@ namespace RepositoryStumble
 		//
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
+            StampInstallDate();
+
 			// Initialize the Parse client with your Application ID and .NET Key found on
 			// your Parse dashboard
 			ParseClient.Initialize("BNE1MlfKES62wVbAkEhBuVL5sxSsTbWtmQAp4fNl",
@@ -62,6 +65,8 @@ namespace RepositoryStumble
             viewModelViewService.RegisterViewModels(typeof(Core.Services.IApplicationService).Assembly);
             viewModelViewService.RegisterViewModels(GetType().Assembly);
 
+            IoC.Resolve<IErrorService>().Init("http://sentry.dillonbuchanan.com/api/11/store/", "61105666362847a683ea7198ff6a1076 ", "7669a51402494220ab63e959851c19da");
+
 			iRate.SharedInstance.AppStoreID = 761416981;
 			iRate.SharedInstance.ApplicationBundleID = "com.dillonbuchanan.repositorystumble";
 			iRate.SharedInstance.DaysUntilPrompt = 2;
@@ -86,6 +91,35 @@ namespace RepositoryStumble
             Window.MakeKeyAndVisible ();
 			return true;
 		}
+
+        /// <summary>
+        /// Record the date this application was installed (or the date that we started recording installation date).
+        /// </summary>
+        private static void StampInstallDate()
+        {
+            try
+            {
+                var query = new SecRecord(SecKind.GenericPassword) { Generic = NSData.FromString("repostumble_install_date") };
+                SecStatusCode secStatusCode;
+                SecKeyChain.QueryAsRecord(query, out secStatusCode);
+                if (secStatusCode == SecStatusCode.Success) 
+                    return;
+
+                var newRec = new SecRecord(SecKind.GenericPassword)
+                {
+                    Label = "RepoStumble Install Date",
+                    Description = "The first date RepoStumble was installed",
+                    ValueData = NSData.FromString(DateTime.UtcNow.ToString()),
+                    Generic = NSData.FromString("repostumble_install_date")
+                };
+
+                SecKeyChain.Add(newRec);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+        }
 
         private static void SetupTheme()
         {

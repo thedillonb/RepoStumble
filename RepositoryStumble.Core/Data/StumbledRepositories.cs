@@ -2,6 +2,7 @@
 using Xamarin.Utilities.Core.Persistence;
 using SQLite;
 using System.Linq;
+using Xamarin.Utilities.Core.Services;
 
 namespace RepositoryStumble.Core.Data
 {
@@ -10,6 +11,12 @@ namespace RepositoryStumble.Core.Data
         public StumbledRepositories(SQLiteConnection db)
             : base(db)
         {
+            bool done;
+            if (!IoC.Resolve<IDefaultValueService>().TryGet("update_stumbled_repositories", out done) || !done)
+            {
+                MarkAllLowercase();
+                IoC.Resolve<IDefaultValueService>().Set("update_stumbled_repositories", true);
+            }
         }
 
         public override void Insert(StumbledRepository o)
@@ -17,6 +24,12 @@ namespace RepositoryStumble.Core.Data
             o.CreatedAt = DateTime.Now;
             o.Fullname = (o.Fullname ?? string.Empty).ToLower();
             base.Insert(o);
+        }
+
+        public override void Update(StumbledRepository o)
+        {
+            o.Fullname = (o.Fullname ?? string.Empty).ToLower();
+            base.Update(o);
         }
 
         public void DeleteAll()
@@ -33,6 +46,12 @@ namespace RepositoryStumble.Core.Data
                 item.ShowInHistory = false;
                 Update(item);
             }
+        }
+
+        public void MarkAllLowercase()
+        {
+            foreach (var item in this)
+                Update(item);
         }
 
         public StumbledRepository FindByFullname(string owner, string name)

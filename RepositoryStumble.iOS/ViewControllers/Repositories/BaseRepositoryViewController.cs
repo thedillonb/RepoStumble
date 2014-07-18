@@ -52,7 +52,11 @@ namespace RepositoryStumble.ViewControllers.Repositories
                 .Where(x => x != null)
                 .Select(x => x.WhenAnyValue(y => y.RepositoryIdentifier).Where(y => y != null))
                 .Switch()
-                .Subscribe(x => Title = HeaderView.Text = x.Name);
+                .Subscribe(x => 
+                {
+                    Title = HeaderView.Text = x.Name;
+                    ReloadData();
+                });
 
             this.WhenAnyValue(x => x.ViewModel)
                 .Where(x => x != null)

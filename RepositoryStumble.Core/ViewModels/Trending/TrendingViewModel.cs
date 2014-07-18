@@ -15,8 +15,7 @@ namespace RepositoryStumble.Core.ViewModels.Trending
 {
     public class TrendingViewModel : BaseViewModel, ILoadableViewModel
     {
-        private const string LanguagesUrl = "http://codehub-trending.herokuapp.com/languages";
-        private const string TrendingUrl = "http://codehub-trending.herokuapp.com/trending";
+        private const string TrendingUrl = "http://trending.codehub-app.com/trending";
         private readonly IJsonHttpClientService _jsonHttpClient;
         private readonly TimeModel[] _times = 
         {

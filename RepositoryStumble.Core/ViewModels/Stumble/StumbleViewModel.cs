@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Linq;
 using RepositoryStumble.Core.Utils;
 using System;
+using System.Reactive.Linq;
+using System.Diagnostics;
 
 namespace RepositoryStumble.Core.ViewModels.Stumble
 {
@@ -24,15 +26,17 @@ namespace RepositoryStumble.Core.ViewModels.Stumble
         {
             this._applicationService = applicationService;
 
-            StumbleCommand = ReactiveCommand.CreateAsyncTask(LoadCommand.CanExecuteObservable, x => StumbleRepository());
+            StumbleCommand = ReactiveCommand.CreateAsyncTask(LoadCommand.IsExecuting.Select(x => !x), x => StumbleRepository());
             StumbleCommand.Subscribe(x =>
             {
+                Reset();
                 RepositoryIdentifier = new RepositoryIdentifierModel(x.Repository.Owner, x.Repository.Name);
                 LoadCommand.ExecuteIfCan();
             });
             StumbleCommand.TriggerNetworkActivity(networkActivity);
 
             DislikeCommand.Subscribe(_ => StumbleCommand.ExecuteIfCan());
+            LikeCommand.Subscribe(_ => StumbleCommand.ExecuteIfCan());
         }
 
         private async Task GetMoreRepositoriesForInterest(Interest interest)
@@ -95,7 +99,7 @@ namespace RepositoryStumble.Core.ViewModels.Stumble
                 interest = interests[_random.Next(interests.Count)];
             }
 
-            Console.WriteLine("Looking at interest: " + interest);
+            Debug.WriteLine("Looking at interest: " + interest);
 
             goAgain:
 
@@ -110,7 +114,7 @@ namespace RepositoryStumble.Core.ViewModels.Stumble
             if (_applicationService.Account.StumbledRepositories.Exists(interestedRepo.Owner, interestedRepo.Name))
             {
                 _applicationService.Account.InterestedRepositories.Remove(interestedRepo);
-                Console.WriteLine("I've seen this before: " + interestedRepo.Owner + "/" + interestedRepo.Name);
+                Debug.WriteLine("I've seen this before: " + interestedRepo.Owner + "/" + interestedRepo.Name);
                 goto goAgain;
             }
 
@@ -129,7 +133,7 @@ namespace RepositoryStumble.Core.ViewModels.Stumble
                 Owner = interest.Owner, 
                 Stars = interest.Stars, 
                 Forks = interest.Forks, 
-                Fullname = string.Format("{0}/{1}", interest.Owner, interest.Name),
+                Fullname = string.Format("{0}/{1}", interest.Owner, interest.Name).ToLower(),
                 ImageUrl = interest.ImageUrl
             };
         }

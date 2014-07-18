@@ -27,14 +27,14 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
         public string Readme
         {
             get { return _readme; }
-            set { this.RaiseAndSetIfChanged(ref _readme, value); }
+            private set { this.RaiseAndSetIfChanged(ref _readme, value); }
         }
 
         private RepositoryModel _repository;
         public RepositoryModel Repository
         {
             get { return _repository; }
-            set { this.RaiseAndSetIfChanged(ref _repository, value); }
+            private set { this.RaiseAndSetIfChanged(ref _repository, value); }
         }
 
         private StumbledRepository _stumbledRepository;
@@ -48,14 +48,14 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
         public int? CollaboratorCount
         {
             get { return _collaboratorCount; }
-            set { this.RaiseAndSetIfChanged(ref _collaboratorCount, value); }
+            private set { this.RaiseAndSetIfChanged(ref _collaboratorCount, value); }
         }
 
         private bool? _liked;
         public bool? Liked
         {
             get { return _liked; }
-            set { this.RaiseAndSetIfChanged(ref _liked, value); }
+            private set { this.RaiseAndSetIfChanged(ref _liked, value); }
         }
 
         public IReactiveCommand<object> GoToGitHubCommand { get; private set; }
@@ -128,12 +128,8 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
             GoToGitHubCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.Repository).Select(x => x != null));
             GoToGitHubCommand.Subscribe(_ => GoToUrlCommand.ExecuteIfCan(Repository.HtmlUrl));
 
-            LoadCommand = ReactiveCommand.CreateAsyncTask(async t =>
+            LoadCommand = ReactiveCommand.CreateAsyncTask(this.WhenAnyValue(x => x.RepositoryIdentifier).Select(x => x != null), async t =>
             {
-                // Cheap...
-                if (RepositoryIdentifier == null)
-                    return;
-
                 var repo = applicationService.Client.Users[RepositoryIdentifier.Owner].Repositories[RepositoryIdentifier.Name];
                 Repository = (await applicationService.Client.ExecuteAsync(repo.Get())).Data;
                 CollaboratorCount = (await applicationService.Client.ExecuteAsync(repo.GetCollaborators())).Data.Count;
@@ -151,6 +147,15 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
             });
 
             LoadCommand.TriggerNetworkActivity(networkActivity);
+        }
+
+        protected void Reset()
+        {
+            Readme = null;
+            Liked = null;
+            Repository = null;
+            CollaboratorCount = null;
+            StumbledRepository = null;
         }
 
         private StumbledRepository CreateStumbledRepository()

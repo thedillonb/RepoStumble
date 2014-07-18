@@ -9,6 +9,9 @@ using RepositoryStumble.ViewControllers.Interests;
 using RepositoryStumble.ViewControllers.Trending;
 using System.Drawing;
 using RepositoryStumble.ViewControllers.Profile;
+using RepositoryStumble.Core.Services;
+using Xamarin.Utilities.Core.Services;
+using System.Linq;
 
 namespace RepositoryStumble.ViewControllers.Application
 {
@@ -63,8 +66,18 @@ namespace RepositoryStumble.ViewControllers.Application
             {
                 if (e.ViewController == stumble)
                 {
-                    ViewModel.GoToStumbleCommand.ExecuteIfCan();
-                    SelectedIndex = previousSelectedIndex;
+                    if (!IoC.Resolve<IApplicationService>().Account.Interests.Any())
+                    {
+                        SelectedIndex = 1;
+                        IoC.Resolve<IAlertDialogService>().Alert(
+                            "You need some interests!", 
+                            "Please add at least one interest before you stumble!");
+                    }
+                    else
+                    {
+                        ViewModel.GoToStumbleCommand.ExecuteIfCan();
+                        SelectedIndex = previousSelectedIndex;
+                    }
                 }
                 else
                 {
