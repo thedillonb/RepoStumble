@@ -36,7 +36,14 @@ namespace RepositoryStumble.Core.Data
 		{
 			SyncWithGitHub = true;
 
-            _db = new Lazy<SQLiteConnection>(() => new SQLiteConnection(DBFilePath) { Trace = true });
+            _db = new Lazy<SQLiteConnection>(() => 
+            {
+                var db = new SQLiteConnection(DBFilePath);
+                #if DEBUG
+                db.Trace = true;
+                #endif
+                return db;
+            });
             _interestedRepositories = new Lazy<InterestedRepositories>(() => new InterestedRepositories(Database));
             _stumbledRepositories = new Lazy<StumbledRepositories>(() => new StumbledRepositories(Database));
             _interests = new Lazy<Interests>(() => new Interests(Database));

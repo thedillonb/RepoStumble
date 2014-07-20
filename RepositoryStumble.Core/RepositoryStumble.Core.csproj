@@ -79,7 +79,6 @@
     <Compile Include="ViewModels\Application\StartupViewModel.cs" />
     <Compile Include="Services\ApplicationService.cs" />
     <Compile Include="Services\IApplicationService.cs" />
-    <Compile Include="Data\ExternalResources.cs" />
     <Compile Include="ViewModels\Application\SettingsViewModel.cs" />
     <Compile Include="ViewModels\Application\LoginViewModel.cs" />
     <Compile Include="ViewModels\Languages\LanguagesViewModel.cs" />

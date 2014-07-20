@@ -35,7 +35,7 @@ namespace RepositoryStumble.Core.ViewModels.Application
             GoToSourceCode.Subscribe(_ =>
             {
                 var vm = CreateViewModel<RepositoryViewModel>();
-                vm.RepositoryIdentifier = new BaseRepositoryViewModel.RepositoryIdentifierModel("thedillonb", "githubstumble");
+                vm.RepositoryIdentifier = new BaseRepositoryViewModel.RepositoryIdentifierModel("thedillonb", "repostumble");
                 ShowViewModel(vm);
             });
 

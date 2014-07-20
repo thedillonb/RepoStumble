@@ -1,4 +1,5 @@
 using System;
+using SQLite;
 
 namespace RepositoryStumble.Core.Data
 {
@@ -6,6 +7,7 @@ namespace RepositoryStumble.Core.Data
 	{
 		public bool? Liked { get; set; }
 
+        [Indexed]
 		public DateTime CreatedAt { get; set; }
 
 		public bool ShowInHistory { get; set; }
