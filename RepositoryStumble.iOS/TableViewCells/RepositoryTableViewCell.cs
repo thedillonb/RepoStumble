@@ -9,9 +9,12 @@ namespace RepositoryStumble.TableViewCells
         public static readonly UINib Nib = UINib.FromName("RepositoryTableViewCell", NSBundle.MainBundle);
         public static readonly NSString Key = new NSString("RepositoryTableViewCell");
 
-        public RepositoryTableViewCell(IntPtr handle) : base(handle)
+        public RepositoryTableViewCell(IntPtr handle) 
+            : base(handle)
         {
         }
+
+        public override string ReuseIdentifier { get { return Key; } }
 
         public static RepositoryTableViewCell Create()
         {

@@ -1,6 +1,5 @@
 ﻿using ReactiveUI;
 using RepositoryStumble.Core.Services;
-using System.Linq;
 
 namespace RepositoryStumble.Core.ViewModels.Repositories
 {
@@ -10,8 +9,8 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
         {
             this.WhenActivated(d =>
             {
-                var repos = applicationService.Account.StumbledRepositories
-                    .Where(x => x.Liked != null && x.Liked.Value)
+                var repos = applicationService.Account.StumbledRepositories.Query
+                    .Where(x => x.Liked == true)
                     .OrderByDescending(x => x.CreatedAt);
                 RepositoryCollection.Reset(repos);
             });

@@ -60,12 +60,10 @@ namespace RepositoryStumble.Elements
 
         public float GetHeight(MonoTouch.UIKit.UITableView tableView, MonoTouch.Foundation.NSIndexPath indexPath)
         {
-            var cell = tableView.DequeueReusableCell(ShowcaseTableViewCell.Key) as ShowcaseTableViewCell;
-            if (cell == null)
-            {
-                cell = ShowcaseTableViewCell.Create();
-            }
-                
+            if (GetRootElement() == null)
+                return 44f;
+
+            var cell = GetRootElement().GetOffscreenCell(ShowcaseTableViewCell.Key, () => ShowcaseTableViewCell.Create());
             cell.Description = _description;
             cell.Name = _name;
 

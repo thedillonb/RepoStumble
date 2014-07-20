@@ -1,6 +1,5 @@
 ﻿using ReactiveUI;
 using RepositoryStumble.Core.Services;
-using System.Linq;
 
 namespace RepositoryStumble.Core.ViewModels.Repositories
 {
@@ -11,7 +10,7 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
         public HistoryViewModel(IApplicationService applicationService)
         {
             ApplicationService = applicationService;
-            RepositoryCollection.Reset(ApplicationService.Account.StumbledRepositories.OrderByDescending(x => x.CreatedAt));
+            RepositoryCollection.Reset(ApplicationService.Account.StumbledRepositories.Query.OrderByDescending(x => x.CreatedAt));
         }
     }
 }

@@ -9,26 +9,49 @@ using RepositoryStumble.Core.Utils;
 using System;
 using System.Reactive.Linq;
 using System.Diagnostics;
+using RepositoryStumble.Core.ViewModels.Application;
 
 namespace RepositoryStumble.Core.ViewModels.Stumble
 {
     public class StumbleViewModel : BaseRepositoryViewModel
     {
+        private const string StumbleKey = "stumble.times";
         private static readonly Random _random = new Random();
         private readonly IApplicationService _applicationService;
 
         public IReactiveCommand<StumbleResult> StumbleCommand { get; private set; }
 
+        public IReactiveCommand<object> GoToPurchaseCommand { get; private set; }
+
         public Interest Interest { get; set; }
 
-        public StumbleViewModel(IApplicationService applicationService, INetworkActivityService networkActivity)
+        public StumbleViewModel(IApplicationService applicationService, INetworkActivityService networkActivity, 
+                                IFeaturesService featuresService, IDefaultValueService defaultValues)
             : base(applicationService, networkActivity)
         {
             this._applicationService = applicationService;
 
+            var localStumbleCount = 0;
+
+            GoToPurchaseCommand = ReactiveCommand.Create();
+            GoToPurchaseCommand.Subscribe(_ => CreateAndShowViewModel<PurchaseProViewModel>());
+
             StumbleCommand = ReactiveCommand.CreateAsyncTask(LoadCommand.IsExecuting.Select(x => !x), x => StumbleRepository());
             StumbleCommand.Subscribe(x =>
             {
+                if (!featuresService.ProEditionEnabled)
+                {
+                    var stumbleTimes = defaultValues.Get<int>(StumbleKey) + 1;
+                    defaultValues.Set(StumbleKey, stumbleTimes);
+
+                    if (localStumbleCount > 0 && stumbleTimes % 50 == 0)
+                    {
+                        GoToPurchaseCommand.ExecuteIfCan();
+                    }
+                }
+
+                localStumbleCount++;
+
                 Reset();
                 RepositoryIdentifier = new RepositoryIdentifierModel(x.Repository.Owner, x.Repository.Name);
                 LoadCommand.ExecuteIfCan();
@@ -93,7 +116,7 @@ namespace RepositoryStumble.Core.ViewModels.Stumble
             if (interest == null)
             {
                 //Grab a random interest
-                var interests = _applicationService.Account.Interests.Where(x => !x.Exhaused).ToList();
+                var interests = _applicationService.Account.Interests.Query.Where(x => x.Exhaused == false).ToList();
                 if (interests.Count == 0)
                     throw new InterestExhaustedException();
                 interest = interests[_random.Next(interests.Count)];
@@ -104,7 +127,7 @@ namespace RepositoryStumble.Core.ViewModels.Stumble
             goAgain:
 
             //Grab the next repo off the queue
-            var interestedRepo = _applicationService.Account.InterestedRepositories.FirstOrDefault(x => x.InterestId == interest.Id);
+            var interestedRepo = _applicationService.Account.InterestedRepositories.Where(x => x.InterestId == interest.Id).Take(1).FirstOrDefault();
             if (interestedRepo == null)
             {
                 await GetMoreRepositoriesForInterest(interest);

@@ -6,6 +6,8 @@ using System.Reactive.Linq;
 using System.Linq;
 using Xamarin.Utilities.Core.ViewModels;
 using RepositoryStumble.Core.ViewModels.Stumble;
+using RepositoryStumble.Core.ViewModels.Application;
+using System.Reactive.Concurrency;
 
 namespace RepositoryStumble.Core.ViewModels.Interests
 {
@@ -21,7 +23,7 @@ namespace RepositoryStumble.Core.ViewModels.Interests
 
         public IReactiveCommand<object> GoToStumbleInterestCommand { get; private set; }
 
-        public InterestsViewModel(IApplicationService applicationService)
+        public InterestsViewModel(IApplicationService applicationService, IFeaturesService featuresService)
         {
             ApplicationService = applicationService;
             var interests = new ReactiveList<Interest>();
@@ -41,13 +43,21 @@ namespace RepositoryStumble.Core.ViewModels.Interests
             GoToAddInterestCommand = ReactiveCommand.Create();
             GoToAddInterestCommand.Subscribe(_ =>
             {
-                var vm = CreateViewModel<AddInterestViewModel>();
-                ShowViewModel(vm);
+                if (ApplicationService.Account.Interests.Count() >= 3 && !featuresService.ProEditionEnabled)
+                {
+                    var vm = CreateViewModel<PurchaseProViewModel>();
+                    ShowViewModel(vm);
+                }
+                else
+                {
+                    var vm = CreateViewModel<AddInterestViewModel>();
+                    ShowViewModel(vm);
+                }
             });
 
             this.WhenActivated(d =>
             {
-                interests.Reset(ApplicationService.Account.Interests.OrderBy(x => x.Keyword));
+                interests.Reset(ApplicationService.Account.Interests.Query.OrderBy(x => x.Keyword));
             });
         }
     }

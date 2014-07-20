@@ -1,9 +1,7 @@
 using System;
-using MonoTouch.UIKit;
 using ReactiveUI;
 using RepositoryStumble.Core.ViewModels.Trending;
 using Xamarin.Utilities.ViewControllers;
-using Xamarin.Utilities.DialogElements;
 using RepositoryStumble.Elements;
 
 namespace RepositoryStumble.ViewControllers.Trending
@@ -22,9 +20,7 @@ namespace RepositoryStumble.ViewControllers.Trending
             ViewModel.WhenAnyValue(x => x.Title).Subscribe(x => Title = x);
 
             this.BindList(ViewModel.Repositories, x =>
-            {
-                return new RepositoryElement(x.Owner, x.Name, x.Description, x.AvatarUrl, () => ViewModel.GoToRepositoryCommand.ExecuteIfCan(x));
-            });
+                new RepositoryElement(x.Owner, x.Name, x.Description, x.AvatarUrl, () => ViewModel.GoToRepositoryCommand.ExecuteIfCan(x)));
         }
     }
 }

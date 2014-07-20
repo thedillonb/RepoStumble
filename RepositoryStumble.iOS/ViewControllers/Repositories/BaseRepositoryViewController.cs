@@ -7,12 +7,15 @@ using Xamarin.Utilities.DialogElements;
 using System.Reactive.Linq;
 using RepositoryStumble.Views;
 using System.Drawing;
+using MonoTouch.Foundation;
 
 namespace RepositoryStumble.ViewControllers.Repositories
 {
     public abstract class BaseRepositoryViewController<TViewModel> : ViewModelPrettyDialogViewController<TViewModel> where TViewModel : BaseRepositoryViewModel
 	{
         private UIActionSheet _actionSheet;
+        private WebElement _webElement;
+        private bool _disposed;
 		protected readonly UIBarButtonItem DislikeButton;
 		protected readonly UIBarButtonItem LikeButton;
 
@@ -113,33 +116,42 @@ namespace RepositoryStumble.ViewControllers.Repositories
                     }
                 });
 
-            var webElement = new WebElement("readme");
-            webElement.UrlRequested += (obj) => ViewModel.GoToUrlCommand.ExecuteIfCan(obj);
+            _webElement = new WebElement("readme");
+            _webElement.UrlRequested += (obj) => ViewModel.GoToUrlCommand.ExecuteIfCan(obj);
 
-            this.WhenAnyValue(x => x.ViewModel)
-                .Where(x => x != null)
-                .Select(x => x.WhenAnyValue(y => y.Readme))
-                .Switch()
-                .Subscribe(x =>
+            ViewModel.WhenAnyValue(y => y.Readme).Where(_ => !_disposed).Subscribe(x =>
+            {
+                if (x == null)
                 {
-                    if (x == null)
+                    _webElement.ContentPath = null;
+                    section2.HeaderView = new LoadingView();
+                    if (_webElement.GetRootElement() != null)
+                        section2.Remove(_webElement);
+                }
+                else
+                {
+                    var view = new ReadmeRazorView { Model = x };
+                    var file = System.IO.Path.GetTempFileName() + ".html";
+                    using (var stream = new System.IO.StreamWriter(file, false, System.Text.Encoding.UTF8))
                     {
-                        webElement.Value = null;
-                        section2.HeaderView = new LoadingView();
-                        if (webElement.GetRootElement() != null)
-                            section2.Remove(webElement);
-                    }
-                    else
-                    {
-                        var view = new ReadmeRazorView { Model = x };
-                        webElement.Value = view.GenerateString();
-                        section2.HeaderView = null;
-                        if (webElement.GetRootElement() == null)
-                            section2.Add(webElement);
+                        view.Generate(stream);
+                        _webElement.ContentPath = file;
+
                     }
 
-                    ReloadData();
-                });
+                    section2.HeaderView = null;
+                    if (_webElement.GetRootElement() == null)
+                        section2.Add(_webElement);
+                }
+
+                ReloadData();
+            });
+
+            ViewModel.DismissCommand.Subscribe(_ => 
+            {
+                _disposed = true;
+                _webElement.Dispose();
+            });
 
             Root.Reset(section, section2);
 
@@ -156,6 +168,7 @@ namespace RepositoryStumble.ViewControllers.Repositories
 		private void ShowMore()
 		{
             _actionSheet = new UIActionSheet(ViewModel.RepositoryIdentifier.ToString());
+            var showCodeHub = _actionSheet.AddButton("Open in CodeHub");
             var show = _actionSheet.AddButton("Show in GitHub");
             var share = _actionSheet.AddButton("Share");
             _actionSheet.CancelButtonIndex = _actionSheet.AddButton("Cancel");
@@ -165,9 +178,22 @@ namespace RepositoryStumble.ViewControllers.Repositories
                 {
                     ViewModel.GoToGitHubCommand.ExecuteIfCan();
                 }
+                else if (e.ButtonIndex == showCodeHub)
+                {
+                    var url = new NSUrl("codehub://github.com/" + ViewModel.RepositoryIdentifier.Owner + "/" + ViewModel.RepositoryIdentifier.Name);
+                    if (UIApplication.SharedApplication.CanOpenUrl(url))
+                    {
+                        UIApplication.SharedApplication.OpenUrl(url);
+                    }
+                    else
+                    {
+                        // Go to the CodeHub iTunes page
+                        UIApplication.SharedApplication.OpenUrl(new NSUrl("https://itunes.apple.com/us/app/codehub-github-for-ios/id707173885?mt=8"));
+                    }
+                }
                 else if (e.ButtonIndex == share)
                 {
-                    var item = MonoTouch.Foundation.NSObject.FromObject(ViewModel.Repository.HtmlUrl);
+                    var item = NSObject.FromObject(ViewModel.Repository.HtmlUrl);
                     var activityItems = new [] { item };
                     UIActivity[] applicationActivities = null;
                     var activityController = new UIActivityViewController(activityItems, applicationActivities);

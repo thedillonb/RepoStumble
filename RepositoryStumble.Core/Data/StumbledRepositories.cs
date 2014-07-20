@@ -34,14 +34,14 @@ namespace RepositoryStumble.Core.Data
 
         public void DeleteAll()
         {
-            var deleteItems = this.Where(x => x.Liked == null).ToList();
+            var deleteItems = this.Query.Where(x => x.Liked == null).ToList();
             foreach (var k in deleteItems)
                 Remove(k);
         }
 
         public void MarkAllAsNotInHistory()
         {
-            foreach (var item in this)
+            foreach (var item in this.Query)
             {
                 item.ShowInHistory = false;
                 Update(item);
@@ -50,8 +50,18 @@ namespace RepositoryStumble.Core.Data
 
         public void MarkAllLowercase()
         {
-            foreach (var item in this)
+            foreach (var item in this.Query)
                 Update(item);
+        }
+
+        public int LikedRepositories()
+        {
+            return Query.Count(x => x.Liked == true);
+        }
+
+        public int DislikedRepositories()
+        {
+            return Query.Count(x => x.Liked == false);
         }
 
         public StumbledRepository FindByFullname(string owner, string name)

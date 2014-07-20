@@ -25,6 +25,19 @@ namespace RepositoryStumble.ViewControllers.Profile
             NavigationItem.RightBarButtonItem = new UIBarButtonItem(Images.Gear, UIBarButtonItemStyle.Plain, 
                 (s, e) => ViewModel.GoToSettingsCommand.ExecuteIfCan());
 
+            ViewModel.WhenAnyValue(x => x.CanPurchase).Subscribe(x =>
+            {
+                if (x)
+                {
+                    NavigationItem.LeftBarButtonItem = new UIBarButtonItem("Upgrade", UIBarButtonItemStyle.Plain, 
+                        (s, e) => ViewModel.GoToPurchaseCommand.ExecuteIfCan());
+                }
+                else
+                {
+                    NavigationItem.LeftBarButtonItem = null;
+                }
+            });
+
             ViewModel.WhenAnyValue(x => x.User).Where(x => x != null).Subscribe(x =>
             {
                 HeaderView.ImageUri = x.AvatarUrl;
@@ -46,11 +59,29 @@ namespace RepositoryStumble.ViewControllers.Profile
 
             var section2 = new Section();
             ViewModel.StumbleHistory.Changed.Subscribe(_ =>
+            {
                 section2.Reset(ViewModel.StumbleHistory.Select(x => 
                     new RepositoryElement(x.Owner, x.Name, x.Description, x.ImageUrl, 
-                        () => ViewModel.GoToRepositoryCommand.ExecuteIfCan(x)))));
+                    () => ViewModel.GoToRepositoryCommand.ExecuteIfCan(x))));
+            });
 
-            Root.Reset(section, section2);
+            var section3 = new Section();
+            ViewModel.WhenAnyValue(x => x.HasMoreHistory).Subscribe(x =>
+            {
+                if (x)
+                {
+                    section3.Reset(new [] {
+                        new StyledStringElement("See More History", () => ViewModel.GoToHistoryCommand.ExecuteIfCan())
+                    });
+                }
+                else
+                {
+                    section3.Clear();
+                }
+            });
+
+
+            Root.Reset(section, section2, section3);
         }
 
 		private class Element : StyledStringElement

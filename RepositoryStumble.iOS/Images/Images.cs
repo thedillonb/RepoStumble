@@ -24,6 +24,9 @@ namespace RepositoryStumble
 
         public static UIImage DownChevron { get { return UIImage.FromBundle("Images/down_chevron"); } }
 
+        public static UIImage GreyButton { get { return UIImageHelper.FromFileAuto("Images/grey_button"); } }
+
+        public static UIImage PurchaseIcon { get { return UIImageHelper.FromFileAuto("Images/purchase_icon"); } }
     }
 }
 

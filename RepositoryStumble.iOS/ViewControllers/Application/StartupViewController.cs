@@ -12,6 +12,7 @@ namespace RepositoryStumble.ViewControllers.Application
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
+
             View.Add(_backgroundImageView);
         }
 

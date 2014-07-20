@@ -2,7 +2,6 @@
 using Xamarin.Utilities.DialogElements;
 using Xamarin.Utilities.Images;
 using RepositoryStumble.TableViewCells;
-using ReactiveUI.Cocoa;
 using System.Drawing;
 using MonoTouch.UIKit;
 
@@ -84,12 +83,10 @@ namespace RepositoryStumble.Elements
 
         public float GetHeight(MonoTouch.UIKit.UITableView tableView, MonoTouch.Foundation.NSIndexPath indexPath)
         {
-            var cell = tableView.DequeueReusableCell(RepositoryTableViewCell.Key) as RepositoryTableViewCell;
-            if (cell == null)
-            {
-                cell = RepositoryTableViewCell.Create();
-            }
+            if (GetRootElement() == null)
+                return 44f;
 
+            var cell = GetRootElement().GetOffscreenCell(RepositoryTableViewCell.Key, () => RepositoryTableViewCell.Create());
             cell.Owner = _owner;
             cell.Description = _description;
             cell.Name = _name;

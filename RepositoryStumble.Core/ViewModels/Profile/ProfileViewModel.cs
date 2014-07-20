@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using GitHubSharp.Models;
 using ReactiveUI;
 using Xamarin.Utilities.Core.ViewModels;
@@ -49,6 +48,27 @@ namespace RepositoryStumble.Core.ViewModels.Profile
             private set { this.RaiseAndSetIfChanged(ref _dislikes, value); }
         }
 
+        private bool _canPurchase;
+        public bool CanPurchase
+        {
+            get { return _canPurchase; }
+            private set { this.RaiseAndSetIfChanged(ref _canPurchase, value); }
+        }
+
+        private bool _hasMoreHistory;
+        public bool HasMoreHistory
+        {
+            get { return _hasMoreHistory; }
+            private set { this.RaiseAndSetIfChanged(ref _hasMoreHistory, value); }
+        }
+
+        private int _stumbedRepositories;
+        public int StumbledRepositories
+        {
+            get { return _stumbedRepositories; }
+            private set { this.RaiseAndSetIfChanged(ref _stumbedRepositories, value); }
+        }
+
         public IReactiveCommand LoadCommand { get; private set; }
 
         public IReactiveCommand<object> GoToInterestsCommand { get; private set; }
@@ -61,9 +81,13 @@ namespace RepositoryStumble.Core.ViewModels.Profile
 
         public IReactiveCommand<object> GoToRepositoryCommand { get; private set; }
 
+        public IReactiveCommand<object> GoToPurchaseCommand { get; private set; }
+
+        public IReactiveCommand<object> GoToHistoryCommand { get; private set; }
+
         public IReactiveList<StumbledRepository> StumbleHistory { get; private set; }
 
-        public ProfileViewModel(IApplicationService applicationService, INetworkActivityService networkActivity)
+        public ProfileViewModel(IApplicationService applicationService, INetworkActivityService networkActivity, IFeaturesService featuresService)
         {
             StumbleHistory = new ReactiveList<StumbledRepository>();
             GoToInterestsCommand = ReactiveCommand.Create();
@@ -73,12 +97,21 @@ namespace RepositoryStumble.Core.ViewModels.Profile
             {
                 if (applicationService.Account != null)
                 {
+                    var stumbledRepositories = applicationService.Account.StumbledRepositories.Count();
+
                     Interests = applicationService.Account.Interests.Count();
-                    Likes = applicationService.Account.StumbledRepositories.Count(x => x.Liked.HasValue && x.Liked.Value);
-                    Dislikes = applicationService.Account.StumbledRepositories.Count(x => x.Liked.HasValue && !x.Liked.Value);
-                    StumbleHistory.Reset(applicationService.Account.StumbledRepositories.OrderByDescending(x => x.CreatedAt));
+                    Likes = applicationService.Account.StumbledRepositories.LikedRepositories();
+                    Dislikes = applicationService.Account.StumbledRepositories.DislikedRepositories();
+                    HasMoreHistory = stumbledRepositories > 30;
+                    if (stumbledRepositories != StumbledRepositories)
+                    {
+                        StumbledRepositories = stumbledRepositories;
+                        StumbleHistory.Reset(applicationService.Account.StumbledRepositories.Query.OrderByDescending(x => x.CreatedAt).Take(30));
+                    }
                     d(applicationService.RepositoryAdded.Subscribe(x => Likes += 1));
                 }
+
+                CanPurchase = !featuresService.ProEditionEnabled;
             });
 
             GoToRepositoryCommand = ReactiveCommand.Create();
@@ -88,6 +121,12 @@ namespace RepositoryStumble.Core.ViewModels.Profile
                 vm.RepositoryIdentifier = new BaseRepositoryViewModel.RepositoryIdentifierModel(x.Owner, x.Name);
                 ShowViewModel(vm);
             });
+
+            GoToPurchaseCommand = ReactiveCommand.Create();
+            GoToPurchaseCommand.Subscribe(_ => CreateAndShowViewModel<PurchaseProViewModel>());
+
+            GoToHistoryCommand = ReactiveCommand.Create();
+            GoToHistoryCommand.Subscribe(_ => CreateAndShowViewModel<HistoryViewModel>());
 
             GoToLikesCommand = ReactiveCommand.Create();
             GoToLikesCommand.Subscribe(_ => CreateAndShowViewModel<LikedRepositoriesViewModel>());

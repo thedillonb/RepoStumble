@@ -42,7 +42,8 @@ namespace RepositoryStumble.Core.Services
             {
                 var d = new Dictionary<string, StumbledRepository>(Account.StumbledRepositories.Count());
                 foreach (var r in Account.StumbledRepositories)
-                    d.Add(r.Fullname.ToLower(), r);
+                    if (!d.ContainsKey(r.Fullname.ToLower()))
+                        d.Add(r.Fullname.ToLower(), r);
 
                 var req = Client.AuthenticatedUser.Repositories.GetStarred();
                 while (req != null)

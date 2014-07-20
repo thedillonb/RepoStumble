@@ -1,6 +1,5 @@
 ﻿
 using System;
-using System.Drawing;
 
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
@@ -16,6 +15,8 @@ namespace RepositoryStumble.TableViewCells
         {
         }
 
+        public override string ReuseIdentifier { get { return Key; } }
+
         public static ShowcaseTableViewCell Create()
         {
             var cell = (ShowcaseTableViewCell)Nib.Instantiate(null, null)[0];
@@ -23,7 +24,6 @@ namespace RepositoryStumble.TableViewCells
             cell.ShowcaseImageView.Layer.CornerRadius = cell.ShowcaseImageView.Frame.Height / 2f;
             cell.SeparatorInset = new UIEdgeInsets(0, cell.ShowcaseNameLabel.Frame.Left, 0, 0);
             return cell;
-
         }
   
         public UIImage Image 

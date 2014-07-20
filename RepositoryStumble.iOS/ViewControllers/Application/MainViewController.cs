@@ -66,7 +66,7 @@ namespace RepositoryStumble.ViewControllers.Application
             {
                 if (e.ViewController == stumble)
                 {
-                    if (!IoC.Resolve<IApplicationService>().Account.Interests.Any())
+                    if (IoC.Resolve<IApplicationService>().Account.Interests.Count() == 0)
                     {
                         SelectedIndex = 1;
                         IoC.Resolve<IAlertDialogService>().Alert(

@@ -56,6 +56,10 @@
     </MtouchI18n>
     <MtouchArch>ARMv7</MtouchArch>
     <AssemblyName>RepositoryStumbleiOS</AssemblyName>
+    <MtouchProfiling>true</MtouchProfiling>
+    <MtouchUseSGen>true</MtouchUseSGen>
+    <IpaPackageName>
+    </IpaPackageName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>full</DebugType>
@@ -85,6 +89,12 @@
     <CodesignProvision>Automatic:AdHoc</CodesignProvision>
     <CodesignKey>iPhone Distribution</CodesignKey>
     <AssemblyName>RepositoryStumbleiOS</AssemblyName>
+    <MtouchUseSGen>true</MtouchUseSGen>
+    <MtouchI18n>
+    </MtouchI18n>
+    <MtouchArch>ARMv7</MtouchArch>
+    <IpaPackageName>
+    </IpaPackageName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|iPhone' ">
     <DebugType>full</DebugType>
@@ -117,9 +127,6 @@
     </Reference>
     <Reference Include="Parse.iOS">
       <HintPath>..\lib\Xamarin.Utilities\lib\iOS\Parse.iOS.dll</HintPath>
-    </Reference>
-    <Reference Include="ModernHttpClient">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\ModernHttpClient.dll</HintPath>
     </Reference>
     <Reference Include="Splat">
       <HintPath>..\lib\Xamarin.Utilities\lib\iOS\Splat.dll</HintPath>
@@ -167,7 +174,6 @@
     <Compile Include="ViewControllers\Application\SettingsViewController.cs" />
     <Compile Include="ViewControllers\Stumble\StumbleViewController.cs" />
     <Compile Include="ViewControllers\Application\LoginViewController.cs" />
-    <Compile Include="Elements\StumbledRepositoryElement.cs" />
     <Compile Include="ViewControllers\Repositories\BaseRepositoriesViewController.cs" />
     <Compile Include="Elements\InterestElement.cs" />
     <Compile Include="ViewControllers\Trending\ShowcasesViewController.cs" />
@@ -189,6 +195,11 @@
     </Compile>
     <Compile Include="Elements\ShowcaseElement.cs" />
     <Compile Include="Transitions\SlideDownTransition.cs" />
+    <Compile Include="Services\FeaturesService.cs" />
+    <Compile Include="ViewControllers\Application\PurchaseProViewController.cs" />
+    <Compile Include="ViewControllers\Application\PurchaseProViewController.designer.cs">
+      <DependentUpon>PurchaseProViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ProjectExtensions>
@@ -257,6 +268,9 @@
     <BundleResource Include="Images\down_chevron.png" />
     <BundleResource Include="Resources\Default-Landscape%402x.png" />
     <BundleResource Include="Resources\Default-Landscape.png" />
+    <BundleResource Include="Images\grey_button.png" />
+    <BundleResource Include="Images\grey_button%402x.png" />
+    <BundleResource Include="Images\purchase_icon%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />
@@ -283,9 +297,11 @@
   <ItemGroup>
     <Folder Include="TableViewCells\" />
     <Folder Include="Transitions\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="TableViewCells\RepositoryTableViewCell.xib" />
     <InterfaceDefinition Include="TableViewCells\ShowcaseTableViewCell.xib" />
+    <InterfaceDefinition Include="ViewControllers\Application\PurchaseProViewController.xib" />
   </ItemGroup>
 </Project>

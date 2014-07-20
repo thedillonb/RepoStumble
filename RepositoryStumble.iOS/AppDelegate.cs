@@ -12,6 +12,7 @@ using Xamarin.Utilities.Core.Services;
 using RepositoryStumble.ViewControllers.Application;
 using System.Reactive.Concurrency;
 using MonoTouch.Security;
+using Xamarin.Utilities.Images;
 
 namespace RepositoryStumble
 {
@@ -76,7 +77,7 @@ namespace RepositoryStumble
             // Install the theme
             SetupTheme();
 
-            //GitHubSharp.Client.ClientConstructor = () => new System.Net.Http.HttpClient(new ModernHttpClient.AFNetworkHandler());
+            //GitHubSharp.Client.ClientConstructor = () => new System.Net.Http.HttpClient(new ModernHttpClient.NativeMessageHandler());
             var startupViewController = new StartupViewController { ViewModel = IoC.Resolve<StartupViewModel>() };
             startupViewController.ViewModel.View = startupViewController;
 
@@ -119,6 +120,11 @@ namespace RepositoryStumble
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
             }
+        }
+
+        public override void ReceiveMemoryWarning(UIApplication application)
+        {
+            ImageLoader.Purge();
         }
 
         private static void SetupTheme()

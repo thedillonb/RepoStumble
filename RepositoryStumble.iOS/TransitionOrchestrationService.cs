@@ -5,14 +5,12 @@ using RepositoryStumble.ViewControllers.Application;
 using Xamarin.Utilities.Core.Services;
 using Xamarin.Utilities.Core.ViewModels;
 using RepositoryStumble.ViewControllers.Interests;
-using RepositoryStumble.ViewControllers;
 using RepositoryStumble.ViewControllers.Repositories;
 using RepositoryStumble.ViewControllers.Stumble;
 using RepositoryStumble.ViewControllers.Languages;
 using RepositoryStumble.ViewControllers.Trending;
-using MonoTouch.AddressBook;
-using System.Web.Services.Protocols;
 using RepositoryStumble.Transitions;
+using System.Collections.Generic;
 
 namespace RepositoryStumble
 {
@@ -66,6 +64,12 @@ namespace RepositoryStumble
                 var ctrlToPresent = new UINavigationController(toViewController);
                 ctrlToPresent.TransitioningDelegate = new SlideDownTransition();
                 fromViewController.PresentViewController(ctrlToPresent, true, null);
+            }
+            else if (toViewController is PurchaseProViewController)
+            {
+                toViewDismissCommand.Subscribe(_ => fromViewController.DismissViewController(true, null));
+                toViewController.NavigationItem.LeftBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Done, (s, e) => toViewDismissCommand.ExecuteIfCan());
+                fromViewController.PresentViewController(toViewController, true, null);
             }
             else
             {

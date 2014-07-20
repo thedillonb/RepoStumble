@@ -19,7 +19,7 @@ namespace RepositoryStumble.Core.Data
 
         public void MarkAllLowercase()
         {
-            foreach (var item in this)
+            foreach (var item in this.Query)
                 Update(item);
         }
 

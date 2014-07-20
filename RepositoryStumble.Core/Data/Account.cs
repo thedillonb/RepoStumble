@@ -2,9 +2,11 @@ using System;
 using SQLite;
 using System.IO;
 using Xamarin.Utilities.Core.Services;
+using System.Runtime.Serialization;
 
 namespace RepositoryStumble.Core.Data
 {
+    [DataContract]
     public class Account : IDisposable
     {
         private static readonly string AccountFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "account.json");
@@ -15,21 +17,26 @@ namespace RepositoryStumble.Core.Data
         private readonly Lazy<StumbledRepositories> _stumbledRepositories;
         private readonly Lazy<Interests> _interests;
 
+        [DataMember]
 		public string Username { get; set; }
 
+        [DataMember]
 		public string OAuth { get; set; }
 
+        [DataMember]
 		public string Fullname { get; set; }
 
+        [DataMember]
 		public string AvatarUrl { get; set; }
 
+        [DataMember]
 		public bool SyncWithGitHub { get; set; }
 
 		public Account()
 		{
 			SyncWithGitHub = true;
 
-            _db = new Lazy<SQLiteConnection>(() => new SQLiteConnection(DBFilePath));
+            _db = new Lazy<SQLiteConnection>(() => new SQLiteConnection(DBFilePath) { Trace = true });
             _interestedRepositories = new Lazy<InterestedRepositories>(() => new InterestedRepositories(Database));
             _stumbledRepositories = new Lazy<StumbledRepositories>(() => new StumbledRepositories(Database));
             _interests = new Lazy<Interests>(() => new Interests(Database));
