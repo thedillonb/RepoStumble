@@ -2,6 +2,7 @@ using MonoTouch.UIKit;
 using Xamarin.Utilities.ViewControllers;
 using RepositoryStumble.Core.ViewModels.Application;
 using ReactiveUI;
+using System;
 
 namespace RepositoryStumble.ViewControllers.Application
 {
@@ -12,7 +13,6 @@ namespace RepositoryStumble.ViewControllers.Application
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-
             View.Add(_backgroundImageView);
         }
 

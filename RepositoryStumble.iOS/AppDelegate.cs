@@ -144,6 +144,8 @@ namespace RepositoryStumble
             UINavigationBar.Appearance.SetTitleTextAttributes(new UITextAttributes { TextColor = UIColor.White, Font = UIFont.SystemFontOfSize(18f) });
             UINavigationBar.Appearance.SetBackgroundImage(img, UIBarPosition.Any, UIBarMetrics.Default);
 
+            UIToolbar.Appearance.BackgroundColor = UIColor.White;
+
             UITabBar.Appearance.TintColor = primaryColor;
 
             Xamarin.Utilities.ViewControllers.ViewModelPrettyDialogViewController.RefreshIndicatorColor = UIColor.White;

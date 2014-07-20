@@ -8,6 +8,7 @@ using RepositoryStumble.Core.ViewModels.Repositories;
 using Xamarin.Utilities.Core.Services;
 using RepositoryStumble.Core.Data;
 using System.Reactive.Linq;
+using System.Threading;
 
 namespace RepositoryStumble.Core.ViewModels.Profile
 {
@@ -93,22 +94,28 @@ namespace RepositoryStumble.Core.ViewModels.Profile
             GoToInterestsCommand = ReactiveCommand.Create();
             Username = applicationService.Account.Username;
 
+            Action updateStumbled = () =>
+            {
+                var stumbledRepositories = applicationService.Account.StumbledRepositories.Count();
+                Interests = applicationService.Account.Interests.Count();
+                Likes = applicationService.Account.StumbledRepositories.LikedRepositories();
+                Dislikes = applicationService.Account.StumbledRepositories.DislikedRepositories();
+                HasMoreHistory = stumbledRepositories > 30;
+                if (stumbledRepositories != StumbledRepositories)
+                {
+                    StumbledRepositories = stumbledRepositories;
+                    StumbleHistory.Reset(applicationService.Account.StumbledRepositories.Query.OrderByDescending(x => x.CreatedAt).Take(30));
+                }
+            };
+
             this.WhenActivated(d =>
             {
                 if (applicationService.Account != null)
                 {
-                    var stumbledRepositories = applicationService.Account.StumbledRepositories.Count();
+                    updateStumbled();
 
-                    Interests = applicationService.Account.Interests.Count();
-                    Likes = applicationService.Account.StumbledRepositories.LikedRepositories();
-                    Dislikes = applicationService.Account.StumbledRepositories.DislikedRepositories();
-                    HasMoreHistory = stumbledRepositories > 30;
-                    if (stumbledRepositories != StumbledRepositories)
-                    {
-                        StumbledRepositories = stumbledRepositories;
-                        StumbleHistory.Reset(applicationService.Account.StumbledRepositories.Query.OrderByDescending(x => x.CreatedAt).Take(30));
-                    }
-                    d(applicationService.RepositoryAdded.Subscribe(x => Likes += 1));
+                    d(applicationService.RepositoryAdded.Buffer(TimeSpan.FromMilliseconds(750))
+                        .ObserveOn(SynchronizationContext.Current).Subscribe(x => updateStumbled()));
                 }
 
                 CanPurchase = !featuresService.ProEditionEnabled;

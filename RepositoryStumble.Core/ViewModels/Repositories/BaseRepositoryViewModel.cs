@@ -84,7 +84,8 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
                     applicationService.Account.StumbledRepositories.Update(StumbledRepository);
                 }
 
-                applicationService.Client.ExecuteAsync(applicationService.Client.Users[Repository.Owner.Login].Repositories[Repository.Name].Star());
+                if (applicationService.Account.SyncWithGitHub)
+                    applicationService.Client.ExecuteAsync(applicationService.Client.Users[Repository.Owner.Login].Repositories[Repository.Name].Star());
 
                 Liked = true;
             });
@@ -109,7 +110,8 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
                     applicationService.Account.StumbledRepositories.Update(StumbledRepository);
                 }
 
-                applicationService.Client.ExecuteAsync(applicationService.Client.Users[Repository.Owner.Login].Repositories[Repository.Name].Unstar());
+                if (applicationService.Account.SyncWithGitHub)
+                    applicationService.Client.ExecuteAsync(applicationService.Client.Users[Repository.Owner.Login].Repositories[Repository.Name].Unstar());
 
                 Liked = false;
             });
