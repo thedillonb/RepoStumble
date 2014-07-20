@@ -271,6 +271,14 @@
     <BundleResource Include="Images\grey_button.png" />
     <BundleResource Include="Images\grey_button%402x.png" />
     <BundleResource Include="Images\purchase_icon%402x.png" />
+    <BundleResource Include="Images\user_filled.png" />
+    <BundleResource Include="Images\user_filled%402x.png" />
+    <BundleResource Include="Images\trending_filled.png" />
+    <BundleResource Include="Images\trending_filled%402x.png" />
+    <BundleResource Include="Images\heart_filled.png" />
+    <BundleResource Include="Images\heart_filled%402x.png" />
+    <BundleResource Include="Images\center-search_disabled.png" />
+    <BundleResource Include="Images\center-search_disabled%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />

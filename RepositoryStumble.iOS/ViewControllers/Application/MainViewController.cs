@@ -23,16 +23,16 @@ namespace RepositoryStumble.ViewControllers.Application
 
             var profileViewController = new ProfileViewController { ViewModel = IoC.Resolve<ProfileViewModel>() };
             profileViewController.ViewModel.GoToInterestsCommand.Subscribe(_ => SelectedIndex = 1);
-            profileViewController.TabBarItem = new UITabBarItem("Profile", Images.User, Images.User);
+            profileViewController.TabBarItem = new UITabBarItem("Profile", Images.User, Images.UserFilled);
             profileViewController.ViewModel.View = profileViewController;
 
             var interestsViewController = new InterestsViewController { ViewModel = IoC.Resolve<InterestsViewModel>() };
-            interestsViewController.TabBarItem = new UITabBarItem("Interests", Images.Heart, Images.Heart);
+            interestsViewController.TabBarItem = new UITabBarItem("Interests", Images.Heart, Images.HeartFilled);
             interestsViewController.ViewModel.View = interestsViewController;
 
             var trendingViewController = IoC.Resolve<TrendingViewController>();
             trendingViewController.ViewModel = IoC.Resolve<TrendingViewModel>();
-            trendingViewController.TabBarItem = new UITabBarItem("Trending", Images.Trending, Images.Trending);
+            trendingViewController.TabBarItem = new UITabBarItem("Trending", Images.Trending, Images.TrendingFilled);
             trendingViewController.ViewModel.View = trendingViewController;
 
             var showcasesViewController = new ShowcasesViewController { ViewModel = IoC.Resolve<ShowcasesViewModel>() };

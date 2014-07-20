@@ -14,13 +14,21 @@ namespace RepositoryStumble
 		public static UIImage Reload { get { return UIImage.FromBundle("Images/reload"); } }
 		public static UIImage Gear { get { return UIImage.FromBundle("Images/gear"); } }
 
-		public static UIImage CenterSearch { get { return UIImage.FromBundle("Images/center-search"); } }
+        public static UIImage CenterSearch { get { return UIImage.FromBundle("Images/center-search"); } }
+		public static UIImage CenterSearchDisabled { get { return UIImage.FromBundle("Images/center-search_disabled"); } }
 
         public static UIImage User { get { return UIImage.FromBundle("Images/user"); } }
+        public static UIImage UserFilled { get { return UIImage.FromBundle("Images/user_filled"); } }
+
         public static UIImage Trending { get { return UIImage.FromBundle("Images/trending"); } }
+        public static UIImage TrendingFilled { get { return UIImage.FromBundle("Images/trending_filled"); } }
+
         public static UIImage Spotlight { get { return UIImage.FromBundle("Images/spotlight"); } }
+
         public static UIImage Search { get { return UIImage.FromBundle("Images/search"); } }
+
         public static UIImage Heart { get { return UIImage.FromBundle("Images/heart"); } }
+        public static UIImage HeartFilled { get { return UIImage.FromBundle("Images/heart_filled"); } }
 
         public static UIImage DownChevron { get { return UIImage.FromBundle("Images/down_chevron"); } }
 

@@ -25,6 +25,7 @@ namespace RepositoryStumble.ViewControllers.Stumble
                 TableView.ScrollRectToVisible(new System.Drawing.RectangleF(0, 0, 1, 1), false);
                 ViewModel.StumbleCommand.ExecuteIfCan();
             };
+
  
             var stumbleButton = new UIBarButtonItem(centerButton) { Enabled = false };
             stumbleButton.EnableIfExecutable(ViewModel.StumbleCommand.CanExecuteObservable);
@@ -40,6 +41,7 @@ namespace RepositoryStumble.ViewControllers.Stumble
                 new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace),
             };
 
+            ViewModel.StumbleCommand.CanExecuteObservable.Subscribe(x => centerButton.Disabled = !x);
             DislikeButton.EnableIfExecutable(ViewModel.StumbleCommand.CanExecuteObservable);
             LikeButton.EnableIfExecutable(ViewModel.StumbleCommand.CanExecuteObservable);
 

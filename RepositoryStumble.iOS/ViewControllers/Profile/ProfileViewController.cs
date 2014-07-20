@@ -14,9 +14,10 @@ namespace RepositoryStumble.ViewControllers.Profile
     {
         public override void ViewDidLoad()
         {
-            Title = ViewModel.Username;
-
             base.ViewDidLoad();
+
+            if (HeaderView != null) HeaderView.Text = ViewModel.Username;
+            if (SlideUpTitle != null) SlideUpTitle.Text = ViewModel.Username;
 
             HeaderView.Text = ViewModel.Username;
             HeaderView.TextColor = UIColor.White;
