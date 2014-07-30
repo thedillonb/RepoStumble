@@ -9,6 +9,8 @@ namespace RepositoryStumble.Core.Services
         Task<string> GetProEditionPrice();
 
         Task EnableProEdition();
+
+        Task RestorePurchase();
     }
 }
 

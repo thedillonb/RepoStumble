@@ -10,6 +10,8 @@ namespace RepositoryStumble.Core.ViewModels.Application
     {
         public IReactiveCommand PurchaseCommand { get; private set; }
 
+        public IReactiveCommand RestoreCommand { get; private set; }
+
         private string _price;
         public string Price
         {
@@ -22,6 +24,10 @@ namespace RepositoryStumble.Core.ViewModels.Application
             var purchaseCommand = ReactiveCommand.CreateAsyncTask(x => featuresService.EnableProEdition());
             purchaseCommand.Subscribe(_ => DismissCommand.ExecuteIfCan());
             PurchaseCommand = purchaseCommand;
+
+            var restoreCommand = ReactiveCommand.CreateAsyncTask(x => featuresService.RestorePurchase());
+            restoreCommand.Subscribe(_ => DismissCommand.ExecuteIfCan());
+            RestoreCommand = restoreCommand;
 
             GetPrice(featuresService);
         }

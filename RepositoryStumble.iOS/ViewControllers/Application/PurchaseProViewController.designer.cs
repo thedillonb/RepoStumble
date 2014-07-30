@@ -25,18 +25,16 @@ namespace RepositoryStumble.ViewControllers.Application
 		MonoTouch.UIKit.UIButton PurchaseButton { get; set; }
 
 		[Outlet]
+		MonoTouch.UIKit.UIButton RestoreButton { get; set; }
+
+		[Outlet]
 		MonoTouch.UIKit.UILabel TitleLabel { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (MainImageView != null) {
-				MainImageView.Dispose ();
-				MainImageView = null;
-			}
-
-			if (TitleLabel != null) {
-				TitleLabel.Dispose ();
-				TitleLabel = null;
+			if (CancelButton != null) {
+				CancelButton.Dispose ();
+				CancelButton = null;
 			}
 
 			if (DescriptionLabel != null) {
@@ -44,14 +42,24 @@ namespace RepositoryStumble.ViewControllers.Application
 				DescriptionLabel = null;
 			}
 
+			if (MainImageView != null) {
+				MainImageView.Dispose ();
+				MainImageView = null;
+			}
+
 			if (PurchaseButton != null) {
 				PurchaseButton.Dispose ();
 				PurchaseButton = null;
 			}
 
-			if (CancelButton != null) {
-				CancelButton.Dispose ();
-				CancelButton = null;
+			if (TitleLabel != null) {
+				TitleLabel.Dispose ();
+				TitleLabel = null;
+			}
+
+			if (RestoreButton != null) {
+				RestoreButton.Dispose ();
+				RestoreButton = null;
 			}
 		}
 	}

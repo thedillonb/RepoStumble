@@ -38,8 +38,9 @@ namespace RepositoryStumble.ViewControllers.Application
             PurchaseButton.TouchUpInside += (sender, e) => ViewModel.PurchaseCommand.ExecuteIfCan();
 
             CancelButton.TouchUpInside += (sender, e) => ViewModel.DismissCommand.ExecuteIfCan();
+            RestoreButton.TouchUpInside += (sender, e) => ViewModel.RestoreCommand.ExecuteIfCan();
 
-            ViewModel.PurchaseCommand.IsExecuting.Skip(1).Subscribe(x =>
+            Observable.Merge(ViewModel.PurchaseCommand.IsExecuting, ViewModel.RestoreCommand.IsExecuting).Skip(1).Subscribe(x =>
             {
                 if (x)
                     _statusIndicatorService.Show("Enabling...");

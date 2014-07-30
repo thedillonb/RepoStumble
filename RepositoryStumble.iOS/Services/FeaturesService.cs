@@ -36,6 +36,11 @@ namespace RepositoryStumble.Services
                 throw new Exception("No Such Product!");
             return productData.Products[0].LocalizedPrice();
         }
+
+        public System.Threading.Tasks.Task RestorePurchase()
+        {
+            return InAppPurchases.Instance.Restore();
+        }
     }
 }
 

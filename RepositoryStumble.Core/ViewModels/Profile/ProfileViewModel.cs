@@ -114,8 +114,11 @@ namespace RepositoryStumble.Core.ViewModels.Profile
                 {
                     updateStumbled();
 
-                    d(applicationService.RepositoryAdded.Buffer(TimeSpan.FromMilliseconds(750))
-                        .ObserveOn(SynchronizationContext.Current).Subscribe(x => updateStumbled()));
+                    d(applicationService.RepositoryAdded
+                        .Buffer(TimeSpan.FromSeconds(1))
+                        .Where(x => x.Count > 0)
+                        .ObserveOn(SynchronizationContext.Current)
+                        .Subscribe(x => updateStumbled()));
                 }
 
                 CanPurchase = !featuresService.ProEditionEnabled;

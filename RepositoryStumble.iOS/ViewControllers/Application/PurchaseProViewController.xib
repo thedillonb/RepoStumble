@@ -10,6 +10,7 @@
                 <outlet property="DescriptionLabel" destination="R2T-UU-tAO" id="5fA-8C-viH"/>
                 <outlet property="MainImageView" destination="bWK-YN-ita" id="Obb-gM-5c9"/>
                 <outlet property="PurchaseButton" destination="LnV-wM-eTg" id="n81-rq-Psk"/>
+                <outlet property="RestoreButton" destination="znt-3e-cRJ" id="9XL-fw-Cu5"/>
                 <outlet property="TitleLabel" destination="XFE-UY-keb" id="K46-iR-UCV"/>
                 <outlet property="view" destination="iN0-l3-epB" id="kCW-yf-GMq"/>
             </connections>
@@ -74,18 +75,32 @@
                                 <constraint firstAttribute="width" constant="128" id="gLZ-sV-cf2"/>
                             </constraints>
                         </imageView>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="znt-3e-cRJ">
+                            <rect key="frame" x="40" y="466" width="240" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="30" id="LG8-OV-8yt"/>
+                                <constraint firstAttribute="width" constant="240" id="wYO-hk-wIM"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                            <state key="normal" title="Restore Purchase">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                        </button>
                     </subviews>
                     <constraints>
-                        <constraint firstAttribute="bottom" secondItem="We6-rb-9Gc" secondAttribute="bottom" constant="88" id="6bC-DY-0bh"/>
                         <constraint firstAttribute="centerX" secondItem="R2T-UU-tAO" secondAttribute="centerX" id="7NS-Ig-1s0"/>
                         <constraint firstAttribute="centerX" secondItem="bWK-YN-ita" secondAttribute="centerX" id="8uh-BP-Tev"/>
                         <constraint firstAttribute="centerX" secondItem="XFE-UY-keb" secondAttribute="centerX" id="CwP-MB-Tve"/>
+                        <constraint firstAttribute="centerX" secondItem="znt-3e-cRJ" secondAttribute="centerX" id="ILc-ij-yAg"/>
                         <constraint firstItem="LnV-wM-eTg" firstAttribute="top" secondItem="R2T-UU-tAO" secondAttribute="bottom" constant="44" id="R7v-H4-grf"/>
                         <constraint firstItem="XFE-UY-keb" firstAttribute="top" secondItem="bWK-YN-ita" secondAttribute="bottom" constant="24" id="YAK-0H-pQw"/>
                         <constraint firstItem="bWK-YN-ita" firstAttribute="top" secondItem="WcO-HF-je3" secondAttribute="top" constant="40" id="b2C-Gr-Ld8"/>
                         <constraint firstItem="R2T-UU-tAO" firstAttribute="top" secondItem="XFE-UY-keb" secondAttribute="bottom" constant="24" id="hMk-lp-utn"/>
                         <constraint firstAttribute="centerX" secondItem="LnV-wM-eTg" secondAttribute="centerX" id="hgB-CY-Q5A"/>
                         <constraint firstAttribute="centerX" secondItem="We6-rb-9Gc" secondAttribute="centerX" id="iJW-d3-FdP"/>
+                        <constraint firstItem="znt-3e-cRJ" firstAttribute="top" secondItem="We6-rb-9Gc" secondAttribute="bottom" constant="8" id="lYn-Bq-py0"/>
+                        <constraint firstAttribute="bottom" secondItem="znt-3e-cRJ" secondAttribute="bottom" constant="72" id="lfU-xu-ZqU"/>
                         <constraint firstItem="We6-rb-9Gc" firstAttribute="top" secondItem="LnV-wM-eTg" secondAttribute="bottom" constant="18" id="rbt-gl-ysa"/>
                     </constraints>
                 </scrollView>
