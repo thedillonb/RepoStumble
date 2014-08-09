@@ -9,7 +9,7 @@ namespace RepositoryStumble.Core.Services
 
         void Logout();
 
-        GitHubSharp.Client Client { get; }
+        Octokit.IGitHubClient Client { get; }
 
         bool Load();
 

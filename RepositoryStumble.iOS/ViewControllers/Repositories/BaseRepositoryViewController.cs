@@ -47,7 +47,7 @@ namespace RepositoryStumble.ViewControllers.Repositories
 
             var split = new SplitButtonElement();
             var stars = split.AddButton("Stargazers", "-");
-            var watchers = split.AddButton("Watchers", "-");
+            var forks = split.AddButton("Forks", "-");
             var collaborators = split.AddButton("Contributors", "-");
             section.Add(split);
 
@@ -79,15 +79,15 @@ namespace RepositoryStumble.ViewControllers.Repositories
                         HeaderView.Text = null;
                         HeaderView.SubText = null;
                         stars.Text = "-";
-                        watchers.Text = "-";
+                        forks.Text = "-";
                     }
                     else
                     {
                         HeaderView.ImageUri = x.Owner.AvatarUrl;
                         HeaderView.Text = x.Name;
                         HeaderView.SubText = x.Description;
-                        stars.Text = x.StargazersCount.ToString();
-                        watchers.Text = x.SubscribersCount.ToString();
+                        stars.Text = x.WatchersCount.ToString();
+                        forks.Text = x.ForksCount.ToString();
                     }
 
                     ReloadData();

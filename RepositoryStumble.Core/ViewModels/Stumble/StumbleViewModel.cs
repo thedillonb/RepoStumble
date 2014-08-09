@@ -10,6 +10,8 @@ using System;
 using System.Reactive.Linq;
 using System.Diagnostics;
 using RepositoryStumble.Core.ViewModels.Application;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace RepositoryStumble.Core.ViewModels.Stumble
 {
@@ -64,48 +66,46 @@ namespace RepositoryStumble.Core.ViewModels.Stumble
 
         private async Task GetMoreRepositoriesForInterest(Interest interest)
         {
-            var response = await Task.Run(() => {
-                var req = _applicationService.Client.Repositories.SearchRepositories(
-                    new [] { interest.Keyword, "in:name,description,readme" }, 
-                    new [] { interest.LanguageId }, 
-                    sort: "stars", page: Convert.ToInt32(interest.NextPage));
-                return _applicationService.Client.ExecuteAsync(req);
-            });
-
             try
             {
-                if (response.More == null)
+                var search = new SearchRequest(interest.Keyword);
+                search.In = new List<Octokit.InQualifier>() { Octokit.InQualifier.Description, Octokit.InQualifier.Name, Octokit.InQualifier.Readme };
+                search.Language = interest.LanguageId;
+                search.Sort = Octokit.RepoSearchSort.Stars;
+                search.Page = Convert.ToInt32(interest.NextPage) + 1;
+                var apiConnection = new Octokit.ApiConnection(_applicationService.Client.Connection);
+                var response = await apiConnection.Get<Octokit.SearchRepositoryResult>(Octokit.ApiUrls.SearchRepositories(), search.Parameters);
+
+                if (response.Items.Count == 0)
                     throw new InterestExhaustedException();
 
-                var regex = new System.Text.RegularExpressions.Regex(@"page=(\d+)");
-                var match = regex.Match(response.More.Url);
-                if (!match.Success)
-                    throw new InterestExhaustedException();
-
-                var page = uint.Parse(match.Groups[1].Value);
-                interest.NextPage = page;
+                interest.NextPage++;
                 _applicationService.Account.Interests.Update(interest);
 
+                foreach (var r in response.Items)
+                {
+                    _applicationService.Account.InterestedRepositories.Insert(new InterestedRepository 
+                    { 
+                        Name = r.Name, 
+                        Owner = r.Owner.Login, 
+                        Description = r.Description, 
+                        InterestId = interest.Id,
+                        Stars = r.WatchersCount,
+                        Forks = r.ForksCount,
+                        ImageUrl = r.Owner.AvatarUrl
+                    });
+                }
             }
-            catch (Exception e)
+            catch (Octokit.ApiException e)
+            {
+                Debug.WriteLine(e.Message);
+                interest.Exhaused = true;
+                _applicationService.Account.Interests.Update(interest);
+            }
+            catch (InterestExhaustedException)
             {
                 interest.Exhaused = true;
-            }
-
-            _applicationService.Account.Interests.Update(interest);
-
-            foreach (var r in response.Data.Items)
-            {
-                _applicationService.Account.InterestedRepositories.Insert(new InterestedRepository 
-                { 
-                    Name = r.Name, 
-                    Owner = r.Owner.Login, 
-                    Description = r.Description, 
-                    InterestId = interest.Id,
-                    Stars = r.StargazersCount,
-                    Forks = r.ForksCount,
-                    ImageUrl = r.Owner.AvatarUrl
-                });
+                _applicationService.Account.Interests.Update(interest);
             }
         }
 
@@ -165,6 +165,33 @@ namespace RepositoryStumble.Core.ViewModels.Stumble
         {
             public StumbledRepository Repository { get; set; }
             public Interest Interest { get; set; }
+        }
+
+        public class SearchRequest : Octokit.SearchRepositoriesRequest
+        {
+            public SearchRequest(string term) : base(term)
+            {
+            }
+             
+            public string Language { get; set; }
+
+            public new IDictionary<string, string> Parameters
+            {
+                get
+                {
+                    var parameters = MergeParameters();
+                    if (Language != null)
+                        parameters += (String.Format(CultureInfo.InvariantCulture, "+language:{0}", Language));
+
+                    var d = new Dictionary<string, string>();
+                    d.Add("page", Page.ToString());
+                    d.Add("per_page", PerPage.ToString());
+                    d.Add("sort", Sort.ToString());
+                    d.Add("q", Term + " " + parameters); //add qualifiers onto the search term
+                    return d;
+                }
+            }
+
         }
     }
 }

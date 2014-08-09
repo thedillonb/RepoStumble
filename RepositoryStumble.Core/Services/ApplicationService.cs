@@ -13,7 +13,7 @@ namespace RepositoryStumble.Core.Services
     {
         private readonly Subject<StumbledRepository> _stumbledRepositories = new Subject<StumbledRepository>();
 
-        public GitHubSharp.Client Client { get; private set; }
+        public Octokit.IGitHubClient Client { get; private set; }
 
         public Account Account { get; private set; }
 
@@ -23,7 +23,9 @@ namespace RepositoryStumble.Core.Services
             if (Account == null)
                 return false;
 
-            Client = GitHubSharp.Client.BasicOAuth(Account.OAuth);
+            var connection = new Octokit.Connection(new Octokit.ProductHeaderValue("RepoStumble"));
+            connection.Credentials = new Octokit.Credentials(Account.OAuth);
+            Client = new Octokit.GitHubClient(connection);
             LoadLikesFromStars();
             return true;
         }
@@ -45,42 +47,36 @@ namespace RepositoryStumble.Core.Services
                     if (!d.ContainsKey(r.Fullname.ToLower()))
                         d.Add(r.Fullname.ToLower(), r);
 
-                var req = Client.AuthenticatedUser.Repositories.GetStarred();
-                while (req != null)
+                var repos = await Client.Activity.Starring.GetAllForCurrent();
+                foreach (var x in repos)
                 {
-                    var repos = await Client.ExecuteAsync(req);
-                    foreach (var x in repos.Data)
+                    StumbledRepository repository;
+                    if (!d.TryGetValue(x.FullName.ToLower(), out repository))
                     {
-                        StumbledRepository repository;
-                        if (!d.TryGetValue(x.FullName.ToLower(), out repository))
-                        {
-                            var newRepo = new StumbledRepository
-                            { 
-                                Name = x.Name, 
-                                Owner = x.Owner.Login,
-                                Fullname = x.FullName, 
-                                Description = x.Description,
-                                Stars = x.StargazersCount,
-                                Forks = x.Forks,
-                                ImageUrl = x.Owner.AvatarUrl,
-                                Liked = true,
-                                ShowInHistory = false
-                            };
+                        var newRepo = new StumbledRepository
+                        { 
+                            Name = x.Name, 
+                            Owner = x.Owner.Login,
+                            Fullname = x.FullName, 
+                            Description = x.Description,
+                            Stars = x.WatchersCount,
+                            Forks = x.ForksCount,
+                            ImageUrl = x.Owner.AvatarUrl,
+                            Liked = true,
+                            ShowInHistory = false
+                        };
 
-                            Account.StumbledRepositories.Insert(newRepo);
-                            _stumbledRepositories.OnNext(newRepo);
-                        }
-                        else
+                        Account.StumbledRepositories.Insert(newRepo);
+                        _stumbledRepositories.OnNext(newRepo);
+                    }
+                    else
+                    {
+                        if (!string.Equals(repository.ImageUrl, x.Owner.AvatarUrl, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            if (!string.Equals(repository.ImageUrl, x.Owner.AvatarUrl, StringComparison.InvariantCultureIgnoreCase))
-                            {
-                                repository.ImageUrl = x.Owner.AvatarUrl;
-                                Account.StumbledRepositories.Update(repository);
-                            }
+                            repository.ImageUrl = x.Owner.AvatarUrl;
+                            Account.StumbledRepositories.Update(repository);
                         }
                     }
-
-                    req = repos.More;
                 }
             }
             catch (Exception e)

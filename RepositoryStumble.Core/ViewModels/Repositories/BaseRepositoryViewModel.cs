@@ -2,7 +2,6 @@
 using Xamarin.Utilities.Core.ViewModels;
 using ReactiveUI;
 using RepositoryStumble.Core.Services;
-using GitHubSharp.Models;
 using System.Diagnostics;
 using RepositoryStumble.Core.Data;
 using System.Reactive.Linq;
@@ -30,8 +29,8 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
             private set { this.RaiseAndSetIfChanged(ref _readme, value); }
         }
 
-        private RepositoryModel _repository;
-        public RepositoryModel Repository
+        private Octokit.Repository _repository;
+        public Octokit.Repository Repository
         {
             get { return _repository; }
             private set { this.RaiseAndSetIfChanged(ref _repository, value); }
@@ -78,14 +77,14 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
                 {
                     StumbledRepository.Liked = true;
                     StumbledRepository.Description = Repository.Description;
-                    StumbledRepository.Forks = Repository.Forks;
-                    StumbledRepository.Stars = Repository.StargazersCount;
+                    StumbledRepository.Forks = Repository.ForksCount;
+                    StumbledRepository.Stars = Repository.WatchersCount;
                     StumbledRepository.ImageUrl = Repository.Owner.AvatarUrl;
                     applicationService.Account.StumbledRepositories.Update(StumbledRepository);
                 }
 
                 if (applicationService.Account.SyncWithGitHub)
-                    applicationService.Client.ExecuteAsync(applicationService.Client.Users[Repository.Owner.Login].Repositories[Repository.Name].Star());
+                    applicationService.Client.Activity.Starring.StarRepo(Repository.Owner.Login, Repository.Name);
 
                 Liked = true;
             });
@@ -104,14 +103,14 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
                 {
                     StumbledRepository.Liked = false;
                     StumbledRepository.Description = Repository.Description;
-                    StumbledRepository.Forks = Repository.Forks;
-                    StumbledRepository.Stars = Repository.StargazersCount;
+                    StumbledRepository.Forks = Repository.ForksCount;
+                    StumbledRepository.Stars = Repository.WatchersCount;
                     StumbledRepository.ImageUrl = Repository.Owner.AvatarUrl;
                     applicationService.Account.StumbledRepositories.Update(StumbledRepository);
                 }
 
                 if (applicationService.Account.SyncWithGitHub)
-                    applicationService.Client.ExecuteAsync(applicationService.Client.Users[Repository.Owner.Login].Repositories[Repository.Name].Unstar());
+                    applicationService.Client.Activity.Starring.RemoveStarFromRepo(Repository.Owner.Login, Repository.Name);
 
                 Liked = false;
             });
@@ -132,14 +131,12 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
 
             LoadCommand = ReactiveCommand.CreateAsyncTask(this.WhenAnyValue(x => x.RepositoryIdentifier).Select(x => x != null), async t =>
             {
-                var repo = applicationService.Client.Users[RepositoryIdentifier.Owner].Repositories[RepositoryIdentifier.Name];
-                Repository = (await applicationService.Client.ExecuteAsync(repo.Get())).Data;
-                CollaboratorCount = (await applicationService.Client.ExecuteAsync(repo.GetCollaborators())).Data.Count;
+                Repository = (await applicationService.Client.Repository.Get(RepositoryIdentifier.Owner, RepositoryIdentifier.Name));
+                CollaboratorCount = (await applicationService.Client.Repository.RepoCollaborators.GetAll(RepositoryIdentifier.Owner, RepositoryIdentifier.Name)).Count;
 
                 try
                 {
-                    var readme = await applicationService.Client.ExecuteAsync(repo.GetReadme());
-                    Readme = await applicationService.Client.Markdown.GetMarkdown(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(readme.Data.Content)));
+                    Readme = await applicationService.Client.Repository.GetReadmeHtml(RepositoryIdentifier.Owner, RepositoryIdentifier.Name);
                 }
                 catch (Exception e)
                 {
@@ -165,12 +162,12 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
             return new StumbledRepository 
             {
                 Description = Repository.Description,
-                Forks = Repository.Forks,
+                Forks = Repository.ForksCount,
                 Fullname = Repository.FullName,
                 ImageUrl = Repository.Owner.AvatarUrl,
                 Name = Repository.Name,
                 Owner = Repository.Owner.Login,
-                Stars = Repository.StargazersCount
+                Stars = Repository.WatchersCount
             };
         }
 

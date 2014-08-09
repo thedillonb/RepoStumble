@@ -1,5 +1,4 @@
 ﻿using System;
-using GitHubSharp.Models;
 using ReactiveUI;
 using Xamarin.Utilities.Core.ViewModels;
 using RepositoryStumble.Core.Services;
@@ -9,6 +8,7 @@ using Xamarin.Utilities.Core.Services;
 using RepositoryStumble.Core.Data;
 using System.Reactive.Linq;
 using System.Threading;
+using Octokit;
 
 namespace RepositoryStumble.Core.ViewModels.Profile
 {
@@ -21,8 +21,8 @@ namespace RepositoryStumble.Core.ViewModels.Profile
             private set { this.RaiseAndSetIfChanged(ref _username, value); }
         }
 
-        private UserModel _userModel;
-        public UserModel User
+        private User _userModel;
+        public User User
         {
             get { return _userModel; }
             private set { this.RaiseAndSetIfChanged(ref _userModel, value); }
@@ -150,8 +150,7 @@ namespace RepositoryStumble.Core.ViewModels.Profile
    
             LoadCommand = ReactiveCommand.CreateAsyncTask(async t =>
             {
-                var ret = await applicationService.Client.ExecuteAsync(applicationService.Client.Users[Username].Get());
-                User = ret.Data;
+                User = await applicationService.Client.User.Current();
             });
 
             LoadCommand.TriggerNetworkActivity(networkActivity);

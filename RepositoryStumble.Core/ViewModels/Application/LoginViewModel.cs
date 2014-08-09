@@ -35,12 +35,17 @@ namespace RepositoryStumble.Core.ViewModels.Application
             LoginCommand = ReactiveCommand.CreateAsyncTask(async t =>
             {
                 var account = new Account();
-                var token = await GitHubSharp.Client.RequestAccessToken(ClientId, ClientSecret, LoginCode, null);
-                var client = GitHubSharp.Client.BasicOAuth(token.AccessToken);
-                var info = await client.ExecuteAsync(client.AuthenticatedUser.GetInfo());
-                account.AvatarUrl = info.Data.AvatarUrl;
-                account.Username = info.Data.Login;
-                account.Fullname = info.Data.Name;
+
+                var connection = new Octokit.Connection(new Octokit.ProductHeaderValue("RepoStumble"));
+                var client = new Octokit.OauthClient(connection);
+                var token = await client.CreateAccessToken(new Octokit.OauthTokenRequest(ClientId, ClientSecret, LoginCode));
+
+                connection.Credentials = new Octokit.Credentials(token.AccessToken);
+                var githubClient = new Octokit.GitHubClient(connection);
+                var info = await githubClient.User.Current();
+                account.AvatarUrl = info.AvatarUrl;
+                account.Username = info.Login;
+                account.Fullname = info.Name;
                 account.OAuth = token.AccessToken;
                 account.Save();
 
