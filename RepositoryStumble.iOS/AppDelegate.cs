@@ -4,7 +4,6 @@ using MonoTouch.UIKit;
 using RepositoryStumble.Core.Messages;
 using RepositoryStumble.Core.ViewModels.Application;
 using MTiRate;
-using Parse;
 using ReactiveUI;
 using System.Threading;
 using System.Reactive;
@@ -40,13 +39,6 @@ namespace RepositoryStumble
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
             StampInstallDate();
-
-			// Initialize the Parse client with your Application ID and .NET Key found on
-			// your Parse dashboard
-			ParseClient.Initialize("BNE1MlfKES62wVbAkEhBuVL5sxSsTbWtmQAp4fNl",
-				"rPcGNYwXJqOpNjeP0tMBHCf4d7oUpnUFhPUosfSQ");
-
-			ParseAnalytics.TrackAppOpenedAsync();
 
             RxApp.MainThreadScheduler = new SynchronizationContextScheduler(SynchronizationContext.Current);
             RxApp.DefaultExceptionHandler = Observer.Create((Exception e) =>

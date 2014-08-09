@@ -1,9 +1,7 @@
 ﻿using System;
 using Xamarin.Utilities.Core.ViewModels;
-using RepositoryStumble.Core.Services;
 using Xamarin.Utilities.Core.Services;
 using ReactiveUI;
-using Xamarin.Utilities.Core.ReactiveAddons;
 using RepositoryStumble.Core.ViewModels.Repositories;
 using System.Reactive.Linq;
 using System.Collections.Generic;
@@ -25,7 +23,7 @@ namespace RepositoryStumble.Core.ViewModels.Trending
         };
         private readonly Language _defaultLanguage = new Language { Name = "All Languages", Slug = null };
 
-        public ReactiveCollection<TrendingRepositoryViewModel> Repositories { get; private set; }
+        public IReadOnlyReactiveCollection<TrendingRepositoryViewModel> Repositories { get; private set; }
 
         private Language _selectedLanguage;
         public Language SelectedLanguage
@@ -45,8 +43,8 @@ namespace RepositoryStumble.Core.ViewModels.Trending
             _jsonHttpClient = jsonHttpClient;
             SelectedLanguage = _defaultLanguage;
 
-            Repositories = new ReactiveCollection<TrendingRepositoryViewModel>();
-            Repositories.GroupFunc = x => x.Time;
+            var repositories = new ReactiveList<TrendingRepositoryViewModel>();
+            Repositories = repositories.CreateDerivedCollection(x => x);
 
             GoToRepositoryCommand = ReactiveCommand.Create();
             GoToRepositoryCommand.OfType<RepositoryModel>().Subscribe(x =>
@@ -83,7 +81,7 @@ namespace RepositoryStumble.Core.ViewModels.Trending
                     var repos = await _jsonHttpClient.Get<List<RepositoryModel>>(TrendingUrl + query);
                     tempRepos.AddRange(repos.Select(x => new TrendingRepositoryViewModel { Repository = x, Time = t.Name } ));
                 }
-                Repositories.Reset(tempRepos);
+                repositories.Reset(tempRepos);
             });
 
             LoadCommand.TriggerNetworkActivity(networkActivity);

@@ -3,6 +3,7 @@ using Xamarin.Utilities.ViewControllers;
 using RepositoryStumble.Core.ViewModels.Application;
 using ReactiveUI;
 using System;
+using System.Threading;
 
 namespace RepositoryStumble.ViewControllers.Application
 {

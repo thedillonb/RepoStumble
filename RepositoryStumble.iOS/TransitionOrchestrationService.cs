@@ -10,7 +10,7 @@ using RepositoryStumble.ViewControllers.Stumble;
 using RepositoryStumble.ViewControllers.Languages;
 using RepositoryStumble.ViewControllers.Trending;
 using RepositoryStumble.Transitions;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RepositoryStumble
 {
@@ -23,8 +23,9 @@ namespace RepositoryStumble
             var toViewController = (UIViewController) toView;
             var toViewModel = (IBaseViewModel) toView.ViewModel;
 
-            fromViewController.BeginInvokeOnMainThread(
+            fromViewController.InvokeOnMainThread(
                 () => DoTransition(fromViewController, fromViewModel, toViewController, toViewModel));
+
         }
 
         private static void DoTransition(UIViewController fromViewController, IBaseViewModel fromViewModel,
@@ -78,7 +79,5 @@ namespace RepositoryStumble
                 fromViewController.NavigationController.PushViewController(toViewController, true);
             }
         }
-
-
     }
 }

@@ -35,7 +35,7 @@ namespace RepositoryStumble.ViewControllers.Trending
         {
             base.ViewDidLoad();
 
-            var titleButton = new TitleButton { Frame = new System.Drawing.RectangleF(0, 0, 320f, 44f) };
+            var titleButton = new TitleButton { Frame = new RectangleF(0, 0, 320f, 44f) };
             titleButton.TouchUpInside += (sender, e) => ViewModel.GoToLanguages.ExecuteIfCan();
             ViewModel.WhenAnyValue(x => x.SelectedLanguage).Subscribe(x => titleButton.Text = x.Name);
             NavigationItem.TitleView = titleButton;
@@ -46,10 +46,10 @@ namespace RepositoryStumble.ViewControllers.Trending
             ViewModel.Repositories.Changed.Subscribe(_ =>
             {
                 var sections = new List<Section>();
-                var repoGroups = ViewModel.Repositories.GroupBy(ViewModel.Repositories.GroupFunc);
+                var repoGroups = ViewModel.Repositories.GroupBy(x => x.Time);
                 foreach (var g in repoGroups)
                 {
-                    var sec = new Section(CreateHeaderView(g.Key.ToString()));
+                    var sec = new Section(CreateHeaderView(g.Key));
                     foreach (var x in g.Select(x => x.Repository))
                         sec.Add(new RepositoryElement(x.Owner, x.Name, x.Description, x.AvatarUrl, () => ViewModel.GoToRepositoryCommand.ExecuteIfCan(x)));
                     sections.Add(sec);

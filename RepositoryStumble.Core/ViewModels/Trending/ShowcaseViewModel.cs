@@ -5,6 +5,7 @@ using RepositoryStumble.Core.Data;
 using Xamarin.Utilities.Core.Services;
 using Xamarin.Utilities.Core.ViewModels;
 using RepositoryStumble.Core.ViewModels.Repositories;
+using Akavache;
 
 namespace RepositoryStumble.Core.ViewModels.Trending
 {
@@ -32,7 +33,7 @@ namespace RepositoryStumble.Core.ViewModels.Trending
 
         public IReactiveCommand LoadCommand { get; private set; }
 
-        public ShowcaseViewModel(IJsonHttpClientService jsonHttpClientService, INetworkActivityService networkActivity)
+        public ShowcaseViewModel(IJsonSerializationService jsonSerializationService, INetworkActivityService networkActivity)
         {
             Title = "Showcase";
 
@@ -49,10 +50,11 @@ namespace RepositoryStumble.Core.ViewModels.Trending
             LoadCommand = ReactiveCommand.CreateAsyncTask(async t =>
             {
                 var url = string.Format("http://trending.codehub-app.com/showcases/{0}", ShowcaseSlug);
-                var data = await jsonHttpClientService.Get<ShowcaseRepositories>(url);
-                Title = data.Name;
-                Showcase = new Showcase {Slug = data.Slug, Description = data.Description, Name = data.Name};
-                repositories.Reset(data.Repositories);
+                var data = await BlobCache.LocalMachine.DownloadUrl(url, absoluteExpiration: DateTimeOffset.Now.AddDays(1));
+                var showcaseRepos = jsonSerializationService.Deserialize<ShowcaseRepositories>(System.Text.Encoding.UTF8.GetString(data));
+                Title = showcaseRepos.Name;
+                Showcase = new Showcase {Slug = showcaseRepos.Slug, Description = showcaseRepos.Description, Name = showcaseRepos.Name};
+                repositories.Reset(showcaseRepos.Repositories);
             });
             LoadCommand.TriggerNetworkActivity(networkActivity);
         }

@@ -16,7 +16,7 @@ namespace RepositoryStumble.Core.ViewModels.Interests
 
         public IReactiveCommand<object> GoToLanguagesCommand { get; private set; }
 
-        public IReactiveCommand<object> DoneCommand { get; private set; }
+        public IReactiveCommand DoneCommand { get; private set; }
 
         public ReactiveList<PopularInterest> PopularInterests { get; private set; }
 
@@ -36,8 +36,7 @@ namespace RepositoryStumble.Core.ViewModels.Interests
 
         public AddInterestViewModel(IApplicationService applicationService, IJsonSerializationService jsonSerializationService)
         {
-            DoneCommand = ReactiveCommand.Create();
-            DoneCommand.Subscribe(_ =>
+            DoneCommand = ReactiveCommand.CreateAsyncTask(async _ =>
             {
                 if (SelectedLanguage == null)
                     throw new Exception("You must select a language for your interest!");
@@ -51,7 +50,7 @@ namespace RepositoryStumble.Core.ViewModels.Interests
                     Keyword = _keyword
                 });
 
-                DismissCommand.ExecuteIfCan();
+                await DismissCommand.ExecuteAsync();
             });
 
             GoToLanguagesCommand = ReactiveCommand.Create();

@@ -4,11 +4,14 @@ using Xamarin.Utilities.Core.ViewModels;
 using System.Collections.Generic;
 using RepositoryStumble.Core.Data;
 using Xamarin.Utilities.Core.Services;
+using System.Reactive.Linq;
+using Akavache;
 
 namespace RepositoryStumble.Core.ViewModels.Languages
 {
     public class LanguagesViewModel : BaseViewModel, ILoadableViewModel
     {
+        private const string LanguagesUrl = "http://trending.codehub-app.com/languages";
         private readonly ReactiveList<Language> _languages = new ReactiveList<Language>();
 
         public IReactiveCommand LoadCommand { get; private set; }
@@ -31,7 +34,7 @@ namespace RepositoryStumble.Core.ViewModels.Languages
 
         public List<Language> ExtraLanguages { get; private set; }
 
-        public LanguagesViewModel(IJsonHttpClientService jsonHttpClientService, INetworkActivityService networkActivity)
+        public LanguagesViewModel(IJsonSerializationService jsonSerializationService, INetworkActivityService networkActivity)
         {
             ExtraLanguages = new List<Language>();
 
@@ -42,7 +45,8 @@ namespace RepositoryStumble.Core.ViewModels.Languages
 
             LoadCommand = ReactiveCommand.CreateAsyncTask(async t =>
             {
-                var langs = await jsonHttpClientService.Get<List<Language>>("http://trending.codehub-app.com/languages");
+                var trendingData = await BlobCache.LocalMachine.DownloadUrl(LanguagesUrl, absoluteExpiration: DateTimeOffset.Now.AddDays(1));
+                var langs = jsonSerializationService.Deserialize<List<Language>>(System.Text.Encoding.UTF8.GetString(trendingData));
                 langs.InsertRange(0, ExtraLanguages);
                 _languages.Reset(langs);
             });
