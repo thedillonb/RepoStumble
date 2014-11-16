@@ -13,8 +13,6 @@ namespace RepositoryStumble.Core.ViewModels.Trending
 {
     public class TrendingViewModel : BaseViewModel, ILoadableViewModel
     {
-        private const string TrendingUrl = "http://trending.codehub-app.com/trending";
-        private readonly IJsonHttpClientService _jsonHttpClient;
         private readonly TimeModel[] _times = 
         {
             new TimeModel { Name = "Daily", Slug = "daily" },
@@ -38,19 +36,18 @@ namespace RepositoryStumble.Core.ViewModels.Trending
 
         public IReactiveCommand LoadCommand { get; private set; }
 
-        public TrendingViewModel(INetworkActivityService networkActivity, IJsonHttpClientService jsonHttpClient)
+        public TrendingViewModel(INetworkActivityService networkActivity, TrendingRepository trendingRepository)
         {
-            _jsonHttpClient = jsonHttpClient;
             SelectedLanguage = _defaultLanguage;
 
             var repositories = new ReactiveList<TrendingRepositoryViewModel>();
             Repositories = repositories.CreateDerivedCollection(x => x);
 
             GoToRepositoryCommand = ReactiveCommand.Create();
-            GoToRepositoryCommand.OfType<RepositoryModel>().Subscribe(x =>
+            GoToRepositoryCommand.OfType<Octokit.Repository>().Subscribe(x =>
             {
                 var vm = CreateViewModel<RepositoryViewModel>();
-                vm.RepositoryIdentifier = new BaseRepositoryViewModel.RepositoryIdentifierModel(x.Owner, x.Name);
+                vm.RepositoryIdentifier = new BaseRepositoryViewModel.RepositoryIdentifierModel(x.Owner.Login, x.Name);
                 ShowViewModel(vm);
             });
 
@@ -75,10 +72,8 @@ namespace RepositoryStumble.Core.ViewModels.Trending
                 var tempRepos = new List<TrendingRepositoryViewModel>();
                 foreach (var t in _times)
                 {
-                    var query = "?since=" + t.Slug;
-                    if (SelectedLanguage != null && SelectedLanguage.Slug != null)
-                        query += string.Format("&language={0}", SelectedLanguage.Slug);
-                    var repos = await _jsonHttpClient.Get<List<RepositoryModel>>(TrendingUrl + query);
+                    var language = SelectedLanguage == null ? null : SelectedLanguage.Slug;
+                    var repos = await trendingRepository.GetTrendingRepositories(t.Slug, language);
                     tempRepos.AddRange(repos.Select(x => new TrendingRepositoryViewModel { Repository = x, Time = t.Name } ));
                 }
                 repositories.Reset(tempRepos);
@@ -114,20 +109,9 @@ namespace RepositoryStumble.Core.ViewModels.Trending
 
         }
 
-        public class RepositoryModel
-        {
-            public string Url { get; set; }
-            public string Owner { get; set; }
-            public string Name { get; set; }
-            public string Description { get; set; }
-            public string AvatarUrl { get; set; }
-            public int Stars { get; set; }
-            public int Forks { get; set; }
-        }
-
         public class TrendingRepositoryViewModel
         {
-            public RepositoryModel Repository { get; set; }
+            public Octokit.Repository Repository { get; set; }
             public string Time { get; set; }
         }
     }

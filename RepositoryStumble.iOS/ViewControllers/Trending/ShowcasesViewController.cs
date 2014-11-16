@@ -18,7 +18,7 @@ namespace RepositoryStumble.ViewControllers.Trending
             base.ViewDidLoad();
 
             this.BindList(ViewModel.Showcases, x => new ShowcaseElement(x.Name, x.Description, 
-                "http://trending.codehub-app.com/" + x.Image, () => ViewModel.GoToShowcaseCommand.ExecuteIfCan(x)));
+                x.ImageUrl, () => ViewModel.GoToShowcaseCommand.ExecuteIfCan(x)));
         }
     }
 }

@@ -43,11 +43,11 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
             private set { this.RaiseAndSetIfChanged(ref _stumbledRepository, value); }
         }
 
-        private int? _collaboratorCount;
-        public int? CollaboratorCount
+        private int? _contributorCount;
+        public int? ContributorCount
         {
-            get { return _collaboratorCount; }
-            private set { this.RaiseAndSetIfChanged(ref _collaboratorCount, value); }
+            get { return _contributorCount; }
+            private set { this.RaiseAndSetIfChanged(ref _contributorCount, value); }
         }
 
         private bool? _liked;
@@ -132,7 +132,7 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
             LoadCommand = ReactiveCommand.CreateAsyncTask(this.WhenAnyValue(x => x.RepositoryIdentifier).Select(x => x != null), async t =>
             {
                 Repository = (await applicationService.Client.Repository.Get(RepositoryIdentifier.Owner, RepositoryIdentifier.Name));
-                CollaboratorCount = (await applicationService.Client.Repository.RepoCollaborators.GetAll(RepositoryIdentifier.Owner, RepositoryIdentifier.Name)).Count;
+                ContributorCount = (await applicationService.Client.Repository.GetAllContributors(RepositoryIdentifier.Owner, RepositoryIdentifier.Name)).Count;
 
                 try
                 {
@@ -153,7 +153,7 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
             Readme = null;
             Liked = null;
             Repository = null;
-            CollaboratorCount = null;
+            ContributorCount = null;
             StumbledRepository = null;
         }
 

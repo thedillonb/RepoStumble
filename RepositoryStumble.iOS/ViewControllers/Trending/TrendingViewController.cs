@@ -50,8 +50,8 @@ namespace RepositoryStumble.ViewControllers.Trending
                 foreach (var g in repoGroups)
                 {
                     var sec = new Section(CreateHeaderView(g.Key));
-                    foreach (var x in g.Select(x => x.Repository))
-                        sec.Add(new RepositoryElement(x.Owner, x.Name, x.Description, x.AvatarUrl, () => ViewModel.GoToRepositoryCommand.ExecuteIfCan(x)));
+                    foreach (var x in g.Select(x => x.Repository).Where(x => x.Owner != null))
+                        sec.Add(new RepositoryElement(x.Owner.Login, x.Name, x.Description, x.Owner.AvatarUrl, () => ViewModel.GoToRepositoryCommand.ExecuteIfCan(x)));
                     sections.Add(sec);
                 }
                 Root.Reset(sections);

@@ -5,13 +5,12 @@ using RepositoryStumble.Core.Data;
 using Xamarin.Utilities.Core.Services;
 using Xamarin.Utilities.Core.ViewModels;
 using RepositoryStumble.Core.ViewModels.Repositories;
-using Akavache;
 
 namespace RepositoryStumble.Core.ViewModels.Trending
 {
     public class ShowcaseViewModel : BaseViewModel, ILoadableViewModel
     {
-        public IReadOnlyReactiveList<ShowcaseRepository> Repositories { get; private set; }
+        public IReadOnlyReactiveList<Octokit.Repository> Repositories { get; private set; }
 
         public IReactiveCommand<object> GoToRepositoryCommand { get; private set; }
 
@@ -33,25 +32,23 @@ namespace RepositoryStumble.Core.ViewModels.Trending
 
         public IReactiveCommand LoadCommand { get; private set; }
 
-        public ShowcaseViewModel(IJsonSerializationService jsonSerializationService, INetworkActivityService networkActivity)
+        public ShowcaseViewModel(INetworkActivityService networkActivity, ShowcaseRepository showcaseRepository)
         {
             Title = "Showcase";
 
             GoToRepositoryCommand = ReactiveCommand.Create();
-            GoToRepositoryCommand.OfType<ShowcaseRepository>().Subscribe(x =>
+            GoToRepositoryCommand.OfType<Octokit.Repository>().Subscribe(x =>
             {
                 var vm = CreateViewModel<RepositoryViewModel>();
-                vm.RepositoryIdentifier = new BaseRepositoryViewModel.RepositoryIdentifierModel(x.Owner, x.Name);
+                vm.RepositoryIdentifier = new BaseRepositoryViewModel.RepositoryIdentifierModel(x.Owner.Login, x.Name);
                 ShowViewModel(vm);
             });
 
-            var repositories = new ReactiveList<ShowcaseRepository>();
+            var repositories = new ReactiveList<Octokit.Repository>();
             Repositories = repositories;
             LoadCommand = ReactiveCommand.CreateAsyncTask(async t =>
             {
-                var url = string.Format("http://trending.codehub-app.com/showcases/{0}", ShowcaseSlug);
-                var data = await BlobCache.LocalMachine.DownloadUrl(url, absoluteExpiration: DateTimeOffset.Now.AddDays(1));
-                var showcaseRepos = jsonSerializationService.Deserialize<ShowcaseRepositories>(System.Text.Encoding.UTF8.GetString(data));
+                var showcaseRepos = await showcaseRepository.GetShowcaseRepositories(ShowcaseSlug);
                 Title = showcaseRepos.Name;
                 Showcase = new Showcase {Slug = showcaseRepos.Slug, Description = showcaseRepos.Description, Name = showcaseRepos.Name};
                 repositories.Reset(showcaseRepos.Repositories);

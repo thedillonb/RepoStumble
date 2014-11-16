@@ -9,9 +9,9 @@ namespace RepositoryStumble.Elements
 {
     public class RepositoryElement : Element, IImageUpdated, IElementSizing
     {
-        private string _name;
-        private string _owner;
-        private string _description;
+        private readonly string _name;
+        private readonly string _owner;
+        private readonly string _description;
         private string _imageUrl;
         private UIImage _image;
         private Action _tapped;

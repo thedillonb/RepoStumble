@@ -52,7 +52,15 @@ namespace RepositoryStumble.Elements
                 cell = ShowcaseTableViewCell.Create();
             }
 
-            cell.Image = ImageLoader.DefaultRequestImage(new Uri(_imageUrl), this);
+            try
+            {
+                cell.Image = ImageLoader.DefaultRequestImage(new Uri(_imageUrl), this);
+            }
+            catch
+            {
+                cell.Image = null;
+            }
+
             cell.Description = _description;
             cell.Name = _name;
             return cell;

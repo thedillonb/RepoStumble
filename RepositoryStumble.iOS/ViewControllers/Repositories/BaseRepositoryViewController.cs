@@ -63,7 +63,7 @@ namespace RepositoryStumble.ViewControllers.Repositories
 
             this.WhenAnyValue(x => x.ViewModel)
                 .Where(x => x != null)
-                .Select(x => x.WhenAnyValue(y => y.CollaboratorCount))
+                .Select(x => x.WhenAnyValue(y => y.ContributorCount))
                 .Switch()
                 .Subscribe(x => collaborators.Text = x.HasValue ? x.Value.ToString() : "-");
 

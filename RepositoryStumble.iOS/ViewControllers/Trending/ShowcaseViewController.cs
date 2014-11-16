@@ -20,7 +20,7 @@ namespace RepositoryStumble.ViewControllers.Trending
             ViewModel.WhenAnyValue(x => x.Title).Subscribe(x => Title = x);
 
             this.BindList(ViewModel.Repositories, x =>
-                new RepositoryElement(x.Owner, x.Name, x.Description, x.AvatarUrl, () => ViewModel.GoToRepositoryCommand.ExecuteIfCan(x)));
+                new RepositoryElement(x.Owner.Login, x.Name, x.Description, x.Owner.AvatarUrl, () => ViewModel.GoToRepositoryCommand.ExecuteIfCan(x)));
         }
     }
 }

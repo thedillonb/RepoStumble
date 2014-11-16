@@ -115,7 +115,7 @@ namespace RepositoryStumble.Core.ViewModels.Profile
                     updateStumbled();
 
                     d(applicationService.RepositoryAdded
-                        .Buffer(TimeSpan.FromSeconds(1))
+                        .Buffer(TimeSpan.FromSeconds(5))
                         .Where(x => x.Count > 0)
                         .ObserveOn(SynchronizationContext.Current)
                         .Subscribe(x => updateStumbled()));
