@@ -71,7 +71,7 @@ namespace RepositoryStumble.Core.ViewModels.Stumble
                 var search = new SearchRequest(interest.Keyword);
                 search.In = new List<Octokit.InQualifier>() { Octokit.InQualifier.Description, Octokit.InQualifier.Name, Octokit.InQualifier.Readme };
                 search.Language = interest.LanguageId;
-                search.Sort = Octokit.RepoSearchSort.Stars;
+				search.SortField = Octokit.RepoSearchSort.Stars;
                 search.Page = Convert.ToInt32(interest.NextPage) + 1;
                 var apiConnection = new Octokit.ApiConnection(_applicationService.Client.Connection);
                 var response = await apiConnection.Get<Octokit.SearchRepositoryResult>(Octokit.ApiUrls.SearchRepositories(), search.Parameters);
@@ -172,26 +172,15 @@ namespace RepositoryStumble.Core.ViewModels.Stumble
             public SearchRequest(string term) : base(term)
             {
             }
-             
-            public string Language { get; set; }
 
-            public new IDictionary<string, string> Parameters
-            {
-                get
-                {
-                    var parameters = MergeParameters();
-                    if (Language != null)
-                        parameters += (String.Format(CultureInfo.InvariantCulture, "+language:{0}", Language));
+			public new string Language { get; set; }
 
-                    var d = new Dictionary<string, string>();
-                    d.Add("page", Page.ToString());
-                    d.Add("per_page", PerPage.ToString());
-                    d.Add("sort", Sort.ToString());
-                    d.Add("q", Term + " " + parameters); //add qualifiers onto the search term
-                    return d;
-                }
-            }
-
+			public override IReadOnlyCollection<string> MergedQualifiers ()
+			{
+				var qualifers = base.MergedQualifiers () as List<string>;
+				qualifers.Add (String.Format (CultureInfo.InvariantCulture, "language:{0}", Language));
+				return qualifers;
+			}
         }
     }
 }

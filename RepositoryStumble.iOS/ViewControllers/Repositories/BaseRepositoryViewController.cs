@@ -224,6 +224,15 @@ namespace RepositoryStumble.ViewControllers.Repositories
                 Add(_activity);
             }
         }
+
+        public override void ViewWillAppear(bool animated)
+        {
+            base.ViewWillAppear(animated);
+            HeaderView.BackgroundColor = NavigationController.NavigationBar.BackgroundColor;
+
+            if (TableView.Subviews.Length > 0)
+                TableView.Subviews[0].BackgroundColor = NavigationController.NavigationBar.BackgroundColor;
+        }
     }
 }
 
