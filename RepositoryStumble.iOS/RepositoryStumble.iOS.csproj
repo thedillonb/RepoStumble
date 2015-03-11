@@ -244,19 +244,6 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup>
-    <BundleResource Include="Resources\Icon%402x.png" />
-    <BundleResource Include="Resources\Icon-60%402x.png" />
-    <BundleResource Include="Resources\Icon-72%402x.png" />
-    <BundleResource Include="Resources\Icon-72.png" />
-    <BundleResource Include="Resources\Icon-76%402x.png" />
-    <BundleResource Include="Resources\Icon-76.png" />
-    <BundleResource Include="Resources\Icon-Small%402x.png" />
-    <BundleResource Include="Resources\Icon-Small-40%402x.png" />
-    <BundleResource Include="Resources\Icon-Small-40.png" />
-    <BundleResource Include="Resources\Icon-Small-50%402x.png" />
-    <BundleResource Include="Resources\Icon-Small-50.png" />
-    <BundleResource Include="Resources\Icon-Small.png" />
-    <BundleResource Include="Resources\Icon.png" />
     <BundleResource Include="Resources\marked.js" />
     <BundleResource Include="Resources\jquery.min.js" />
     <BundleResource Include="Resources\readme.html" />
@@ -275,11 +262,6 @@
     <BundleResource Include="Images\gear%402x.png" />
     <BundleResource Include="Images\gear.png" />
     <BundleResource Include="Resources\popular_interests.json" />
-    <BundleResource Include="Resources\Default-Portrait%402x.png" />
-    <BundleResource Include="Resources\Default-Portrait.png" />
-    <BundleResource Include="Resources\Default-568h%402x.png" />
-    <BundleResource Include="Resources\Default%402x.png" />
-    <BundleResource Include="Resources\Default.png" />
     <BundleResource Include="Images\user%402x.png" />
     <BundleResource Include="Images\user.png" />
     <BundleResource Include="Images\trending%402x.png" />
@@ -296,8 +278,6 @@
     <BundleResource Include="Images\thumb_up_filled%402x.png" />
     <BundleResource Include="Images\down_chevron%402x.png" />
     <BundleResource Include="Images\down_chevron.png" />
-    <BundleResource Include="Resources\Default-Landscape%402x.png" />
-    <BundleResource Include="Resources\Default-Landscape.png" />
     <BundleResource Include="Images\grey_button.png" />
     <BundleResource Include="Images\grey_button%402x.png" />
     <BundleResource Include="Images\purchase_icon%402x.png" />
@@ -309,6 +289,7 @@
     <BundleResource Include="Images\heart_filled%402x.png" />
     <BundleResource Include="Images\center-search_disabled.png" />
     <BundleResource Include="Images\center-search_disabled%402x.png" />
+    <BundleResource Include="Resources\RepoStumbleLogo.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />
@@ -329,5 +310,22 @@
     <InterfaceDefinition Include="TableViewCells\RepositoryTableViewCell.xib" />
     <InterfaceDefinition Include="TableViewCells\ShowcaseTableViewCell.xib" />
     <InterfaceDefinition Include="ViewControllers\Application\PurchaseProViewController.xib" />
+    <InterfaceDefinition Include="Launch.storyboard" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Icon.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Icon%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Icon-60%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Icon-72.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Icon-72%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Icon-76.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Icon-76%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Icon-Small.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Icon-Small%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Icon-Small-50.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Icon-Small-50%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Icon-Small-40.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Icon-Small-40%402x.png" />
   </ItemGroup>
 </Project>

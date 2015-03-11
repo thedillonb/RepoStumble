@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="5">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="4">
+            <objects>
+                <viewController id="5" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="2"/>
+                        <viewControllerLayoutGuide type="bottom" id="3"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="6">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" image="RepoStumbleLogo.png" translatesAutoresizingMaskIntoConstraints="NO" id="9" misplaced="YES">
+                                <rect key="frame" x="43" y="170" width="235" height="228"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="235" id="5Id-jZ-HfS"/>
+                                    <constraint firstAttribute="width" secondItem="9" secondAttribute="height" multiplier="235:228" id="hBF-Am-o2b"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.30588235294117649" green="0.29411764705882354" blue="0.74509803921568629" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="centerX" secondItem="9" secondAttribute="centerX" id="cia-Pe-NHI"/>
+                            <constraint firstAttribute="centerY" secondItem="9" secondAttribute="centerY" id="gUf-bt-hKL"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="262" y="88"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="RepoStumbleLogo.png" width="379" height="360"/>
+        <image name="Icon.png" width="57" height="57"/>
+        <image name="Icon-60.png" width="120" height="120"/>
+        <image name="Icon-72.png" width="72" height="72"/>
+        <image name="Icon-76.png" width="76" height="76"/>
+        <image name="Icon-Small.png" width="29" height="29"/>
+        <image name="Icon-Small-40.png" width="40" height="40"/>
+        <image name="Icon-Small-50.png" width="50" height="50"/>
+        <image name="Images/thumb_down.png" width="32" height="32"/>
+        <image name="Images/thumb_up.png" width="32" height="32"/>
+        <image name="Images/back.png" width="32" height="32"/>
+        <image name="Images/forward.png" width="32" height="32"/>
+        <image name="Images/reload.png" width="32" height="32"/>
+        <image name="Images/center-search.png" width="59" height="58"/>
+        <image name="Images/gear.png" width="24" height="24"/>
+        <image name="Images/user.png" width="25" height="25"/>
+        <image name="Images/trending.png" width="25" height="25"/>
+        <image name="Images/spotlight.png" width="27" height="24"/>
+        <image name="Images/search.png" width="25" height="25"/>
+        <image name="Images/heart.png" width="25" height="25"/>
+        <image name="Images/thumb_down_filled.png" width="32" height="32"/>
+        <image name="Images/thumb_up_filled.png" width="32" height="32"/>
+        <image name="Images/down_chevron.png" width="32" height="32"/>
+        <image name="Images/grey_button.png" width="36" height="36"/>
+        <image name="Images/purchase_icon.png" width="256" height="256"/>
+        <image name="Images/user_filled.png" width="25" height="25"/>
+        <image name="Images/trending_filled.png" width="25" height="25"/>
+        <image name="Images/heart_filled.png" width="25" height="25"/>
+        <image name="Images/center-search_disabled.png" width="59" height="58"/>
+    </resources>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
+</document>

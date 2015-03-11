@@ -9,19 +9,10 @@ namespace RepositoryStumble.ViewControllers.Application
 {
     public class StartupViewController : ViewModelViewController<StartupViewModel>
     {
-        private readonly UIImageView _backgroundImageView = new UIImageView();
-
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-            View.Add(_backgroundImageView);
-        }
-
-        public override void ViewWillLayoutSubviews()
-        {
-            base.ViewWillLayoutSubviews();
-            _backgroundImageView.Image = Xamarin.Utilities.Images.BackgroundHelper.LoadSplashImage();
-            _backgroundImageView.Frame = View.Bounds;
+            View.BackgroundColor = UIColor.FromRGB(0x4e, 0x4b, 0xbe);
         }
 
         public override void ViewDidAppear(bool animated)
