@@ -4,7 +4,7 @@
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
-using MonoTouch.Foundation;
+using Foundation;
 using System.CodeDom.Compiler;
 
 namespace RepositoryStumble.ViewControllers.Application
@@ -13,22 +13,22 @@ namespace RepositoryStumble.ViewControllers.Application
 	partial class PurchaseProViewController
 	{
 		[Outlet]
-		MonoTouch.UIKit.UIButton CancelButton { get; set; }
+		UIKit.UIButton CancelButton { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UILabel DescriptionLabel { get; set; }
+		UIKit.UILabel DescriptionLabel { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIImageView MainImageView { get; set; }
+		UIKit.UIImageView MainImageView { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIButton PurchaseButton { get; set; }
+		UIKit.UIButton PurchaseButton { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIButton RestoreButton { get; set; }
+		UIKit.UIButton RestoreButton { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UILabel TitleLabel { get; set; }
+		UIKit.UILabel TitleLabel { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{

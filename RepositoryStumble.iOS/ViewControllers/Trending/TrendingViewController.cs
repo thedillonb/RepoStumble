@@ -1,14 +1,13 @@
-﻿using System;
+using System;
 using RepositoryStumble.Core.ViewModels.Trending;
-using Xamarin.Utilities.ViewControllers;
 using Xamarin.Utilities.DialogElements;
 using ReactiveUI;
 using System.Linq;
 using RepositoryStumble.Elements;
 using System.Collections.Generic;
-using MonoTouch.UIKit;
+using UIKit;
 using System.Reactive.Linq;
-using System.Drawing;
+using CoreGraphics;
 
 namespace RepositoryStumble.ViewControllers.Trending
 {
@@ -35,13 +34,13 @@ namespace RepositoryStumble.ViewControllers.Trending
         {
             base.ViewDidLoad();
 
-            var titleButton = new TitleButton { Frame = new RectangleF(0, 0, 320f, 44f) };
+            var titleButton = new TitleButton { Frame = new CGRect(0, 0, 320f, 44f) };
             titleButton.TouchUpInside += (sender, e) => ViewModel.GoToLanguages.ExecuteIfCan();
             ViewModel.WhenAnyValue(x => x.SelectedLanguage).Subscribe(x => titleButton.Text = x.Name);
             NavigationItem.TitleView = titleButton;
 
             ViewModel.LoadCommand.IsExecuting.Where(x => x).Subscribe(_ =>
-                TableView.ScrollRectToVisible(new System.Drawing.RectangleF(0, 0, 1, 1), true));
+                TableView.ScrollRectToVisible(new CGRect(0, 0, 1, 1), true));
 
             ViewModel.Repositories.Changed.Subscribe(_ =>
             {
@@ -60,7 +59,7 @@ namespace RepositoryStumble.ViewControllers.Trending
 
         private static UILabel CreateHeaderView(string name)
         {
-            var v = new UILabel(new RectangleF(0, 0, 320f, 26f)) { BackgroundColor = UINavigationBar.Appearance.BarTintColor };
+            var v = new UILabel(new CGRect(0, 0, 320f, 26f)) { BackgroundColor = UINavigationBar.Appearance.BarTintColor };
             v.Text = name;
             v.Font = UIFont.BoldSystemFontOfSize(14f);
             v.TextColor = UINavigationBar.Appearance.TintColor;
@@ -91,7 +90,7 @@ namespace RepositoryStumble.ViewControllers.Trending
                 Add(_label);
 
                 _imageView = new UIImageView();
-                _imageView.Frame = new System.Drawing.RectangleF(0, 0, 12, 12);
+                _imageView.Frame = new CGRect(0, 0, 12, 12);
                 _imageView.TintColor = UINavigationBar.Appearance.TintColor;
                 _imageView.Image = Images.DownChevron.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
                 Add(_imageView);
@@ -102,8 +101,8 @@ namespace RepositoryStumble.ViewControllers.Trending
                 base.LayoutSubviews();
 
                 _label.SizeToFit();
-                _label.Center = new System.Drawing.PointF(Frame.Width / 2f, Frame.Height / 2f);
-                _imageView.Center = new System.Drawing.PointF(_label.Frame.Right + 12f, Frame.Height / 2f);
+                _label.Center = new CGPoint(Frame.Width / 2f, Frame.Height / 2f);
+                _imageView.Center = new CGPoint(_label.Frame.Right + 12f, Frame.Height / 2f);
             }
         }
     }

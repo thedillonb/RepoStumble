@@ -1,10 +1,9 @@
 using System;
 using RepositoryStumble.Core.ViewModels.Application;
 using ReactiveUI;
-using Xamarin.Utilities.ViewControllers;
 using System.Text;
-using Xamarin.Utilities.Core.Services;
 using System.Reactive.Linq;
+using RepositoryStumble.Core.Services;
 
 namespace RepositoryStumble.ViewControllers.Application
 {
@@ -29,13 +28,13 @@ namespace RepositoryStumble.ViewControllers.Application
                     _statusIndicator.Hide();
             });
 
-            foreach (var c in MonoTouch.Foundation.NSHttpCookieStorage.SharedStorage.Cookies)
-                MonoTouch.Foundation.NSHttpCookieStorage.SharedStorage.DeleteCookie(c);
-            MonoTouch.Foundation.NSUrlCache.SharedCache.RemoveAllCachedResponses();
-            Web.LoadRequest(new MonoTouch.Foundation.NSUrlRequest(new MonoTouch.Foundation.NSUrl(ViewModel.LoginUrl)));
+            foreach (var c in Foundation.NSHttpCookieStorage.SharedStorage.Cookies)
+                Foundation.NSHttpCookieStorage.SharedStorage.DeleteCookie(c);
+            Foundation.NSUrlCache.SharedCache.RemoveAllCachedResponses();
+            Web.LoadRequest(new Foundation.NSUrlRequest(new Foundation.NSUrl(ViewModel.LoginUrl)));
         }
 
-		protected override bool ShouldStartLoad(MonoTouch.Foundation.NSUrlRequest request, MonoTouch.UIKit.UIWebViewNavigationType navigationType)
+		protected override bool ShouldStartLoad(Foundation.NSUrlRequest request, UIKit.UIWebViewNavigationType navigationType)
         {
             Console.WriteLine("Attemping to load: " + request.Url);
 

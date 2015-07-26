@@ -1,5 +1,4 @@
-﻿using RepositoryStumble.Core.Services;
-using Xamarin.Utilities.Core.Services;
+using RepositoryStumble.Core.Services;
 
 namespace RepositoryStumble.Core.ViewModels.Repositories
 {

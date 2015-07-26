@@ -1,6 +1,4 @@
-﻿using System;
-using Xamarin.Utilities.Core.ViewModels;
-using Xamarin.Utilities.Core.Services;
+using System;
 using ReactiveUI;
 using RepositoryStumble.Core.ViewModels.Repositories;
 using System.Reactive.Linq;
@@ -8,6 +6,7 @@ using System.Collections.Generic;
 using RepositoryStumble.Core.ViewModels.Languages;
 using RepositoryStumble.Core.Data;
 using System.Linq;
+using RepositoryStumble.Core.Services;
 
 namespace RepositoryStumble.Core.ViewModels.Trending
 {

@@ -1,8 +1,7 @@
-using MonoTouch.UIKit;
-using MonoTouch.Foundation;
+using UIKit;
+using Foundation;
 using RepositoryStumble.Core.ViewModels.Application;
 using ReactiveUI;
-using Xamarin.Utilities.ViewControllers;
 using Xamarin.Utilities.DialogElements;
 
 namespace RepositoryStumble.ViewControllers.Application
@@ -25,15 +24,15 @@ namespace RepositoryStumble.ViewControllers.Application
 
             var mid = new Section()
             {
-                new StyledStringElement("Follow On Twitter", () => UIApplication.SharedApplication.OpenUrl(new NSUrl("https://twitter.com/thedillonb"))),
-                new StyledStringElement("Rate This App", () => UIApplication.SharedApplication.OpenUrl(new NSUrl("https://itunes.apple.com/us/app/repository-stumble-discover/id761416981?ls=1&mt=8"))),
-                new StyledStringElement("Source Code", () => ViewModel.GoToSourceCode.ExecuteIfCan()),
-                new StyledStringElement("App Version", ViewModel.Version)
+                new StringElement("Follow On Twitter", () => UIApplication.SharedApplication.OpenUrl(new NSUrl("https://twitter.com/thedillonb"))),
+                new StringElement("Rate This App", () => UIApplication.SharedApplication.OpenUrl(new NSUrl("https://itunes.apple.com/us/app/repository-stumble-discover/id761416981?ls=1&mt=8"))),
+                new StringElement("Source Code", () => ViewModel.GoToSourceCode.ExecuteIfCan()),
+                new StringElement("App Version", ViewModel.Version)
             };
 
             var sec = new Section()
             {
-                new StyledStringElement("Logout", () => ViewModel.LogoutCommand.ExecuteIfCan())
+                new StringElement("Logout", () => ViewModel.LogoutCommand.ExecuteIfCan())
             };
 
             Root.Reset(settingsSection, mid, sec);

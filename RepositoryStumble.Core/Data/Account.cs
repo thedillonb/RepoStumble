@@ -1,8 +1,8 @@
 using System;
 using SQLite;
 using System.IO;
-using Xamarin.Utilities.Core.Services;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace RepositoryStumble.Core.Data
 {
@@ -55,12 +55,12 @@ namespace RepositoryStumble.Core.Data
 				return null;
 
 			var str = File.ReadAllText(AccountFilePath, System.Text.Encoding.UTF8);
-            return IoC.Resolve<IJsonSerializationService>().Deserialize<Account>(str);
+            return JsonConvert.DeserializeObject<Account>(str);
 		}
 
 		public void Save()
 		{
-            var obj = IoC.Resolve<IJsonSerializationService>().Serialize(this);
+            var obj = JsonConvert.SerializeObject(this);
 			File.WriteAllText(AccountFilePath, obj, System.Text.Encoding.UTF8);
 		}
 

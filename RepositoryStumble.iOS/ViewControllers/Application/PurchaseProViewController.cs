@@ -1,15 +1,11 @@
-﻿
-using System;
-using System.Drawing;
 
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-using Xamarin.Utilities.ViewControllers;
+using CoreGraphics;
+using System;
+using UIKit;
 using RepositoryStumble.Core.ViewModels.Application;
 using System.Reactive.Linq;
 using ReactiveUI;
-using Xamarin.Utilities.Purchases;
-using Xamarin.Utilities.Core.Services;
+using RepositoryStumble.Core.Services;
 
 namespace RepositoryStumble.ViewControllers.Application
 {
@@ -33,7 +29,7 @@ namespace RepositoryStumble.ViewControllers.Application
 
             PurchaseButton.SetBackgroundImage(Images.GreyButton.CreateResizableImage(new UIEdgeInsets(18, 18, 18, 18)), UIControlState.Normal);
             PurchaseButton.Layer.ShadowColor = UIColor.Black.CGColor;
-            PurchaseButton.Layer.ShadowOffset = new SizeF(0, 1);
+            PurchaseButton.Layer.ShadowOffset = new CGSize(0, 1);
             PurchaseButton.Layer.ShadowOpacity = 0.3f;
             PurchaseButton.TouchUpInside += (sender, e) => ViewModel.PurchaseCommand.ExecuteIfCan();
 

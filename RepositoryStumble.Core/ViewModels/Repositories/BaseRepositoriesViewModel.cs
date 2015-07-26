@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using RepositoryStumble.Core.Data;
 using ReactiveUI;
-using Xamarin.Utilities.Core.ViewModels;
 using System.Reactive.Linq;
 using RepositoryStumble.Core.ViewModels.Stumble;
 

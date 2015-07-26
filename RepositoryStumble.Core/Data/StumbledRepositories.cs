@@ -1,8 +1,8 @@
-﻿using System;
-using Xamarin.Utilities.Core.Persistence;
+using System;
 using SQLite;
 using System.Linq;
-using Xamarin.Utilities.Core.Services;
+using Splat;
+using RepositoryStumble.Core.Services;
 
 namespace RepositoryStumble.Core.Data
 {
@@ -12,10 +12,10 @@ namespace RepositoryStumble.Core.Data
             : base(db)
         {
             bool done;
-            if (!IoC.Resolve<IDefaultValueService>().TryGet("update_stumbled_repositories", out done) || !done)
+            if (!Locator.Current.GetService<IDefaultValueService>().TryGet("update_stumbled_repositories", out done) || !done)
             {
                 MarkAllLowercase();
-                IoC.Resolve<IDefaultValueService>().Set("update_stumbled_repositories", true);
+                Locator.Current.GetService<IDefaultValueService>().Set("update_stumbled_repositories", true);
             }
         }
 

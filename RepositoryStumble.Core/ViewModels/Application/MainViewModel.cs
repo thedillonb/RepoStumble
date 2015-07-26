@@ -1,6 +1,5 @@
 using System;
 
-using Xamarin.Utilities.Core.ViewModels;
 using ReactiveUI;
 using RepositoryStumble.Core.ViewModels.Stumble;
 using RepositoryStumble.Core.Services;

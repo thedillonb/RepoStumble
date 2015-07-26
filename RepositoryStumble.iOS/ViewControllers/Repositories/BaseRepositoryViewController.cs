@@ -1,13 +1,12 @@
 using System;
-using MonoTouch.UIKit;
-using Xamarin.Utilities.ViewControllers;
+using UIKit;
 using RepositoryStumble.Core.ViewModels.Repositories;
 using ReactiveUI;
 using Xamarin.Utilities.DialogElements;
 using System.Reactive.Linq;
 using RepositoryStumble.Views;
-using System.Drawing;
-using MonoTouch.Foundation;
+using CoreGraphics;
+using Foundation;
 
 namespace RepositoryStumble.ViewControllers.Repositories
 {
@@ -86,7 +85,7 @@ namespace RepositoryStumble.ViewControllers.Repositories
                         HeaderView.ImageUri = x.Owner.AvatarUrl;
                         HeaderView.Text = x.Name;
                         HeaderView.SubText = x.Description;
-                        stars.Text = x.WatchersCount.ToString();
+                        stars.Text = x.StargazersCount.ToString();
                         forks.Text = x.ForksCount.ToString();
                     }
 
@@ -117,7 +116,8 @@ namespace RepositoryStumble.ViewControllers.Repositories
                 });
 
             _webElement = new WebElement("readme");
-            _webElement.UrlRequested += (obj) => ViewModel.GoToUrlCommand.ExecuteIfCan(obj);
+            _webElement.UrlRequested += (obj) => 
+                ViewModel.GoToUrlCommand.ExecuteIfCan(obj);
 
             ViewModel.WhenAnyValue(y => y.Readme).Where(_ => !_disposed).Subscribe(x =>
             {
@@ -167,9 +167,10 @@ namespace RepositoryStumble.ViewControllers.Repositories
 
 		private void ShowMore()
 		{
-            _actionSheet = new UIActionSheet(ViewModel.RepositoryIdentifier.ToString());
+            _actionSheet = new UIActionSheet();
             var showCodeHub = _actionSheet.AddButton("Open in CodeHub");
             var show = _actionSheet.AddButton("Show in GitHub");
+            var showSafari = _actionSheet.AddButton("Show in Safari");
             var share = _actionSheet.AddButton("Share");
             _actionSheet.CancelButtonIndex = _actionSheet.AddButton("Cancel");
             _actionSheet.Clicked += (sender, e) =>
@@ -191,6 +192,10 @@ namespace RepositoryStumble.ViewControllers.Repositories
                         UIApplication.SharedApplication.OpenUrl(new NSUrl("https://itunes.apple.com/us/app/codehub-github-for-ios/id707173885?mt=8"));
                     }
                 }
+                else if (e.ButtonIndex == showSafari)
+                {
+                    UIApplication.SharedApplication.OpenUrl(new NSUrl(ViewModel.Repository.HtmlUrl));
+                }
                 else if (e.ButtonIndex == share)
                 {
                     var item = NSObject.FromObject(ViewModel.Repository.HtmlUrl);
@@ -211,13 +216,13 @@ namespace RepositoryStumble.ViewControllers.Repositories
             private readonly UIActivityIndicatorView _activity;
 
             public LoadingView()
-                : base(new RectangleF(0, 0, 320f, 44f))
+                : base(new CGRect(0, 0, 320f, 44f))
             {
                 BackgroundColor = UIColor.Clear;
 
                 _activity = new UIActivityIndicatorView();
                 _activity.Color = UINavigationBar.Appearance.BackgroundColor;
-                _activity.Center = new PointF(Bounds.Width / 2, Bounds.Height / 2);
+                _activity.Center = new CGPoint(Bounds.Width / 2, Bounds.Height / 2);
                 _activity.AutoresizingMask = UIViewAutoresizing.FlexibleLeftMargin | UIViewAutoresizing.FlexibleRightMargin |
                                              UIViewAutoresizing.FlexibleTopMargin | UIViewAutoresizing.FlexibleBottomMargin;
                 _activity.StartAnimating();

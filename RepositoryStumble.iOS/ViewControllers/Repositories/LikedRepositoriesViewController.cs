@@ -1,4 +1,4 @@
-﻿using RepositoryStumble.Core.ViewModels.Repositories;
+using RepositoryStumble.Core.ViewModels.Repositories;
 
 namespace RepositoryStumble.ViewControllers.Repositories
 {

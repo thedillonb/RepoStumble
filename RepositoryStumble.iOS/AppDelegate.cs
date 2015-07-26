@@ -1,17 +1,14 @@
 using System;
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
+using Foundation;
+using UIKit;
 using RepositoryStumble.Core.Messages;
 using RepositoryStumble.Core.ViewModels.Application;
-using MTiRate;
 using ReactiveUI;
-using System.Threading;
 using System.Reactive;
-using Xamarin.Utilities.Core.Services;
 using RepositoryStumble.ViewControllers.Application;
-using System.Reactive.Concurrency;
-using MonoTouch.Security;
-using Xamarin.Utilities.Images;
+using Security;
+using RepositoryStumble.Core.Services;
+using Splat;
 
 namespace RepositoryStumble
 {
@@ -40,37 +37,30 @@ namespace RepositoryStumble
 		{
             StampInstallDate();
 
-            RxApp.MainThreadScheduler = new SynchronizationContextScheduler(SynchronizationContext.Current);
             RxApp.DefaultExceptionHandler = Observer.Create((Exception e) =>
             {
-                IoC.Resolve<IAlertDialogService>().Alert("Error", e.Message);
+                Locator.Current.GetService<IAlertDialogService>().Alert("Error", e.Message);
                 Console.WriteLine("Exception occured: " + e.Message + " at " + e.StackTrace);
             });
 
             // Load the IoC
-            IoC.RegisterAssemblyServicesAsSingletons(typeof(Xamarin.Utilities.Core.Services.IDefaultValueService).Assembly);
-            IoC.RegisterAssemblyServicesAsSingletons(typeof(Xamarin.Utilities.Services.DefaultValueService).Assembly);
-            IoC.RegisterAssemblyServicesAsSingletons(typeof(Core.Services.IApplicationService).Assembly);
-            IoC.RegisterAssemblyServicesAsSingletons(GetType().Assembly);
+            Services.Registrations.InitializeServices(Locator.CurrentMutable);
 
-            var viewModelViewService = IoC.Resolve<IViewModelViewService>();
-            viewModelViewService.RegisterViewModels(typeof(Xamarin.Utilities.Services.DefaultValueService).Assembly);
-            viewModelViewService.RegisterViewModels(typeof(Core.Services.IApplicationService).Assembly);
+
+            var viewModelViewService = Locator.Current.GetService<IViewModelViewService>();
+            viewModelViewService.RegisterViewModels(typeof(IApplicationService).Assembly);
             viewModelViewService.RegisterViewModels(GetType().Assembly);
 
-            IoC.Resolve<IErrorService>().Init("http://sentry.dillonbuchanan.com/api/11/store/", "61105666362847a683ea7198ff6a1076 ", "7669a51402494220ab63e959851c19da");
-
-			iRate.SharedInstance.AppStoreID = 761416981;
-			iRate.SharedInstance.ApplicationBundleID = "com.dillonbuchanan.repositorystumble";
-			iRate.SharedInstance.DaysUntilPrompt = 2;
-			iRate.SharedInstance.UsesUntilPrompt = 5;
-			iRate.SharedInstance.OnlyPromptIfLatestVersion = true;
-
+//			iRate.SharedInstance.AppStoreID = 761416981;
+//			iRate.SharedInstance.ApplicationBundleID = "com.dillonbuchanan.repositorystumble";
+//			iRate.SharedInstance.DaysUntilPrompt = 2;
+//			iRate.SharedInstance.UsesUntilPrompt = 5;
+//			iRate.SharedInstance.OnlyPromptIfLatestVersion = true;
+//
             // Install the theme
             SetupTheme();
 
-            //GitHubSharp.Client.ClientConstructor = () => new System.Net.Http.HttpClient(new ModernHttpClient.NativeMessageHandler());
-            var startupViewController = new StartupViewController { ViewModel = IoC.Resolve<StartupViewModel>() };
+            var startupViewController = new StartupViewController { ViewModel = new StartupViewModel(Locator.Current.GetService<IApplicationService>()) };
             startupViewController.ViewModel.View = startupViewController;
 
             var mainNavigationController = new UINavigationController(startupViewController) { NavigationBarHidden = true };
@@ -114,18 +104,13 @@ namespace RepositoryStumble
             }
         }
 
-        public override void ReceiveMemoryWarning(UIApplication application)
-        {
-            ImageLoader.Purge();
-        }
-
         private static void SetupTheme()
         {
             var primaryColor = UIColor.FromRGB(0x4e, 0x4b, 0xbe);
 
-            UIGraphics.BeginImageContext(new System.Drawing.SizeF(1, 64f));
+            UIGraphics.BeginImageContext(new CoreGraphics.CGSize(1, 64f));
             primaryColor.SetFill();
-            UIGraphics.RectFill(new System.Drawing.RectangleF(0, 0, 1, 64));
+            UIGraphics.RectFill(new CoreGraphics.CGRect(0, 0, 1, 64));
             var img = UIGraphics.GetImageFromCurrentImageContext();
             UIGraphics.EndImageContext();
 
@@ -140,7 +125,7 @@ namespace RepositoryStumble
 
             UITabBar.Appearance.TintColor = primaryColor;
 
-            Xamarin.Utilities.ViewControllers.ViewModelPrettyDialogViewController.RefreshIndicatorColor = UIColor.White;
+            RepositoryStumble.ViewControllers.ViewModelPrettyDialogViewController.RefreshIndicatorColor = UIColor.White;
 
             UIApplication.SharedApplication.SetStatusBarHidden(false, UIStatusBarAnimation.Fade);
         }

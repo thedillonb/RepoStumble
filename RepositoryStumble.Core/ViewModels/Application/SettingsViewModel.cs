@@ -1,10 +1,8 @@
-﻿using System;
+using System;
 using ReactiveUI;
 using RepositoryStumble.Core.Services;
 using System.Reactive.Linq;
-using Xamarin.Utilities.Core.ViewModels;
 using RepositoryStumble.Core.Messages;
-using Xamarin.Utilities.Core.Services;
 using RepositoryStumble.Core.ViewModels.Repositories;
 
 namespace RepositoryStumble.Core.ViewModels.Application

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using RepositoryStumble.Core.Data;
 
 namespace RepositoryStumble.Core.Services

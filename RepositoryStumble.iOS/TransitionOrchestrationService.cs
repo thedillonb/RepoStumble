@@ -1,16 +1,15 @@
 using System;
-using MonoTouch.UIKit;
+using UIKit;
 using ReactiveUI;
 using RepositoryStumble.ViewControllers.Application;
-using Xamarin.Utilities.Core.Services;
-using Xamarin.Utilities.Core.ViewModels;
 using RepositoryStumble.ViewControllers.Interests;
 using RepositoryStumble.ViewControllers.Repositories;
 using RepositoryStumble.ViewControllers.Stumble;
 using RepositoryStumble.ViewControllers.Languages;
 using RepositoryStumble.ViewControllers.Trending;
 using RepositoryStumble.Transitions;
-using System.Threading.Tasks;
+using RepositoryStumble.Core.Services;
+using RepositoryStumble.Core.ViewModels;
 
 namespace RepositoryStumble
 {
@@ -40,7 +39,7 @@ namespace RepositoryStumble
             }
             else if (toViewController is MainViewController)
             {
-                var nav = ((UINavigationController)UIApplication.SharedApplication.Delegate.Window.RootViewController);
+                var nav = ((UINavigationController)UIApplication.SharedApplication.Delegate.GetWindow().RootViewController);
                 UIView.Transition(nav.View, 0.6f,
                     UIViewAnimationOptions.BeginFromCurrentState | UIViewAnimationOptions.TransitionCrossDissolve,
                     () => nav.PushViewController(toViewController, false), null);

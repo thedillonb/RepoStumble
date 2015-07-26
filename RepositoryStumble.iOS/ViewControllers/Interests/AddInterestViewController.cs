@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using RepositoryStumble.Core.ViewModels.Interests;
 using ReactiveUI;
-using Xamarin.Utilities.ViewControllers;
 using Xamarin.Utilities.DialogElements;
 
 namespace RepositoryStumble.ViewControllers.Interests
@@ -20,23 +19,23 @@ namespace RepositoryStumble.ViewControllers.Interests
 
             var input = new InputElement("Keyword", string.Empty, string.Empty);
             input.Changed += (sender, e) => ViewModel.Keyword = input.Value;
-            input.AutocorrectionType = MonoTouch.UIKit.UITextAutocorrectionType.No;
-            input.AutocapitalizationType = MonoTouch.UIKit.UITextAutocapitalizationType.None;
-            input.TextAlignment = MonoTouch.UIKit.UITextAlignment.Right;
+            input.AutocorrectionType = UIKit.UITextAutocorrectionType.No;
+            input.AutocapitalizationType = UIKit.UITextAutocapitalizationType.None;
+            input.TextAlignment = UIKit.UITextAlignment.Right;
 
-            NavigationItem.RightBarButtonItem = new MonoTouch.UIKit.UIBarButtonItem(MonoTouch.UIKit.UIBarButtonSystemItem.Done, (s, e) => 
+            NavigationItem.RightBarButtonItem = new UIKit.UIBarButtonItem(UIKit.UIBarButtonSystemItem.Done, (s, e) => 
             {
                 input.ResignFirstResponder(false);
                 ViewModel.DoneCommand.ExecuteIfCan();
             });
 
-            var showLanguage = new StyledStringElement("Language", string.Empty, MonoTouch.UIKit.UITableViewCellStyle.Value1);
+            var showLanguage = new StringElement("Language", string.Empty, UIKit.UITableViewCellStyle.Value1);
             showLanguage.Tapped += () =>
             {
                 input.ResignFirstResponder(false);
                 ViewModel.GoToLanguagesCommand.ExecuteIfCan();
             };
-            showLanguage.Accessory = MonoTouch.UIKit.UITableViewCellAccessory.DisclosureIndicator;
+            showLanguage.Accessory = UIKit.UITableViewCellAccessory.DisclosureIndicator;
 
             var sec2 = new Section("Add New Interest") { showLanguage, input };
             var sec3 = new Section("Popular Interests");
@@ -44,8 +43,8 @@ namespace RepositoryStumble.ViewControllers.Interests
 
             ViewModel.WhenAnyValue(x => x.PopularInterests).Subscribe(_ => sec3.Reset(ViewModel.PopularInterests.OrderBy(x => x.Keyword).Select(p =>
             {
-                var item = new StyledStringElement(p.Keyword, p.Language.Name, MonoTouch.UIKit.UITableViewCellStyle.Subtitle);
-                item.Accessory = MonoTouch.UIKit.UITableViewCellAccessory.DisclosureIndicator;
+                var item = new StringElement(p.Keyword, p.Language.Name, UIKit.UITableViewCellStyle.Subtitle);
+                item.Accessory = UIKit.UITableViewCellAccessory.DisclosureIndicator;
                 item.Tapped += () =>
                 {
                     ViewModel.Keyword = p.Keyword;
@@ -58,7 +57,7 @@ namespace RepositoryStumble.ViewControllers.Interests
             ViewModel.WhenAnyValue(x => x.SelectedLanguage).Subscribe(x =>
             {
                 showLanguage.Value = x == null ? string.Empty : x.Name;
-                Root.Reload(showLanguage, MonoTouch.UIKit.UITableViewRowAnimation.None);
+                Root.Reload(showLanguage, UIKit.UITableViewRowAnimation.None);
             });
         }
     }

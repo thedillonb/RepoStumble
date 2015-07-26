@@ -75,8 +75,7 @@ WriteLiteral(">\n");
 
 
 #line 106 "ReadmeRazorView.cshtml"
-            WriteLiteral(Model);
-
+  WriteLiteral(Model);
 
 #line default
 #line hidden

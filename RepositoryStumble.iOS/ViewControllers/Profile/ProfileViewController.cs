@@ -1,9 +1,8 @@
 using System;
-using MonoTouch.UIKit;
+using UIKit;
 using RepositoryStumble.Core.ViewModels.Profile;
 using System.Reactive.Linq;
 using ReactiveUI;
-using Xamarin.Utilities.ViewControllers;
 using Xamarin.Utilities.DialogElements;
 using RepositoryStumble.Elements;
 using System.Linq;
@@ -72,7 +71,7 @@ namespace RepositoryStumble.ViewControllers.Profile
                 if (x)
                 {
                     section3.Reset(new [] {
-                        new StyledStringElement("See More History", () => ViewModel.GoToHistoryCommand.ExecuteIfCan())
+                        new StringElement("See More History", () => ViewModel.GoToHistoryCommand.ExecuteIfCan())
                     });
                 }
                 else
@@ -85,12 +84,12 @@ namespace RepositoryStumble.ViewControllers.Profile
             Root.Reset(section, section2, section3);
         }
 
-		private class Element : StyledStringElement
+        private class Element : StringElement
 		{
 			public Element(string caption, object value, Action action)
 				: base(caption, action)
 			{
-				this.style = UITableViewCellStyle.Value1;
+				this.Style = UITableViewCellStyle.Value1;
 				this.Value = value.ToString();
 			}
 		}

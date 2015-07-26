@@ -1,6 +1,7 @@
-﻿using System;
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
+using System;
+using Foundation;
+using UIKit;
+using SDWebImage;
 
 namespace RepositoryStumble.TableViewCells
 {
@@ -14,7 +15,7 @@ namespace RepositoryStumble.TableViewCells
         {
         }
 
-        public override string ReuseIdentifier { get { return Key; } }
+        public override NSString ReuseIdentifier { get { return Key; } }
 
         public static RepositoryTableViewCell Create()
         {
@@ -25,10 +26,26 @@ namespace RepositoryStumble.TableViewCells
             return cell;
         }
 
-        public UIImage Image 
+        public void SetImage(string url, UIImage placeholder)
         {
-            get { return RepositoryImageView.Image; }
-            set { RepositoryImageView.Image = value; }
+            if (url == null)
+            {
+                RepositoryImageView.Image = null;
+                return;
+            }
+            
+            try
+            {
+                RepositoryImageView.SetImage(new NSUrl(url), placeholder);
+            }
+            catch
+            {
+            }
+        }
+
+        public void SetImage(UIImage placeholder)
+        {
+            RepositoryImageView.Image = placeholder;
         }
 
         public string Name

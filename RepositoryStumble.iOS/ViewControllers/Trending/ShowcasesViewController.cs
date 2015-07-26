@@ -1,6 +1,5 @@
-﻿using ReactiveUI;
+using ReactiveUI;
 using RepositoryStumble.Core.ViewModels.Trending;
-using Xamarin.Utilities.ViewControllers;
 using RepositoryStumble.Elements;
 
 namespace RepositoryStumble.ViewControllers.Trending

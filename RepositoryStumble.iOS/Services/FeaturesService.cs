@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using RepositoryStumble.Core.Services;
-using Xamarin.Utilities.Core.Services;
-using Xamarin.Utilities.Purchases;
+using RepositoryStumble.Purchases;
 
 namespace RepositoryStumble.Services
 {

@@ -1,13 +1,11 @@
 using System;
-using MonoTouch.UIKit;
+using UIKit;
 using RepositoryStumble.Core.ViewModels.Stumble;
 using RepositoryStumble.Views;
 using RepositoryStumble.ViewControllers.Repositories;
 using ReactiveUI;
-using Xamarin.Utilities.Core.Services;
 using BigTed;
-using System.Drawing;
-using MonoTouch.CoreGraphics;
+using CoreGraphics;
 
 namespace RepositoryStumble.ViewControllers.Stumble
 {
@@ -22,7 +20,7 @@ namespace RepositoryStumble.ViewControllers.Stumble
             var centerButton = new CenterButton();
             centerButton.TouchUpInside += (s, e) =>
             {
-                TableView.ScrollRectToVisible(new System.Drawing.RectangleF(0, 0, 1, 1), false);
+                TableView.ScrollRectToVisible(new CGRect(0, 0, 1, 1), false);
                 ViewModel.StumbleCommand.ExecuteIfCan();
             };
 
@@ -55,11 +53,11 @@ namespace RepositoryStumble.ViewControllers.Stumble
         {
             var window = UIApplication.SharedApplication.KeyWindow;
             var initialBounds = window.Bounds;
-            initialBounds.Inflate(new SizeF(window.Bounds.Width, window.Bounds.Height));
+            initialBounds.Inflate(new CGSize(window.Bounds.Width, window.Bounds.Height));
 
             var hud = _hud = new Hud(initialBounds, img);
             window.Add(hud);
-            hud.Center = new PointF(window.Bounds.Width / 2f, window.Bounds.Height / 2f);
+            hud.Center = new CGPoint(window.Bounds.Width / 2f, window.Bounds.Height / 2f);
             hud.BackgroundColor = UINavigationBar.Appearance.BackgroundColor;
             hud.Alpha = 0f;
 
@@ -80,14 +78,14 @@ namespace RepositoryStumble.ViewControllers.Stumble
         {
             private readonly UIImageView _imageView;
 
-            public Hud(RectangleF frame, UIImage image)
+            public Hud(CGRect frame, UIImage image)
                 : base(frame)
             {
                 UserInteractionEnabled = true;
 
-                _imageView = new UIImageView(new RectangleF(0, 0, frame.Width / 5f, frame.Width / 5f));
+                _imageView = new UIImageView(new CGRect(0, 0, frame.Width / 5f, frame.Width / 5f));
                 _imageView.ContentMode = UIViewContentMode.ScaleAspectFit;
-                _imageView.Center = new PointF(Frame.Width / 2f, Frame.Height / 2f);
+                _imageView.Center = new CGPoint(Frame.Width / 2f, Frame.Height / 2f);
                 _imageView.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleMargins;
                 _imageView.TintColor = UIColor.White;
                 _imageView.Image = image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);

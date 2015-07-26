@@ -1,4 +1,4 @@
-using MonoTouch.UIKit;
+using UIKit;
 
 namespace RepositoryStumble.Views
 {
@@ -22,8 +22,8 @@ namespace RepositoryStumble.Views
             _imageView = new UIImageView(Images.CenterSearch);
             _imageView.UserInteractionEnabled = false;
 
-            this.Frame = new System.Drawing.RectangleF(0, 0, _imageView.Frame.Width, 44f);
-            _imageView.Frame = new System.Drawing.RectangleF(0, 44f - _imageView.Frame.Height, _imageView.Frame.Width, _imageView.Frame.Height);
+            this.Frame = new CoreGraphics.CGRect(0, 0, _imageView.Frame.Width, 44f);
+            _imageView.Frame = new CoreGraphics.CGRect(0, 44f - _imageView.Frame.Height, _imageView.Frame.Width, _imageView.Frame.Height);
 
             Add(_imageView);
         }

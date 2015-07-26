@@ -1,11 +1,9 @@
-﻿using System;
-using Xamarin.Utilities.Core.ViewModels;
+using System;
 using ReactiveUI;
 using RepositoryStumble.Core.Services;
 using System.Diagnostics;
 using RepositoryStumble.Core.Data;
 using System.Reactive.Linq;
-using Xamarin.Utilities.Core.Services;
 
 namespace RepositoryStumble.Core.ViewModels.Repositories
 {
@@ -78,7 +76,7 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
                     StumbledRepository.Liked = true;
                     StumbledRepository.Description = Repository.Description;
                     StumbledRepository.Forks = Repository.ForksCount;
-                    StumbledRepository.Stars = Repository.WatchersCount;
+                    StumbledRepository.Stars = Repository.StargazersCount;
                     StumbledRepository.ImageUrl = Repository.Owner.AvatarUrl;
                     applicationService.Account.StumbledRepositories.Update(StumbledRepository);
                 }
@@ -104,7 +102,7 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
                     StumbledRepository.Liked = false;
                     StumbledRepository.Description = Repository.Description;
                     StumbledRepository.Forks = Repository.ForksCount;
-                    StumbledRepository.Stars = Repository.WatchersCount;
+                    StumbledRepository.Stars = Repository.StargazersCount;
                     StumbledRepository.ImageUrl = Repository.Owner.AvatarUrl;
                     applicationService.Account.StumbledRepositories.Update(StumbledRepository);
                 }
@@ -136,7 +134,7 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
 
                 try
                 {
-                    Readme = await applicationService.Client.Repository.GetReadmeHtml(RepositoryIdentifier.Owner, RepositoryIdentifier.Name);
+                    Readme = await applicationService.Client.Repository.Content.GetReadmeHtml(RepositoryIdentifier.Owner, RepositoryIdentifier.Name);
                 }
                 catch (Exception e)
                 {
@@ -167,7 +165,7 @@ namespace RepositoryStumble.Core.ViewModels.Repositories
                 ImageUrl = Repository.Owner.AvatarUrl,
                 Name = Repository.Name,
                 Owner = Repository.Owner.Login,
-                Stars = Repository.WatchersCount
+                Stars = Repository.StargazersCount
             };
         }
 

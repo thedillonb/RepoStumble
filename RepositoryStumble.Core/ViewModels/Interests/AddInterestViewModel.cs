@@ -1,12 +1,11 @@
-﻿using System;
+using System;
 using ReactiveUI;
 using RepositoryStumble.Core.Data;
-using Xamarin.Utilities.Core.Services;
 using System.Collections.Generic;
-using Xamarin.Utilities.Core.ViewModels;
 using System.Reactive.Linq;
 using RepositoryStumble.Core.Services;
 using RepositoryStumble.Core.ViewModels.Languages;
+using Newtonsoft.Json;
 
 namespace RepositoryStumble.Core.ViewModels.Interests
 {
@@ -34,7 +33,7 @@ namespace RepositoryStumble.Core.ViewModels.Interests
             set { this.RaiseAndSetIfChanged(ref _selectedLanguage, value); }
         }
 
-        public AddInterestViewModel(IApplicationService applicationService, IJsonSerializationService jsonSerializationService)
+        public AddInterestViewModel(IApplicationService applicationService)
         {
             DoneCommand = ReactiveCommand.CreateAsyncTask(async _ =>
             {
@@ -68,7 +67,7 @@ namespace RepositoryStumble.Core.ViewModels.Interests
 
 
             var str = System.IO.File.ReadAllText(PopularInterestsPath, System.Text.Encoding.UTF8);
-            PopularInterests = new ReactiveList<PopularInterest>(jsonSerializationService.Deserialize<List<PopularInterest>>(str));
+            PopularInterests = new ReactiveList<PopularInterest>(JsonConvert.DeserializeObject<List<PopularInterest>>(str));
 
         }
     }

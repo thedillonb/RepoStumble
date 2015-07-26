@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using RepositoryStumble.Core.Data;
 using System.Threading.Tasks;
 using System.Linq;
@@ -59,7 +59,7 @@ namespace RepositoryStumble.Core.Services
                             Owner = x.Owner.Login,
                             Fullname = x.FullName, 
                             Description = x.Description,
-                            Stars = x.WatchersCount,
+							Stars = x.StargazersCount,
                             Forks = x.ForksCount,
                             ImageUrl = x.Owner.AvatarUrl,
                             Liked = true,

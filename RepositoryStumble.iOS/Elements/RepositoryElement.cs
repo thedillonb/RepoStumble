@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using Xamarin.Utilities.DialogElements;
-using Xamarin.Utilities.Images;
 using RepositoryStumble.TableViewCells;
-using System.Drawing;
-using MonoTouch.UIKit;
+using CoreGraphics;
+using UIKit;
+using SDWebImage;
 
 namespace RepositoryStumble.Elements
 {
-    public class RepositoryElement : Element, IImageUpdated, IElementSizing
+    public class RepositoryElement : Element, IElementSizing
     {
         private readonly string _name;
         private readonly string _owner;
@@ -34,26 +34,11 @@ namespace RepositoryStumble.Elements
             _image = image;
         }
 
-        public override void Selected(UITableView tableView, MonoTouch.Foundation.NSIndexPath path)
+        public override void Selected(UITableView tableView, Foundation.NSIndexPath path)
         {
             if (_tapped != null)
                 _tapped();
             base.Selected(tableView, path);
-        }
-
-        public void UpdatedImage(Uri uri)
-        {
-            var img = ImageLoader.DefaultRequestImage(uri, this);
-            if (img != null)
-            {
-                var cell = GetActiveCell() as RepositoryTableViewCell;
-                if (cell != null)
-                {
-                    cell.Image = img;
-                    cell.SetNeedsDisplay();
-                }
-                //GetRootElement().Reload(this, UITableViewRowAnimation.None);
-            }
         }
 
         public override UITableViewCell GetCell(UITableView tv)
@@ -66,13 +51,14 @@ namespace RepositoryStumble.Elements
 
             if (!string.IsNullOrEmpty(_imageUrl))
             {
+                
                 Uri uri;
-                cell.Image = Uri.TryCreate(_imageUrl, UriKind.Absolute, out uri) ? 
-                ImageLoader.DefaultRequestImage(uri, this) : null;
+                if (Uri.TryCreate(_imageUrl, UriKind.Absolute, out uri))
+                    cell.SetImage(uri.AbsoluteUri, _image);
             }
             else
             {
-                cell.Image = _image;
+                cell.SetImage(_image);
             }
 
             cell.Owner = _owner;
@@ -81,7 +67,7 @@ namespace RepositoryStumble.Elements
             return cell;
         }
 
-        public float GetHeight(MonoTouch.UIKit.UITableView tableView, MonoTouch.Foundation.NSIndexPath indexPath)
+        public nfloat GetHeight(UIKit.UITableView tableView, Foundation.NSIndexPath indexPath)
         {
             if (GetRootElement() == null)
                 return 44f;
@@ -94,7 +80,7 @@ namespace RepositoryStumble.Elements
             cell.SetNeedsUpdateConstraints();
             cell.UpdateConstraintsIfNeeded();
 
-            cell.Bounds = new RectangleF(0, 0, tableView.Bounds.Width, tableView.Bounds.Height);
+            cell.Bounds = new CGRect(0, 0, tableView.Bounds.Width, tableView.Bounds.Height);
 
             cell.SetNeedsLayout();
             cell.LayoutIfNeeded();

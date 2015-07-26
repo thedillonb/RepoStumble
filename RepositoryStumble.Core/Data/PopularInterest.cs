@@ -1,4 +1,4 @@
-﻿namespace RepositoryStumble.Core.Data
+namespace RepositoryStumble.Core.Data
 {
     public class PopularInterest
     {

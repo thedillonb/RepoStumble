@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using RepositoryStumble.Core.ViewModels.Repositories;
 using RepositoryStumble.Elements;
 using System.Linq;
-using Xamarin.Utilities.ViewControllers;
 using Xamarin.Utilities.DialogElements;
 using System.Reactive.Linq;
 using System.Collections.Specialized;

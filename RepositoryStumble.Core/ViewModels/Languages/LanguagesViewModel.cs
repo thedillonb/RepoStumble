@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using ReactiveUI;
-using Xamarin.Utilities.Core.ViewModels;
 using System.Collections.Generic;
 using RepositoryStumble.Core.Data;
-using Xamarin.Utilities.Core.Services;
+using RepositoryStumble.Core.Services;
 
 namespace RepositoryStumble.Core.ViewModels.Languages
 {

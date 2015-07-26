@@ -1,14 +1,12 @@
 using System;
-using MonoTouch.UIKit;
+using UIKit;
 using System.Linq;
 using RepositoryStumble.Core.ViewModels.Interests;
 using RepositoryStumble.Elements;
 using ReactiveUI;
 using System.Reactive.Linq;
 using System.Collections.Specialized;
-using Xamarin.Utilities.ViewControllers;
 using Xamarin.Utilities.DialogElements;
-using RepositoryStumble.ViewControllers.Repositories;
 
 namespace RepositoryStumble.ViewControllers.Interests
 {
@@ -50,24 +48,24 @@ namespace RepositoryStumble.ViewControllers.Interests
 		{
 			private readonly InterestsViewController _parent;
 			public EditSource(InterestsViewController dvc) 
-				: base (dvc)
+                : base (dvc)
 			{
 				_parent = dvc;
 			}
 
-			public override bool CanEditRow(UITableView tableView, MonoTouch.Foundation.NSIndexPath indexPath)
+			public override bool CanEditRow(UITableView tableView, Foundation.NSIndexPath indexPath)
 			{
 				return (indexPath.Section == 0);
 			}
 
-			public override UITableViewCellEditingStyle EditingStyleForRow(UITableView tableView, MonoTouch.Foundation.NSIndexPath indexPath)
+			public override UITableViewCellEditingStyle EditingStyleForRow(UITableView tableView, Foundation.NSIndexPath indexPath)
 			{
 				if (indexPath.Section == 0)
 					return UITableViewCellEditingStyle.Delete;
 				return UITableViewCellEditingStyle.None;
 			}
 
-			public override void CommitEditingStyle(UITableView tableView, UITableViewCellEditingStyle editingStyle, MonoTouch.Foundation.NSIndexPath indexPath)
+			public override void CommitEditingStyle(UITableView tableView, UITableViewCellEditingStyle editingStyle, Foundation.NSIndexPath indexPath)
 			{
 				switch (editingStyle)
 				{

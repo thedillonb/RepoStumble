@@ -1,6 +1,5 @@
-﻿using RepositoryStumble.Core.ViewModels.Repositories;
+using RepositoryStumble.Core.ViewModels.Repositories;
 using RepositoryStumble.Core.Services;
-using Xamarin.Utilities.Core.Services;
 using ReactiveUI;
 using RepositoryStumble.Core.Data;
 using System.Threading.Tasks;
@@ -43,7 +42,7 @@ namespace RepositoryStumble.Core.ViewModels.Stumble
             {
                 if (!featuresService.ProEditionEnabled)
                 {
-                    var stumbleTimes = defaultValues.Get<int>(StumbleKey) + 1;
+                    var stumbleTimes = defaultValues.Get<nint>(StumbleKey) + 1;
                     defaultValues.Set(StumbleKey, stumbleTimes);
 
                     if (localStumbleCount > 0 && stumbleTimes % 50 == 0)
@@ -90,7 +89,7 @@ namespace RepositoryStumble.Core.ViewModels.Stumble
                         Owner = r.Owner.Login, 
                         Description = r.Description, 
                         InterestId = interest.Id,
-                        Stars = r.WatchersCount,
+						Stars = r.StargazersCount,
                         Forks = r.ForksCount,
                         ImageUrl = r.Owner.AvatarUrl
                     });
@@ -175,7 +174,7 @@ namespace RepositoryStumble.Core.ViewModels.Stumble
 
 			public new string Language { get; set; }
 
-			public override IReadOnlyCollection<string> MergedQualifiers ()
+			public override IReadOnlyList<string> MergedQualifiers ()
 			{
 				var qualifers = base.MergedQualifiers () as List<string>;
 				qualifers.Add (String.Format (CultureInfo.InvariantCulture, "language:{0}", Language));

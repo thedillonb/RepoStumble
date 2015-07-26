@@ -1,4 +1,4 @@
-using MonoTouch.UIKit;
+using UIKit;
 
 namespace RepositoryStumble
 {
@@ -35,6 +35,49 @@ namespace RepositoryStumble
         public static UIImage GreyButton { get { return UIImageHelper.FromFileAuto("Images/grey_button"); } }
 
         public static UIImage PurchaseIcon { get { return UIImageHelper.FromFileAuto("Images/purchase_icon"); } }
+
+        public static UIImage BackChevron { get { return UIImageHelper.FromFileAuto("Images/back-chevron"); } }
+
+        public static UIImage ForwardChevron { get { return UIImageHelper.FromFileAuto("Images/forward-chevron"); } }
+    }
+
+    public static class UIImageHelper
+    {
+        /// <summary>
+        /// Load's an image via the FromFile.
+        /// Also checks to make sure it's on the main thread.
+        /// </summary>
+        /// <returns>The file auto.</returns>
+        /// <param name="filename">Filename.</param>
+        /// <param name="extension">Extension.</param>
+        public static UIImage FromFileAuto(string filename, string extension = "png")
+        {
+            UIImage img = null;
+            if (Foundation.NSThread.Current.IsMainThread)
+                img = LoadImageFromFile(filename, extension);
+            else
+            {
+                UIApplication.SharedApplication.InvokeOnMainThread(() =>
+                {
+                    img = LoadImageFromFile(filename, extension);
+                });
+            }
+
+            return img;
+        }
+
+        private static UIImage LoadImageFromFile(string filename, string extension = "png")
+        {
+            if (UIScreen.MainScreen.Scale > 1.0)
+            {
+                var file = filename + "@2x." + extension;
+                return System.IO.File.Exists(file) ? UIImage.FromFile(file) : UIImage.FromFile(filename + "." + extension);
+            }
+            else
+            {
+                var file = filename + "." + extension;
+                return System.IO.File.Exists(file) ? UIImage.FromFile(file) : UIImage.FromFile(filename + "@2x." + extension);
+            }
+        }
     }
 }
-

@@ -1,5 +1,4 @@
 using SQLite;
-using Xamarin.Utilities.Core.Persistence;
 
 namespace RepositoryStumble.Core.Data
 {

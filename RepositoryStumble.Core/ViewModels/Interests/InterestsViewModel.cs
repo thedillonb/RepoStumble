@@ -1,13 +1,10 @@
-﻿using System;
+using System;
 using RepositoryStumble.Core.Services;
 using ReactiveUI;
 using RepositoryStumble.Core.Data;
 using System.Reactive.Linq;
-using System.Linq;
-using Xamarin.Utilities.Core.ViewModels;
 using RepositoryStumble.Core.ViewModels.Stumble;
 using RepositoryStumble.Core.ViewModels.Application;
-using System.Reactive.Concurrency;
 
 namespace RepositoryStumble.Core.ViewModels.Interests
 {

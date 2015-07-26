@@ -1,5 +1,4 @@
-﻿using System;
-using Xamarin.Utilities.Core.ViewModels;
+using System;
 using ReactiveUI;
 using RepositoryStumble.Core.Services;
 using System.Threading.Tasks;

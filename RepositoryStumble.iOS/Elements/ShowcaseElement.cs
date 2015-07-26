@@ -1,14 +1,13 @@
-﻿using System;
+using System;
 using Xamarin.Utilities.DialogElements;
-using Xamarin.Utilities.Images;
 using RepositoryStumble.TableViewCells;
 using ReactiveUI.Cocoa;
-using System.Drawing;
-using MonoTouch.UIKit;
+using CoreGraphics;
+using UIKit;
 
 namespace RepositoryStumble.Elements
 {
-    public class ShowcaseElement : Element, IImageUpdated, IElementSizing
+    public class ShowcaseElement : Element, IElementSizing
     {
         private string _name;
         private string _description;
@@ -23,25 +22,11 @@ namespace RepositoryStumble.Elements
             _imageUrl = imageUrl;
         }
 
-        public override void Selected(UITableView tableView, MonoTouch.Foundation.NSIndexPath path)
+        public override void Selected(UITableView tableView, Foundation.NSIndexPath path)
         {
             if (_tapped != null)
                 _tapped();
             base.Selected(tableView, path);
-        }
-
-        public void UpdatedImage(Uri uri)
-        {
-            var img = ImageLoader.DefaultRequestImage(uri, this);
-            if (img != null)
-            {
-                var cell = GetActiveCell() as ShowcaseTableViewCell;
-                if (cell != null)
-                {
-                    cell.Image = img;
-                    cell.SetNeedsDisplay();
-                }
-            }
         }
 
         public override UITableViewCell GetCell(UITableView tv)
@@ -52,21 +37,13 @@ namespace RepositoryStumble.Elements
                 cell = ShowcaseTableViewCell.Create();
             }
 
-            try
-            {
-                cell.Image = ImageLoader.DefaultRequestImage(new Uri(_imageUrl), this);
-            }
-            catch
-            {
-                cell.Image = null;
-            }
-
+            cell.SetImage(_imageUrl);
             cell.Description = _description;
             cell.Name = _name;
             return cell;
         }
 
-        public float GetHeight(MonoTouch.UIKit.UITableView tableView, MonoTouch.Foundation.NSIndexPath indexPath)
+        public nfloat GetHeight(UIKit.UITableView tableView, Foundation.NSIndexPath indexPath)
         {
             if (GetRootElement() == null)
                 return 44f;
@@ -78,7 +55,7 @@ namespace RepositoryStumble.Elements
             cell.SetNeedsUpdateConstraints();
             cell.UpdateConstraintsIfNeeded();
 
-            cell.Bounds = new RectangleF(0, 0, tableView.Bounds.Width, tableView.Bounds.Height);
+            cell.Bounds = new CGRect(0, 0, tableView.Bounds.Width, tableView.Bounds.Height);
 
             cell.SetNeedsLayout();
             cell.LayoutIfNeeded();

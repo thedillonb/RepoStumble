@@ -1,10 +1,8 @@
-﻿using System;
+using System;
 using ReactiveUI;
-using Xamarin.Utilities.Core.ViewModels;
 using RepositoryStumble.Core.Services;
 using RepositoryStumble.Core.ViewModels.Application;
 using RepositoryStumble.Core.ViewModels.Repositories;
-using Xamarin.Utilities.Core.Services;
 using RepositoryStumble.Core.Data;
 using System.Reactive.Linq;
 using System.Threading;
