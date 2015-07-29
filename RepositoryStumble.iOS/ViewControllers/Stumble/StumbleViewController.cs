@@ -20,7 +20,7 @@ namespace RepositoryStumble.ViewControllers.Stumble
             var centerButton = new CenterButton();
             centerButton.TouchUpInside += (s, e) =>
             {
-                TableView.ScrollRectToVisible(new CGRect(0, 0, 1, 1), false);
+                //TableView.ScrollRectToVisible(new CGRect(0, 0, 1, 1), false);
                 ViewModel.StumbleCommand.ExecuteIfCan();
             };
 

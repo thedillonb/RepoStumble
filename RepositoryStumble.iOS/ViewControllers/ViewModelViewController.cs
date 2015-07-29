@@ -15,8 +15,6 @@ namespace RepositoryStumble.ViewControllers
             set { ViewModel = (TViewModel)value; }
         }
 
-        protected bool ManualLoad { get; set; }
-
         protected ViewModelViewController()
         {
         }
@@ -36,26 +34,18 @@ namespace RepositoryStumble.ViewControllers
         {
             base.ViewWillAppear(animated);
 
-            var activatable = ViewModel as ISupportsActivation;
-            if (activatable != null)
-                activatable.Activator.Activate();
+            this.WhenActivated(d =>
+            {
+                // Do nothing.
+            });
 
-            if (!ManualLoad && !_isLoaded)
+            if (!_isLoaded)
             {
                 var loadableViewModel = ViewModel as ILoadableViewModel;
                 if (loadableViewModel != null)
                     loadableViewModel.LoadCommand.ExecuteIfCan();
                 _isLoaded = true;
             }
-        }
-
-        public override void ViewWillDisappear(bool animated)
-        {
-            base.ViewWillDisappear(animated);
-
-            var activatable = ViewModel as ISupportsActivation;
-            if (activatable != null)
-                activatable.Activator.Deactivate();
         }
     }
 }

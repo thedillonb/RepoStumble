@@ -80,7 +80,7 @@ namespace RepositoryStumble.ViewControllers
                 Text = base.Title
             };
 
-            this.CreateTopBackground(HeaderView.BackgroundColor);
+            TableView.CreateTopBackground(HeaderView.BackgroundColor);
 
             //            this.WhenAnyValue(x => x.ViewModel)
             //                .Subscribe(x =>
@@ -100,14 +100,14 @@ namespace RepositoryStumble.ViewControllers
     public static class ViewControllerExtensions
     {
 
-        public static UIView CreateTopBackground(this UITableViewController viewController, UIColor color)
+        public static UIView CreateTopBackground(this UIView view, UIColor color)
         {
-            var frame = viewController.TableView.Bounds;
+            var frame = view.Bounds;
             frame.Y = -frame.Size.Height;
-            var view = new UIView(frame);
-            view.AutoresizingMask = UIViewAutoresizing.FlexibleWidth;
-            view.BackgroundColor = color;
-            viewController.TableView.InsertSubview(view, 0);
+            var view2 = new UIView(frame);
+            view2.AutoresizingMask = UIViewAutoresizing.FlexibleWidth;
+            view2.BackgroundColor = color;
+            view.InsertSubview(view2, 0);
             return view;
         }
     }

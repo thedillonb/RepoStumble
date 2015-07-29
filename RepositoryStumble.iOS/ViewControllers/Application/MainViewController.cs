@@ -63,9 +63,8 @@ namespace RepositoryStumble.ViewControllers.Application
             if (TabBar.Subviews.Length == 5)
                 width = TabBar.Subviews[2].Bounds.Width;
 
-            var stumbleView = new StumbleView(new CGRect(TabBar.Bounds.Width / 2f - width / 2, 0, width, TabBar.Bounds.Height));
+            var stumbleView = new StumbleView(new CGRect(TabBar.Bounds.Width / 2f - width / 2, 0, width, TabBar.Bounds.Height), UITabBar.Appearance.TintColor);
             stumbleView.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
-            stumbleView.BackgroundColor = UITabBar.Appearance.TintColor;
             stumbleView.UserInteractionEnabled = false;
             TabBar.Add(stumbleView);
 
@@ -104,9 +103,23 @@ namespace RepositoryStumble.ViewControllers.Application
 
         private class StumbleView : UIView
         {
-            public StumbleView(CGRect rect)
+            public StumbleView(CGRect rect, UIColor backgroundColor)
                 : base(rect)
             {
+                var bgWidth = rect.Width;
+                var mask = UIViewAutoresizing.FlexibleWidth  | UIViewAutoresizing.FlexibleHeight;
+                if (UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Pad)
+                {
+                    bgWidth = 90f;
+                    mask = UIViewAutoresizing.FlexibleLeftMargin | UIViewAutoresizing.FlexibleRightMargin | UIViewAutoresizing.FlexibleHeight;
+                }
+
+                var background = new UIView(new CGRect(0, 0, bgWidth, rect.Height));
+                background.AutoresizingMask = mask;
+                background.BackgroundColor = backgroundColor;
+                background.Center = new CGPoint(Bounds.GetMidX(), Bounds.GetMidY());
+                Add(background);
+
                 var img = new UIImageView(new CGRect(rect.Width / 2f - 14f, 4f, 28f, 28f));
                 img.AutoresizingMask = UIViewAutoresizing.FlexibleLeftMargin | UIViewAutoresizing.FlexibleRightMargin;
                 img.Image = Images.Search.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);

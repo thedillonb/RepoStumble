@@ -28,6 +28,7 @@
     <MtouchArch>i386</MtouchArch>
     <AssemblyName>RepositoryStumble</AssemblyName>
     <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>full</DebugType>
@@ -122,6 +123,7 @@
     <AssemblyName>RepositoryStumbleiOS</AssemblyName>
     <MtouchUseSGen>true</MtouchUseSGen>
     <MtouchUseLlvm>true</MtouchUseLlvm>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -246,7 +248,6 @@
     <Compile Include="Views\SlideUpTitleView.cs" />
     <Compile Include="ViewControllers\WebView.cs" />
     <Compile Include="ViewControllers\ViewModelViewController.cs" />
-    <Compile Include="DialogElements\WebElement.cs" />
     <Compile Include="Extensions\UIBarButtonItemExtensions.cs" />
     <Compile Include="Purchases\InAppPurchases.cs" />
     <Compile Include="DialogElements\EntryElement.cs" />

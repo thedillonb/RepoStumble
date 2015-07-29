@@ -7,16 +7,31 @@ using System.Reactive.Linq;
 using RepositoryStumble.Views;
 using CoreGraphics;
 using Foundation;
+using Newtonsoft.Json;
 
 namespace RepositoryStumble.ViewControllers.Repositories
 {
-    public abstract class BaseRepositoryViewController<TViewModel> : ViewModelPrettyDialogViewController<TViewModel> where TViewModel : BaseRepositoryViewModel
+    public abstract class BaseRepositoryViewController<TViewModel> : ViewModelViewController<TViewModel> where TViewModel : BaseRepositoryViewModel
 	{
+        private UIWebView _web;
         private UIActionSheet _actionSheet;
-        private WebElement _webElement;
-        private bool _disposed;
 		protected readonly UIBarButtonItem DislikeButton;
 		protected readonly UIBarButtonItem LikeButton;
+
+        private SlideUpTitleView _slideUpTitle;
+
+        public override string Title
+        {
+            get
+            {
+                return base.Title;
+            }
+            set
+            {
+                if (_slideUpTitle != null) _slideUpTitle.Text = value;
+                base.Title = value;
+            }
+        }
 
 		protected BaseRepositoryViewController()
 		{
@@ -27,9 +42,38 @@ namespace RepositoryStumble.ViewControllers.Repositories
             LikeButton.TintColor = UITabBar.Appearance.TintColor;
         }
 
+        private bool _loaded;
+        private bool IsWebLoaded
+        {
+            get { return _loaded; }
+            set { this.RaiseAndSetIfChanged(ref _loaded, value); }
+        }
+
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
+
+            NavigationItem.TitleView = _slideUpTitle = new SlideUpTitleView(NavigationController.NavigationBar.Bounds.Height) { Text = Title };
+            _slideUpTitle.Offset = 100f;
+
+            _web = new UIWebView(new CGRect(0, 0, View.Frame.Width, View.Frame.Height));
+            _web.BackgroundColor = UIColor.White;
+            _web.Opaque = false;
+            _web.AutoresizingMask = UIViewAutoresizing.All;
+            _web.LoadFinished += (sender, e) => IsWebLoaded = true;
+            _web.ShouldStartLoad = (w, r, x) =>
+            {
+                if (x == UIWebViewNavigationType.LinkClicked && r.Url.Scheme.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+                {
+                    ViewModel.GoToUrlCommand.ExecuteIfCan(r.Url.AbsoluteString);
+                    return false;
+                }
+                return true;
+            };
+            _web.ScrollView.Scrolled += WebScrolled;
+            Add(_web);
+
+            _web.ScrollView.CreateTopBackground(UIColor.FromRGB(0x4e, 0x4b, 0xbe));
 
             NavigationItem.RightBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Action, (s, e) => ShowMore());
             NavigationItem.RightBarButtonItem.EnableIfExecutable(this.WhenAnyValue(x => x.ViewModel)
@@ -37,61 +81,18 @@ namespace RepositoryStumble.ViewControllers.Repositories
                 .Select(x => x.WhenAnyValue(y => y.Repository))
                 .Switch().Select(x => x != null));
 
-            HeaderView.Text = string.Empty;
-            HeaderView.TextColor = UIColor.White;
-            HeaderView.SubTextColor = UIColor.FromWhiteAlpha(0.9f, 1.0f);
+            this.WhenAnyObservable(x => x.ViewModel.LoadCommand.IsExecuting)
+                .Where(x => x)
+                .Subscribe(_ => IsWebLoaded = false);
 
-            var section = new Section { HeaderView = HeaderView };
-            var section2 = new Section();
-
-            var split = new SplitButtonElement();
-            var stars = split.AddButton("Stargazers", "-");
-            var forks = split.AddButton("Forks", "-");
-            var collaborators = split.AddButton("Contributors", "-");
-            section.Add(split);
-
-            this.WhenAnyValue(x => x.ViewModel)
+            this.WhenAnyValue(x => x.ViewModel.Repository)
                 .Where(x => x != null)
-                .Select(x => x.WhenAnyValue(y => y.RepositoryIdentifier).Where(y => y != null))
-                .Switch()
-                .Subscribe(x => 
-                {
-                    Title = HeaderView.Text = x.Name;
-                    ReloadData();
-                });
-
-            this.WhenAnyValue(x => x.ViewModel)
-                .Where(x => x != null)
-                .Select(x => x.WhenAnyValue(y => y.ContributorCount))
-                .Switch()
-                .Subscribe(x => collaborators.Text = x.HasValue ? x.Value.ToString() : "-");
-
-            this.WhenAnyValue(x => x.ViewModel)
-                .Where(x => x != null)
-                .Select(x => x.WhenAnyValue(y => y.Repository))
-                .Switch()
                 .Subscribe(x =>
                 {
-                    if (x == null)
-                    {
-                        HeaderView.ImageUri = null;
-                        HeaderView.Text = null;
-                        HeaderView.SubText = null;
-                        stars.Text = "-";
-                        forks.Text = "-";
-                    }
-                    else
-                    {
-                        HeaderView.ImageUri = x.Owner.AvatarUrl;
-                        HeaderView.Text = x.Name;
-                        HeaderView.SubText = x.Description;
-                        stars.Text = x.StargazersCount.ToString();
-                        forks.Text = x.ForksCount.ToString();
-                    }
-
-                    ReloadData();
+                    _web.LoadHtmlString(new ReadmeRazorView().GenerateString(), new NSUrl(x.HtmlUrl + "/raw/" + x.DefaultBranch + "/")); 
+                    Title = x.Name;
                 });
-
+            
             this.WhenAnyValue(x => x.ViewModel)
                 .Where(x => x != null)
                 .Select(x => x.WhenAnyValue(y => y.Liked))
@@ -114,46 +115,34 @@ namespace RepositoryStumble.ViewControllers.Repositories
                         LikeButton.Image = Images.ThumbUp;
                     }
                 });
-
-            _webElement = new WebElement("readme");
-            _webElement.UrlRequested += (obj) => 
-                ViewModel.GoToUrlCommand.ExecuteIfCan(obj);
-
-            ViewModel.WhenAnyValue(y => y.Readme).Where(_ => !_disposed).Subscribe(x =>
-            {
-                if (x == null)
+            
+            this.WhenAnyValue(y => y.ViewModel.Repository, y => y.IsWebLoaded)
+                .Where(y => y.Item1 != null && y.Item2)
+                .Subscribe(x =>
                 {
-                    _webElement.ContentPath = null;
-                    section2.HeaderView = new LoadingView();
-                    if (_webElement.GetRootElement() != null)
-                        section2.Remove(_webElement);
-                }
-                else
+                    var s = JsonConvert.SerializeObject(x.Item1);
+                    _web.EvaluateJavascript("setRepository(" + s + ")");
+                });
+
+            this.WhenAnyValue(y => y.ViewModel.ContributorCount, y => y.IsWebLoaded)
+                .Where(y => y.Item1 != null && y.Item2)
+                .Subscribe(x =>
                 {
-                    var view = new ReadmeRazorView { Model = x };
-                    var file = System.IO.Path.GetTempFileName() + ".html";
-                    using (var stream = new System.IO.StreamWriter(file, false, System.Text.Encoding.UTF8))
+                    _web.EvaluateJavascript("setContrib(" + x.Item1.Value + ")");
+                });
+
+            this.WhenAnyValue(y => y.ViewModel.Readme, y => y.IsWebLoaded)
+                .Where(y => y.Item2)
+                .Subscribe(x =>
+                {
+                    if (x.Item1 == null)
+                        _web.EvaluateJavascript("setBody(\"\")");
+                    else
                     {
-                        view.Generate(stream);
-                        _webElement.ContentPath = file;
-
+                        var s = JsonConvert.SerializeObject(x.Item1);
+                        _web.EvaluateJavascript("setBody(" + s + ")");
                     }
-
-                    section2.HeaderView = null;
-                    if (_webElement.GetRootElement() == null)
-                        section2.Add(_webElement);
-                }
-
-                ReloadData();
-            });
-
-            ViewModel.DismissCommand.Subscribe(_ => 
-            {
-                _disposed = true;
-                _webElement.Dispose();
-            });
-
-            Root.Reset(section, section2);
+                });
 
             ToolbarItems = new [] 
             { 
@@ -163,6 +152,21 @@ namespace RepositoryStumble.ViewControllers.Repositories
                 LikeButton,
                 new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace),
             };
+        }
+
+        void WebScrolled (object sender, EventArgs e)
+        {
+            if (NavigationController == null)
+                return;
+
+            var x = _web.ScrollView.ContentOffset;
+
+            if (x.Y > 0)
+                NavigationController.NavigationBar.ShadowImage = null;
+            if (x.Y <= 0 && NavigationController.NavigationBar.ShadowImage == null)
+                NavigationController.NavigationBar.ShadowImage = new UIImage();
+            
+            _slideUpTitle.Offset = 108 + 28f - x.Y;
         }
 
 		private void ShowMore()
@@ -232,12 +236,21 @@ namespace RepositoryStumble.ViewControllers.Repositories
 
         public override void ViewWillAppear(bool animated)
         {
+            if (ToolbarItems != null)
+                NavigationController.SetToolbarHidden(false, animated);
             base.ViewWillAppear(animated);
-            HeaderView.BackgroundColor = NavigationController.NavigationBar.BackgroundColor;
-
-            if (TableView.Subviews.Length > 0)
-                TableView.Subviews[0].BackgroundColor = NavigationController.NavigationBar.BackgroundColor;
+            NavigationController.NavigationBar.ShadowImage = new UIImage();
+            _web.Frame = new CGRect(0, 0, View.Frame.Width, View.Frame.Height);
         }
+
+        public override void ViewWillDisappear(bool animated)
+        {
+            base.ViewWillDisappear(animated);
+            NavigationController.NavigationBar.ShadowImage = null;
+            if (ToolbarItems != null)
+                NavigationController.SetToolbarHidden(true, animated);
+        }
+
     }
 }
 

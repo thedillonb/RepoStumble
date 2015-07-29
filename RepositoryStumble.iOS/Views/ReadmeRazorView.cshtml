@@ -1,15 +1,13 @@
 ﻿@model string
 <html><head>
 <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0"/>
-<script>
-function size() { return document.getElementById('main').scrollHeight + 28; }
-function rs() { document.location.href = 'app://resize'; }; window.onsize = rs;
-var h = 0; 
-setInterval(function() { var th = size(); if (th != h) { h = th; rs(); } }, 250);
-</script>
 <style>
 * {
 box-sizing: border-box;
+}
+body, html {
+	padding: 0;
+	margin: 0;
 }
 body {
 color: #333;
@@ -17,6 +15,7 @@ font-family: Helvetica, Arial, sans-serif;
 line-height: 1.42;
 }
 .markdown-body {
+padding: 1px 5px;
 font-size: 15px;
 line-height: 1.7;
 overflow: hidden;
@@ -94,16 +93,162 @@ padding: 6px 13px;
 .markdown-body table th {
 font-weight: bold;
 }
-.markdown-body img {
+.markdown-body img { scroll
 max-width: 100%;
 -moz-box-sizing: border-box;
 box-sizing: border-box;
 }
+
+#welcome {
+	background-color: #4e4bbe;
+	padding: 15px;
+	color: white;
+}
+#welcome img {
+	width: 80px;
+	height: 80px;
+	margin-bottom: 10px;
+	display: block;
+	border-radius: 40px;
+	border: 2px solid white;
+}
+#name {
+	font-weight: bold;
+	font-size: 1.2em;
+}
+#stats {
+	border-top: 1px solid #d6d6d6;
+	border-bottom: 1px solid #d6d6d6;
+	display: -webkit-flex;
+	display: flex;
+	flex-direction: row;
+}
+#stats .item {
+	width: 33%;
+	padding: 3px 12px;
+	font-size: 14px;
+}
+#stats * {
+	color: #282828;
+}
+#stars, #forks, #contrib {
+	color: #5B5B5B;
+}
+.border-left {
+	border-left: 1px solid #d6d6d6;
+}
+
+@@-webkit-keyframes throbber-loader {
+  0% {
+    background: #dde2e7;
+  }
+  10% {
+    background: #6b9dc8;
+  }
+  40% {
+    background: #dde2e7;
+  }
+}
+@@keyframes throbber-loader {
+  0% {
+    background: #dde2e7;
+  }
+  10% {
+    background: #6b9dc8;
+  }
+  40% {
+    background: #dde2e7;
+  }
+}
+@@-webkit-keyframes three-quarters-loader {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@@keyframes three-quarters-loader {
+  0% {
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+/* :not(:required) hides this rule from IE9 and below */
+.three-quarters-loader:not(:required) {
+  -moz-animation: three-quarters-loader 1250ms infinite linear;
+  -webkit-animation: three-quarters-loader 1250ms infinite linear;
+  animation: three-quarters-loader 1250ms infinite linear;
+  border: 8px solid #4e4bbe;
+  border-right-color: transparent;
+  border-radius: 16px;
+  box-sizing: border-box;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  text-indent: -9999px;
+  width: 32px;
+  height: 32px;
+  margin-top: 25px;
+}
+
 </style>
 <title>Readme</title></head>
 <body>
+	<div id="welcome">
+		 <center>
+			<img id="guy">
+			<div id="name"></div>
+			<div id="desc"></div>
+		</center>
+	</div>
+	<div id="stats">
+		<div class="item">
+			<div id="stars">-</div>
+			<div>Stargazers</div>
+		</div>
+		<div class="item border-left">
+			<div id="forks">-</div>
+			<div>Forks</div>
+		</div>
+		<div class="item  border-left">
+			<div id="contrib">-</div>
+			<div>Contributors</div>
+		</div>
+	</div>
 <div id="main" class="markdown-body">
-@{WriteLiteral(Model);}
+<center>
+<div class="three-quarters-loader">
+  Loading…
 </div>
+</center>
+</div>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script>
+function setBody(body) {
+	$('#main').html(body);
+}
+function setRepository(repo) {
+	$('#guy').attr('src', repo.Owner.AvatarUrl);
+	$('#desc').text(repo.Description);
+	$('#name').text(repo.Name);
+	$('#stars').text(repo.StargazersCount);
+	$('#forks').text(repo.ForksCount);
+}
+function setContrib(contrib) {
+	$('#contrib').text(contrib);
+
+}
+</script>
 </body>
 </html>

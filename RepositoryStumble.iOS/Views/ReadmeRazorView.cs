@@ -39,47 +39,160 @@ WriteLiteral(" name=\"viewport\"");
 WriteLiteral(" content=\"width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable" +
 "=0\"");
 
-WriteLiteral("/>\n<script>\nfunction size() { return document.getElementById(\'main\').scrollHeight" +
-" + 28; }\nfunction rs() { document.location.href = \'app://resize\'; }; window.onsi" +
-"ze = rs;\nvar h = 0; \nsetInterval(function() { var th = size(); if (th != h) { h " +
-"= th; rs(); } }, 250);\n</script>\n<style>\n* {\nbox-sizing: border-box;\n}\nbody {\nco" +
-"lor: #333;\nfont-family: Helvetica, Arial, sans-serif;\nline-height: 1.42;\n}\n.mark" +
-"down-body {\nfont-size: 15px;\nline-height: 1.7;\noverflow: hidden;\nword-wrap: brea" +
-"k-word;\n}\n.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-bod" +
-"y h4, .markdown-body h5, .markdown-body h6 {\nmargin: 1em 0 15px;\npadding: 0;\nfon" +
-"t-weight: bold;\nline-height: 1.7;\ncursor: text;\nposition: relative;\n}\n.markdown-" +
-"body h1 {\nfont-size: 1.8em;\nborder-bottom: 1px solid #ddd;\n}\n.markdown-body p, ." +
-"markdown-body blockquote, .markdown-body ul, .markdown-body ol, .markdown-body d" +
-"l, .markdown-body table, .markdown-body pre {\nmargin: 15px 0;\n}\n.markdown-body h" +
-"2 {\nfont-size: 1.4em;\nborder-bottom: 1px solid #eee;\n}\n.markdown-body ul, .markd" +
-"own-body ol {\npadding-left: 30px;\n}\na {\ncolor: #4183c4;\ntext-decoration: none;\nt" +
-"ext-decoration: none;\n}\n.markdown-body .highlight pre, .markdown-body pre {\nback" +
-"ground-color: #f8f8f8;\nborder: 1px solid #ddd;\nfont-size: 13px;\nline-height: 19p" +
-"x;\noverflow: auto;\npadding: 6px 10px;\nborder-radius: 3px;\n}\n.markdown-body pre {" +
-"\nword-wrap: normal;\n}\n.markdown-body dl {\npadding: 0;\n}\n.markdown-body dl dt {\nf" +
-"ont-size: 14px;\nfont-weight: bold;\nfont-style: italic;\npadding: 0;\nmargin-top: 1" +
-"5px;\n}\n.markdown-body dl dd {\nmargin-bottom: 15px;\npadding: 0 15px;\n}\n.markdown-" +
-"body table {\nwidth: 100%;\noverflow: auto;\ndisplay: block;\n}\n.markdown-body table" +
-" tr {\nborder-top: 1px solid #ccc;\nbackground-color: #fff;\n}\n.markdown-body table" +
-" tr:nth-child(2n) {\nbackground-color: #f8f8f8;\n}\n.markdown-body table th, .markd" +
-"own-body table td {\nborder: 1px solid #ddd;\npadding: 6px 13px;\n}\n.markdown-body " +
-"table th {\nfont-weight: bold;\n}\n.markdown-body img {\nmax-width: 100%;\n-moz-box-s" +
-"izing: border-box;\nbox-sizing: border-box;\n}\n</style>\n<title>Readme</title></hea" +
-"d>\n<body>\n<div");
+WriteLiteral("/>\n<style>\n* {\nbox-sizing: border-box;\n}\nbody, html {\n\tpadding: 0;\n\tmargin: 0;\n}\n" +
+"body {\ncolor: #333;\nfont-family: Helvetica, Arial, sans-serif;\nline-height: 1.42" +
+";\n}\n.markdown-body {\npadding: 1px 5px;\nfont-size: 15px;\nline-height: 1.7;\noverfl" +
+"ow: hidden;\nword-wrap: break-word;\n}\n.markdown-body h1, .markdown-body h2, .mark" +
+"down-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6 {\nmargin: " +
+"1em 0 15px;\npadding: 0;\nfont-weight: bold;\nline-height: 1.7;\ncursor: text;\nposit" +
+"ion: relative;\n}\n.markdown-body h1 {\nfont-size: 1.8em;\nborder-bottom: 1px solid " +
+"#ddd;\n}\n.markdown-body p, .markdown-body blockquote, .markdown-body ul, .markdow" +
+"n-body ol, .markdown-body dl, .markdown-body table, .markdown-body pre {\nmargin:" +
+" 15px 0;\n}\n.markdown-body h2 {\nfont-size: 1.4em;\nborder-bottom: 1px solid #eee;\n" +
+"}\n.markdown-body ul, .markdown-body ol {\npadding-left: 30px;\n}\na {\ncolor: #4183c" +
+"4;\ntext-decoration: none;\ntext-decoration: none;\n}\n.markdown-body .highlight pre" +
+", .markdown-body pre {\nbackground-color: #f8f8f8;\nborder: 1px solid #ddd;\nfont-s" +
+"ize: 13px;\nline-height: 19px;\noverflow: auto;\npadding: 6px 10px;\nborder-radius: " +
+"3px;\n}\n.markdown-body pre {\nword-wrap: normal;\n}\n.markdown-body dl {\npadding: 0;" +
+"\n}\n.markdown-body dl dt {\nfont-size: 14px;\nfont-weight: bold;\nfont-style: italic" +
+";\npadding: 0;\nmargin-top: 15px;\n}\n.markdown-body dl dd {\nmargin-bottom: 15px;\npa" +
+"dding: 0 15px;\n}\n.markdown-body table {\nwidth: 100%;\noverflow: auto;\ndisplay: bl" +
+"ock;\n}\n.markdown-body table tr {\nborder-top: 1px solid #ccc;\nbackground-color: #" +
+"fff;\n}\n.markdown-body table tr:nth-child(2n) {\nbackground-color: #f8f8f8;\n}\n.mar" +
+"kdown-body table th, .markdown-body table td {\nborder: 1px solid #ddd;\npadding: " +
+"6px 13px;\n}\n.markdown-body table th {\nfont-weight: bold;\n}\n.markdown-body img { " +
+"scroll\nmax-width: 100%;\n-moz-box-sizing: border-box;\nbox-sizing: border-box;\n}\n\n" +
+"#welcome {\n\tbackground-color: #4e4bbe;\n\tpadding: 15px;\n\tcolor: white;\n}\n#welcome" +
+" img {\n\twidth: 80px;\n\theight: 80px;\n\tmargin-bottom: 10px;\n\tdisplay: block;\n\tbord" +
+"er-radius: 40px;\n\tborder: 2px solid white;\n}\n#name {\n\tfont-weight: bold;\n\tfont-s" +
+"ize: 1.2em;\n}\n#stats {\n\tborder-top: 1px solid #d6d6d6;\n\tborder-bottom: 1px solid" +
+" #d6d6d6;\n\tdisplay: -webkit-flex;\n\tdisplay: flex;\n\tflex-direction: row;\n}\n#stats" +
+" .item {\n\twidth: 33%;\n\tpadding: 3px 12px;\n\tfont-size: 14px;\n}\n#stats * {\n\tcolor:" +
+" #282828;\n}\n#stars, #forks, #contrib {\n\tcolor: #5B5B5B;\n}\n.border-left {\n\tborder" +
+"-left: 1px solid #d6d6d6;\n}\n\n");
+
+WriteLiteral("@-webkit-keyframes throbber-loader {\n  0% {\n    background: #dde2e7;\n  }\n  10% {\n" +
+"    background: #6b9dc8;\n  }\n  40% {\n    background: #dde2e7;\n  }\n}\n");
+
+WriteLiteral("@keyframes throbber-loader {\n  0% {\n    background: #dde2e7;\n  }\n  10% {\n    back" +
+"ground: #6b9dc8;\n  }\n  40% {\n    background: #dde2e7;\n  }\n}\n");
+
+WriteLiteral("@-webkit-keyframes three-quarters-loader {\n  0% {\n    -webkit-transform: rotate(0" +
+"deg);\n    transform: rotate(0deg);\n  }\n  100% {\n    -webkit-transform: rotate(36" +
+"0deg);\n    transform: rotate(360deg);\n  }\n}\n");
+
+WriteLiteral(@"@keyframes three-quarters-loader {
+  0% {
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+/* :not(:required) hides this rule from IE9 and below */
+.three-quarters-loader:not(:required) {
+  -moz-animation: three-quarters-loader 1250ms infinite linear;
+  -webkit-animation: three-quarters-loader 1250ms infinite linear;
+  animation: three-quarters-loader 1250ms infinite linear;
+  border: 8px solid #4e4bbe;
+  border-right-color: transparent;
+  border-radius: 16px;
+  box-sizing: border-box;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  text-indent: -9999px;
+  width: 32px;
+  height: 32px;
+  margin-top: 25px;
+}
+
+</style>
+<title>Readme</title></head>
+<body>
+	<div");
+
+WriteLiteral(" id=\"welcome\"");
+
+WriteLiteral(">\n\t\t <center>\n\t\t\t<img");
+
+WriteLiteral(" id=\"guy\"");
+
+WriteLiteral(">\n\t\t\t<div");
+
+WriteLiteral(" id=\"name\"");
+
+WriteLiteral("></div>\n\t\t\t<div");
+
+WriteLiteral(" id=\"desc\"");
+
+WriteLiteral("></div>\n\t\t</center>\n\t</div>\n\t<div");
+
+WriteLiteral(" id=\"stats\"");
+
+WriteLiteral(">\n\t\t<div");
+
+WriteLiteral(" class=\"item\"");
+
+WriteLiteral(">\n\t\t\t<div");
+
+WriteLiteral(" id=\"stars\"");
+
+WriteLiteral(">-</div>\n\t\t\t<div>Stargazers</div>\n\t\t</div>\n\t\t<div");
+
+WriteLiteral(" class=\"item border-left\"");
+
+WriteLiteral(">\n\t\t\t<div");
+
+WriteLiteral(" id=\"forks\"");
+
+WriteLiteral(">-</div>\n\t\t\t<div>Forks</div>\n\t\t</div>\n\t\t<div");
+
+WriteLiteral(" class=\"item  border-left\"");
+
+WriteLiteral(">\n\t\t\t<div");
+
+WriteLiteral(" id=\"contrib\"");
+
+WriteLiteral(">-</div>\n\t\t\t<div>Contributors</div>\n\t\t</div>\n\t</div>\n<div");
 
 WriteLiteral(" id=\"main\"");
 
 WriteLiteral(" class=\"markdown-body\"");
 
-WriteLiteral(">\n");
+WriteLiteral(">\n<center>\n<div");
 
+WriteLiteral(" class=\"three-quarters-loader\"");
 
-#line 106 "ReadmeRazorView.cshtml"
-  WriteLiteral(Model);
+WriteLiteral(">\n  Loading…\n</div>\n</center>\n</div>\n<script");
 
-#line default
-#line hidden
-WriteLiteral("\n</div>\n</body>\n</html>");
+WriteLiteral(" src=\"https://code.jquery.com/jquery-2.1.4.min.js\"");
+
+WriteLiteral(@"></script>
+<script>
+function setBody(body) {
+	$('#main').html(body);
+}
+function setRepository(repo) {
+	$('#guy').attr('src', repo.Owner.AvatarUrl);
+	$('#desc').text(repo.Description);
+	$('#name').text(repo.Name);
+	$('#stars').text(repo.StargazersCount);
+	$('#forks').text(repo.ForksCount);
+}
+function setContrib(contrib) {
+	$('#contrib').text(contrib);
+
+}
+</script>
+</body>
+</html>");
 
 }
 }
