@@ -132,16 +132,11 @@ namespace RepositoryStumble.ViewControllers.Repositories
                 });
 
             this.WhenAnyValue(y => y.ViewModel.Readme, y => y.IsWebLoaded)
-                .Where(y => y.Item2)
+                .Where(y => y.Item2 && y.Item1 != null)
                 .Subscribe(x =>
                 {
-                    if (x.Item1 == null)
-                        _web.EvaluateJavascript("setBody(\"\")");
-                    else
-                    {
-                        var s = JsonConvert.SerializeObject(x.Item1);
-                        _web.EvaluateJavascript("setBody(" + s + ")");
-                    }
+                    var s = JsonConvert.SerializeObject(x.Item1);
+                    _web.EvaluateJavascript("setBody(" + s + ")");
                 });
 
             ToolbarItems = new [] 
