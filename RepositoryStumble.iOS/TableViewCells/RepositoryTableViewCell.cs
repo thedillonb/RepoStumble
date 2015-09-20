@@ -15,65 +15,42 @@ namespace RepositoryStumble.TableViewCells
         {
         }
 
-        public override NSString ReuseIdentifier { get { return Key; } }
-
-        public static RepositoryTableViewCell Create()
+        public override void AwakeFromNib()
         {
-            var cell = (RepositoryTableViewCell)Nib.Instantiate(null, null)[0];
-            cell.RepositoryImageView.Layer.MasksToBounds = true;
-            cell.RepositoryImageView.Layer.CornerRadius = cell.RepositoryImageView.Frame.Height / 2f;
-            cell.SeparatorInset = new UIEdgeInsets(0, cell.TitleLabel.Frame.Left, 0, 0);
-            return cell;
+            base.AwakeFromNib();
+
+            RepositoryImageView.Layer.MasksToBounds = true;
+            RepositoryImageView.Layer.CornerRadius = RepositoryImageView.Frame.Height / 2f;
         }
 
-        public void SetImage(string url, UIImage placeholder)
+        public void Set(string name, string owner, string description, string avatarUrl)
         {
-            if (url == null)
-            {
+            TitleLabel.Text = name;
+            OwnerLabel.Text = owner;
+            DescriptionLabel.Text = description;
+
+            if (avatarUrl == null)
                 RepositoryImageView.Image = null;
-                return;
-            }
-            
-            try
+            else
             {
-                RepositoryImageView.SetImage(new NSUrl(url), placeholder);
+                try
+                {
+                    RepositoryImageView.SetImage(new NSUrl(avatarUrl), Images.UnknownUser, (img, err, type, imageUrl) => {
+                        if (img == null || err != null)
+                            return;
+
+                        if (type == SDImageCacheType.None)
+                        {
+                            RepositoryImageView.Image = Images.UnknownUser;
+                            BeginInvokeOnMainThread(() =>
+                                UIView.Transition(RepositoryImageView, 0.25f, UIViewAnimationOptions.TransitionCrossDissolve, () => RepositoryImageView.Image = img, null));
+                        }
+                    });
+                }
+                catch
+                {
+                }
             }
-            catch
-            {
-            }
-        }
-
-        public void SetImage(UIImage placeholder)
-        {
-            RepositoryImageView.Image = placeholder;
-        }
-
-        public string Name
-        {
-            get { return TitleLabel.Text; }
-            set { TitleLabel.Text = value; }
-        }
-
-        public string Description
-        {
-            get { return DescriptionLabel.Text; }
-            set { DescriptionLabel.Text = value; }
-        }
-
-        public string Owner
-        {
-            get { return OwnerLabel.Text; }
-            set { OwnerLabel.Text = value; }
-        }
-
-        public override void LayoutSubviews()
-        {
-            base.LayoutSubviews();
-
-            ContentView.SetNeedsLayout();
-            ContentView.LayoutIfNeeded();
-
-            DescriptionLabel.PreferredMaxLayoutWidth = DescriptionLabel.Frame.Width;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace RepositoryStumble.Core.Data
 {
     public class ShowcaseRepository
     {
-        private const string ShowcaseUrl = "http://trending.codehub-app.com/v2/showcases/{0}";
+        private const string ShowcaseUrl = "http://trending.codehub-app.com/showcases/{0}";
 
         public async Task<ShowcaseRepositories> GetShowcaseRepositories(string showcaseSlug)
         {

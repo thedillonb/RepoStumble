@@ -6,6 +6,7 @@ using ReactiveUI;
 using Xamarin.Utilities.DialogElements;
 using RepositoryStumble.Elements;
 using System.Linq;
+using RepositoryStumble.TableViewCells;
 
 namespace RepositoryStumble.ViewControllers.Profile
 {
@@ -14,6 +15,10 @@ namespace RepositoryStumble.ViewControllers.Profile
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
+
+            TableView.RegisterNibForCellReuse(RepositoryTableViewCell.Nib, RepositoryTableViewCell.Key);
+            TableView.RowHeight = UITableView.AutomaticDimension;
+            TableView.EstimatedRowHeight = 80f;
 
             if (HeaderView != null) HeaderView.Text = ViewModel.Username;
             if (SlideUpTitle != null) SlideUpTitle.Text = ViewModel.Username;

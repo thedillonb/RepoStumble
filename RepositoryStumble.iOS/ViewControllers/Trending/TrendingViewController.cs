@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using UIKit;
 using System.Reactive.Linq;
 using CoreGraphics;
+using RepositoryStumble.TableViewCells;
 
 namespace RepositoryStumble.ViewControllers.Trending
 {
@@ -41,6 +42,10 @@ namespace RepositoryStumble.ViewControllers.Trending
 
             ViewModel.LoadCommand.IsExecuting.Where(x => x).Subscribe(_ =>
                 TableView.ScrollRectToVisible(new CGRect(0, 0, 1, 1), true));
+
+            TableView.RegisterNibForCellReuse(RepositoryTableViewCell.Nib, RepositoryTableViewCell.Key);
+            TableView.RowHeight = UITableView.AutomaticDimension;
+            TableView.EstimatedRowHeight = 80f;
 
             ViewModel.Repositories.Changed.Subscribe(_ =>
             {

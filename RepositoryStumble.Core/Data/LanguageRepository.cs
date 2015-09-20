@@ -10,7 +10,7 @@ namespace RepositoryStumble.Core.Data
 {
     public class LanguageRepository
     {
-        private const string LanguagesUrl = "http://trending.codehub-app.com/v2/languages";
+        private const string LanguagesUrl = "http://trending.codehub-app.com/languages";
 
         public async Task<List<Language>> GetLanguages()
         {

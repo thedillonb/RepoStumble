@@ -46,17 +46,10 @@ namespace RepositoryStumble
             // Load the IoC
             Services.Registrations.InitializeServices(Locator.CurrentMutable);
 
-
             var viewModelViewService = Locator.Current.GetService<IViewModelViewService>();
             viewModelViewService.RegisterViewModels(typeof(IApplicationService).Assembly);
             viewModelViewService.RegisterViewModels(GetType().Assembly);
 
-//			iRate.SharedInstance.AppStoreID = 761416981;
-//			iRate.SharedInstance.ApplicationBundleID = "com.dillonbuchanan.repositorystumble";
-//			iRate.SharedInstance.DaysUntilPrompt = 2;
-//			iRate.SharedInstance.UsesUntilPrompt = 5;
-//			iRate.SharedInstance.OnlyPromptIfLatestVersion = true;
-//
             // Install the theme
             SetupTheme();
 

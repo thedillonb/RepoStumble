@@ -8,6 +8,7 @@ namespace RepositoryStumble.Elements
     public class InterestElement : StringElement
     {
         public Interest Interest { get; private set; }
+
         public InterestElement(Interest interest, Action action)
             : base(interest.Keyword, interest.Language, UITableViewCellStyle.Subtitle)
         {

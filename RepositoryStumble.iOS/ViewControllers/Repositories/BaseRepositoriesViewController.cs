@@ -6,6 +6,8 @@ using Xamarin.Utilities.DialogElements;
 using System.Reactive.Linq;
 using System.Collections.Specialized;
 using ReactiveUI;
+using RepositoryStumble.TableViewCells;
+using UIKit;
 
 namespace RepositoryStumble.ViewControllers.Repositories
 {
@@ -14,7 +16,17 @@ namespace RepositoryStumble.ViewControllers.Repositories
         protected BaseRepositoriesViewController()
             : base(unevenRows: true)
         {
+        }
+
+        public override void ViewDidLoad()
+        {
+            base.ViewDidLoad();
+
             SearchTextChanging.Where(x => ViewModel != null).Subscribe(x => ViewModel.SearchKeyword = x);
+
+            TableView.RegisterNibForCellReuse(RepositoryTableViewCell.Nib, RepositoryTableViewCell.Key);
+            TableView.RowHeight = UITableView.AutomaticDimension;
+            TableView.EstimatedRowHeight = 80f;
 
             this.WhenAnyValue(x => x.ViewModel)
                 .Where(x => x != null)

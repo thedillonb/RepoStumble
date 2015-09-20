@@ -1,6 +1,4 @@
-
 using System;
-
 using Foundation;
 using UIKit;
 using SDWebImage;
@@ -12,53 +10,43 @@ namespace RepositoryStumble.TableViewCells
         public static readonly UINib Nib = UINib.FromName("ShowcaseTableViewCell", NSBundle.MainBundle);
         public static readonly NSString Key = new NSString("ShowcaseTableViewCell");
 
-        public ShowcaseTableViewCell(IntPtr handle) : base(handle)
+        public ShowcaseTableViewCell(IntPtr handle) 
+            : base(handle)
         {
         }
 
-        public override NSString ReuseIdentifier { get { return Key; } }
-
-        public static ShowcaseTableViewCell Create()
+        public override void AwakeFromNib()
         {
-            var cell = (ShowcaseTableViewCell)Nib.Instantiate(null, null)[0];
-            cell.ShowcaseImageView.Layer.MasksToBounds = true;
-            cell.ShowcaseImageView.Layer.CornerRadius = cell.ShowcaseImageView.Frame.Height / 2f;
-            cell.SeparatorInset = new UIEdgeInsets(0, cell.ShowcaseNameLabel.Frame.Left, 0, 0);
-            return cell;
+            base.AwakeFromNib();
+            ShowcaseImageView.Layer.MasksToBounds = true;
+            ShowcaseImageView.Layer.CornerRadius = ShowcaseImageView.Frame.Height / 2f;
         }
-  
-        public void SetImage(string url)
+
+        public void Set(string name, string description, string avatarUrl)
         {
-            if (url == null)
+            ShowcaseNameLabel.Text = name;
+            ShowcaseDescriptionLabel.Text = description;
+
+            if (avatarUrl == null)
                 ShowcaseImageView.Image = null;
-                
-            try
+            else
             {
-                ShowcaseImageView.SetImage(new NSUrl(url));
+                try
+                {
+                    ShowcaseImageView.SetImage(new NSUrl(avatarUrl), Images.UnknownUser, (img, err, type, imageUrl) => {
+                        if (img == null || err != null)
+                            return;
+
+                        if (type == SDImageCacheType.None)
+                        {
+                            ShowcaseImageView.Image = Images.UnknownUser;
+                            BeginInvokeOnMainThread(() =>
+                                UIView.Transition(ShowcaseImageView, 0.25f, UIViewAnimationOptions.TransitionCrossDissolve, () => ShowcaseImageView.Image = img, null));
+                        }
+                    });
+                }
+                catch {}
             }
-            catch {}
-        }
-
-        public string Name
-        {
-            get { return ShowcaseNameLabel.Text; }
-            set { ShowcaseNameLabel.Text = value; }
-        }
-
-        public string Description
-        {
-            get { return ShowcaseDescriptionLabel.Text; }
-            set { ShowcaseDescriptionLabel.Text = value; }
-        }
-
-        public override void LayoutSubviews()
-        {
-            base.LayoutSubviews();
-
-            ContentView.SetNeedsLayout();
-            ContentView.LayoutIfNeeded();
-
-            ShowcaseDescriptionLabel.PreferredMaxLayoutWidth = ShowcaseDescriptionLabel.Frame.Width;
         }
     }
 }

@@ -229,7 +229,6 @@
     <Compile Include="ViewControllers\Application\PurchaseProViewController.designer.cs">
       <DependentUpon>PurchaseProViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="DialogElements\IElementSizing.cs" />
     <Compile Include="DialogElements\InputElement.cs" />
     <Compile Include="DialogElements\RootElement.cs" />
     <Compile Include="DialogElements\Section.cs" />
@@ -322,6 +321,8 @@
     <BundleResource Include="Images\back-chevron%402x.png" />
     <BundleResource Include="Images\forward-chevron.png" />
     <BundleResource Include="Images\forward-chevron%402x.png" />
+    <BundleResource Include="Images\unknown_user.png" />
+    <BundleResource Include="Images\unknown_user%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />

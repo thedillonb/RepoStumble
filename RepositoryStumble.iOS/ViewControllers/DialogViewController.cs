@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Reactive.Subjects;
 using ReactiveUI;
 using Xamarin.Utilities.DialogElements;
@@ -133,12 +132,7 @@ namespace RepositoryStumble.ViewControllers
             {
                 var section = Root[indexPath.Section];
                 var element = section[indexPath.Row];
-
-                if (element.Hidden)
-                    return 0f;
-
-                var sizable = element as IElementSizing;
-                return sizable == null ? tableView.RowHeight : sizable.GetHeight(tableView, indexPath);
+                return element.Hidden ? 0f : tableView.RowHeight;
             }
         }
 

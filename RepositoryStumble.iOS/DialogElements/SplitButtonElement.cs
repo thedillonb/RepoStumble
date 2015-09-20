@@ -110,7 +110,6 @@ namespace Xamarin.Utilities.DialogElements
             }
 
             public SplitButton(string caption, string text)
-                : base(UIButtonType.Custom)
             {
                 AutosizesSubviews = true;
 
