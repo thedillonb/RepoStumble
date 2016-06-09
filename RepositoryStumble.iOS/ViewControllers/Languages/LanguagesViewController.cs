@@ -10,7 +10,7 @@ namespace RepositoryStumble.ViewControllers.Languages
     {
         public LanguagesViewController()
         {
-            Title = "Langauges";
+            Title = "Languages";
         }
 
         public override void ViewDidLoad()
