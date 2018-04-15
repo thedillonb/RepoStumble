@@ -22,11 +22,11 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>MinimumOSVersion</key>
-	<string>8.0</string>
+	<string>9.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.2.0</string>
+	<string>2.2.1</string>
 	<key>CFBundleVersion</key>
-	<string>2.2.0</string>
+	<string>2.2.1.2</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.dillonbuchanan.repositorystumble</string>
 	<key>UIPrerenderedIcon</key>
@@ -64,5 +64,7 @@
 	<string>Launch</string>
 	<key>XSAppIconAssets</key>
 	<string>Resources/Images.xcassets/AppIcons.appiconset</string>
+	<key>CFBundleName</key>
+	<string>RepoStumble</string>
 </dict>
 </plist>

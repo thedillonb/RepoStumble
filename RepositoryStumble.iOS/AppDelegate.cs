@@ -9,6 +9,9 @@ using RepositoryStumble.ViewControllers.Application;
 using Security;
 using RepositoryStumble.Core.Services;
 using Splat;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 
 namespace RepositoryStumble
 {
@@ -35,6 +38,8 @@ namespace RepositoryStumble
 		//
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
+            AppCenter.Start("394e3d5b-722a-4e2e-b465-24e0e7af82bf", typeof(Analytics), typeof(Crashes));
+
             StampInstallDate();
 
             RxApp.DefaultExceptionHandler = Observer.Create((Exception e) =>

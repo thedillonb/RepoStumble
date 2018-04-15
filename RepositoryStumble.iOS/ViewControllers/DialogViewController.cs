@@ -30,6 +30,8 @@ namespace RepositoryStumble.ViewControllers
         {
             _unevenRows = unevenRows;
             _tableView = new UITableView(UIScreen.MainScreen.Bounds, style);
+            _tableView.EstimatedSectionFooterHeight = 0;
+            _tableView.EstimatedSectionHeaderHeight = 0;
             _root = new RootElement(_tableView);
         }
 
